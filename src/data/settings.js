@@ -1,0 +1,81 @@
+export const settingsConfig = {
+  '⚙️ General': [
+    { key:'STORE_NAME', label:'Platform Name', value:'HyperBridge QuantumOS', type:'text' },
+    { key:'GST_RATE', label:'GST Rate (%)', value:'5', type:'number' },
+    { key:'CURRENCY', label:'Currency', value:'INR', type:'text' },
+    { key:'TIMEZONE', label:'Timezone', value:'Asia/Kolkata', type:'text' },
+    { key:'SUPPORT_PHONE', label:'Support Phone', value:'+91 98765 43210', type:'text' },
+  ],
+  '📲 OTP & Verification': [
+    { key:'OTP_SMS', label:'SMS OTP Enabled', value:'true', type:'toggle' },
+    { key:'OTP_SMS_PROVIDER', label:'SMS Provider', value:'MSG91', type:'select', options:['MSG91','2Factor.in','Kaleyra','Gupshup','Textlocal','Twilio','Vonage','Sinch','Plivo','AWS SNS'] },
+    { key:'OTP_SMS_FALLBACK', label:'SMS Fallback', value:'2Factor.in', type:'select', options:['None','MSG91','2Factor.in','Kaleyra','Gupshup','Textlocal','Twilio','Vonage','Sinch','Plivo','AWS SNS'] },
+    { key:'OTP_WHATSAPP', label:'WhatsApp OTP Enabled', value:'true', type:'toggle' },
+    { key:'OTP_WA_PROVIDER', label:'WhatsApp BSP', value:'Meta Cloud API', type:'select', options:['Meta Cloud API','Gupshup','WATI','Twilio WhatsApp','Interakt','AiSensy','360dialog','Kaleyra'] },
+    { key:'OTP_EMAIL', label:'Email OTP Enabled', value:'true', type:'toggle' },
+    { key:'OTP_EMAIL_PROVIDER', label:'Email Provider', value:'Pepipost', type:'select', options:['Pepipost (Netcore)','SendGrid','AWS SES','Mailgun','Postmark','Zoho ZeptoMail','Brevo','Resend'] },
+    { key:'OTP_LENGTH', label:'OTP Length', value:'6', type:'select', options:['4','6'] },
+    { key:'OTP_EXPIRY_SEC', label:'OTP Expiry (seconds)', value:'300', type:'number' },
+    { key:'OTP_MAX_ATTEMPTS', label:'Max Attempts', value:'5', type:'number' },
+    { key:'OTP_RESEND_COOLDOWN', label:'Resend Cooldown (sec)', value:'30', type:'number' },
+    { key:'VERIFY_DEFAULT_CHANNEL', label:'Default Channel', value:'whatsapp', type:'select', options:['sms','whatsapp','email'] },
+    { key:'VERIFY_CHANNEL_PRIORITY', label:'Channel Priority', value:'whatsapp,sms,email', type:'text' },
+  ],
+  '📍 Address & Autofill': [
+    { key:'ADDR_AUTOFILL_ENABLED', label:'Address Autofill', value:'true', type:'toggle' },
+    { key:'ADDR_PROVIDER', label:'Primary Provider', value:'Google Places', type:'select', options:['Google Places','MapmyIndia (Mappls)','Ola Maps','Mapbox','HERE Maps','LocationIQ'] },
+    { key:'ADDR_FALLBACK', label:'Fallback Provider', value:'MapmyIndia (Mappls)', type:'select', options:['None','Google Places','MapmyIndia (Mappls)','Ola Maps','Mapbox','HERE Maps','LocationIQ'] },
+    { key:'ADDR_COUNTRY_RESTRICT', label:'Country Restriction', value:'in', type:'text' },
+    { key:'ADDR_DEBOUNCE_MS', label:'Debounce (ms)', value:'300', type:'number' },
+    { key:'ADDR_MIN_CHARS', label:'Min Characters', value:'3', type:'number' },
+    { key:'ADDR_MAX_RESULTS', label:'Max Results', value:'5', type:'number' },
+    { key:'ADDR_AUTO_VERIFY', label:'Auto-Verify Address', value:'true', type:'toggle' },
+    { key:'ADDR_REQUIRE_PINCODE', label:'Require Pincode', value:'true', type:'toggle' },
+    { key:'ADDR_VALIDATE_ZONE', label:'Validate Delivery Zone', value:'true', type:'toggle' },
+    { key:'ADDR_GOOGLE_API_KEY', label:'Google Maps API Key', value:'', type:'text' },
+    { key:'ADDR_MAPPLS_KEY', label:'MapmyIndia REST Key', value:'', type:'text' },
+  ],
+  '🛵 Delivery': [
+    { key:'DELIVERY_FREE_ABOVE', label:'Free Delivery Above (₹)', value:'499', type:'number' },
+    { key:'DELIVERY_CHARGE', label:'Base Delivery Charge (₹)', value:'29', type:'number' },
+    { key:'DELIVERY_EXPRESS_FEE', label:'Express Surcharge (₹)', value:'49', type:'number' },
+    { key:'DELIVERY_MAX_RADIUS', label:'Max Radius (km)', value:'10', type:'number' },
+    { key:'DELIVERY_COD_ENABLED', label:'COD Enabled', value:'true', type:'toggle' },
+    { key:'DELIVERY_COD_LIMIT', label:'COD Max (₹)', value:'2000', type:'number' },
+    { key:'DELIVERY_PARTNER', label:'Logistics Partner', value:'Own Fleet', type:'select', options:['Own Fleet','Dunzo','Swiggy Genie','Porter','Shadowfax','Borzo','Loadshare','Pidge','Rapido','Zypp'] },
+    { key:'DELIVERY_AUTO_ASSIGN', label:'Auto-Assign Delivery', value:'true', type:'toggle' },
+  ],
+  '🔌 API Integrations': [
+    { key:'API_SMS_KEY', label:'SMS API Key (MSG91)', value:'', type:'text' },
+    { key:'API_SMS_SENDER', label:'SMS Sender ID', value:'QNTUOS', type:'text' },
+    { key:'API_EMAIL_KEY', label:'Email API Key', value:'', type:'text' },
+    { key:'API_EMAIL_FROM', label:'From Email', value:'noreply@quantumos.in', type:'text' },
+    { key:'API_WA_TOKEN', label:'WhatsApp Access Token', value:'', type:'text' },
+    { key:'API_WA_PHONE_ID', label:'WA Phone Number ID', value:'', type:'text' },
+    { key:'API_MAPS_KEY', label:'Google Maps API Key', value:'', type:'text' },
+    { key:'API_MAPPLS_CLIENT', label:'MapmyIndia Client ID', value:'', type:'text' },
+    { key:'API_MAPPLS_SECRET', label:'MapmyIndia Secret', value:'', type:'text' },
+    { key:'API_RAZORPAY_KEY', label:'Razorpay Key ID', value:'', type:'text' },
+    { key:'API_RAZORPAY_SECRET', label:'Razorpay Secret', value:'', type:'text' },
+  ],
+  '🎁 Viral Marketing': [
+    { key:'VIRAL_REFERRAL_ENABLED', label:'Referral Program', value:'true', type:'toggle' },
+    { key:'VIRAL_REFERRAL_REWARD', label:'Referrer Reward (₹)', value:'100', type:'number' },
+    { key:'VIRAL_REFERRAL_FRIEND', label:'Friend Gets (₹ off)', value:'100', type:'number' },
+    { key:'VIRAL_REWARDS_ENABLED', label:'Loyalty Points', value:'true', type:'toggle' },
+    { key:'VIRAL_POINTS_PER_RUPEE', label:'Points per ₹1 Spent', value:'1', type:'number' },
+    { key:'VIRAL_FIRST_ORDER_DISCOUNT', label:'First Order Discount (%)', value:'20', type:'number' },
+  ],
+  '🏢 Franchise': [
+    { key:'FRANCHISE_ENABLED', label:'Franchise Mode', value:'true', type:'toggle' },
+    { key:'FRANCHISE_DEFAULT_ROYALTY', label:'Default Royalty (%)', value:'12', type:'number' },
+    { key:'FRANCHISE_FORM_ENABLED', label:'Frontend Inquiry Form', value:'true', type:'toggle' },
+    { key:'FRANCHISE_CONTACT_EMAIL', label:'Inquiry Email', value:'franchise@sangam.in', type:'text' },
+  ],
+};
+
+export function getDefaultSettings() {
+  const s = {};
+  Object.values(settingsConfig).flat().forEach(i => { s[i.key] = i.value; });
+  return s;
+}
