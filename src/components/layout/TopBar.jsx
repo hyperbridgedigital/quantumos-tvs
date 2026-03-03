@@ -1,24 +1,41 @@
 'use client';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
 import { ROLES } from '@/data/roles';
 
 function TopBar() {
-  const { view, setView, user, customer, adminLogout, userLogout, setShowUserAuth, setShowAdminLogin, cart, settings } = useApp();
+  const { view, setView, user, customer, adminLogout, userLogout, setShowUserAuth, cart, detectNearestStore, currentStore } = useApp();
   const isAdmin = view === 'admin';
   const G = brand.green;
+  const [locating, setLocating] = useState(false);
+  const [detectedStoreName, setDetectedStoreName] = useState('');
+
+  useEffect(() => {
+    if (currentStore?.name && !detectedStoreName) setDetectedStoreName(currentStore.name);
+  }, [currentStore, detectedStoreName]);
+
+  const handleDetectLocation = async () => {
+    setLocating(true);
+    try {
+      const result = await detectNearestStore();
+      if (result?.store?.name) setDetectedStoreName(result.store.name);
+    } finally {
+      setLocating(false);
+    }
+  };
 
   return (
     <div className="topbar" style={{
       background: isAdmin ? '#0C0B09' : '#FFFFFF',
       backdropFilter: 'blur(20px)',
       borderBottom: isAdmin ? '1px solid #2A2A3E' : '1px solid '+brand.storeBorder,
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px',
+      padding: '0 12px',
       boxShadow: isAdmin ? 'none' : '0 1px 8px rgba(27,94,32,.06)',
     }}>
+      <div className="topbar-inner" style={{ width:'100%', maxWidth:1200, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, minHeight:54 }}>
       {/* ═══ LOGO ═══ */}
-      <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => { if (!user) setView('store'); }}>
+      <div className="topbar-left" style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer', minWidth:0, flex:1 }} onClick={() => { if (!user) setView('store'); }}>
         {isAdmin ? (
           /* DARK ADMIN — Plain text logo, high contrast */
           <div style={{ display:'flex', alignItems:'baseline', gap:6 }}>
@@ -29,9 +46,9 @@ function TopBar() {
           /* LIGHT STOREFRONT — Green badge + text */
           <>
             <div style={{ width:36, height:36, borderRadius:10, background:G, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:brand.fontDisplay, fontSize:11, color:'#fff', fontWeight:800 }}>CM</div>
-            <div>
-              <div style={{ fontFamily:brand.fontDisplay, fontSize:15, color:brand.storeHeading, fontWeight:700, lineHeight:1.1 }}>Charminar Mehfil</div>
-              <div style={{ fontSize:8, color:G, fontWeight:700, letterSpacing:'.15em', textTransform:'uppercase' }}>The Real Taste of Hyderabad</div>
+            <div className="topbar-brand-text" style={{ minWidth:0 }}>
+              <div style={{ fontFamily:brand.fontDisplay, fontSize:15, color:brand.storeHeading, fontWeight:700, lineHeight:1.1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>Charminar Mehfil</div>
+              <div style={{ fontSize:8, color:G, fontWeight:700, letterSpacing:'.15em', textTransform:'uppercase', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>The Real Taste of Hyderabad</div>
             </div>
           </>
         )}
@@ -39,7 +56,15 @@ function TopBar() {
 
       {/* ═══ STOREFRONT NAV ═══ */}
       {view === 'store' && (
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <div className="topbar-right" style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0, whiteSpace:'nowrap' }}>
+          <button onClick={handleDetectLocation} disabled={locating} style={{ padding:'7px 10px', borderRadius:8, background:'rgba(27,94,32,.08)', color:G, fontSize:11, fontWeight:700, border:'1px solid #C8E6C9', cursor:'pointer' }}>
+            {locating ? '⏳ Locating...' : '📍 Auto Detect'}
+          </button>
+          {detectedStoreName ? (
+            <span className="topbar-location-chip" style={{ padding:'5px 10px', borderRadius:8, background:'#F4FBF4', color:G, fontSize:11, fontWeight:700, border:'1px solid #D6EFD8', maxWidth:180, overflow:'hidden', textOverflow:'ellipsis' }}>
+              {detectedStoreName}
+            </span>
+          ) : null}
           {cart.length > 0 && (
             <span style={{ padding:'5px 12px', borderRadius:8, background:brand.greenMint, color:G, fontSize:11, fontWeight:700, border:'1px solid #C8E6C9' }}>
               🛒 {cart.length}
@@ -59,7 +84,7 @@ function TopBar() {
 
       {/* ═══ ADMIN NAV ═══ */}
       {view === 'admin' && user && (
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <div className="topbar-right" style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0, whiteSpace:'nowrap' }}>
           <span style={{ fontSize:10, color:'#888' }}>{user.email}</span>
           <span style={{ fontSize:10, padding:'2px 8px', borderRadius:6, background:ROLES[user.role]?.color+'22', color:ROLES[user.role]?.color, fontWeight:700 }}>
             {ROLES[user.role]?.emoji} {ROLES[user.role]?.label}
@@ -72,6 +97,7 @@ function TopBar() {
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -222,6 +222,39 @@ export function AppProvider({ children }) {
   }, [show]);
   const updateStore = useCallback((id, updates) => { setStores(p => p.map(s => s.id === id ? { ...s, ...updates } : s)); show('Store updated'); }, [show]);
   const deleteStore = useCallback((id) => { setStores(p => p.filter(s => s.id !== id)); show('Store removed'); }, [show]);
+  const detectNearestStore = useCallback(({ silent = false } = {}) => {
+    return new Promise((resolve, reject) => {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
+      if (!silent) show('Geolocation not supported', 'error');
+      reject(new Error('Geolocation not supported'));
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setUserLocation(loc);
+        const active = stores.filter((s) => s.status === 'active');
+        if (!active.length) {
+          resolve(null);
+          return;
+        }
+        let nearest = active[0];
+        let minDist = Infinity;
+        active.forEach((s) => {
+          const d = Math.sqrt((s.lat - loc.lat) ** 2 + (s.lng - loc.lng) ** 2) * 111;
+          if (d < minDist) { minDist = d; nearest = s; }
+        });
+        setSelectedStore(nearest.id);
+        if (!silent) show('📍 ' + nearest.name + ' (' + minDist.toFixed(1) + ' km)');
+        resolve({ store: nearest, distanceKm: minDist, location: loc });
+      },
+      () => {
+        if (!silent) show('Location denied', 'error');
+        reject(new Error('Location denied'));
+      }
+    );
+    });
+  }, [stores, show]);
 
   // ═══ CRM OPS (Pipeline-integrated) ═══
   const updateCustomerFromOrder = useCallback((order) => {
@@ -394,6 +427,7 @@ export function AppProvider({ children }) {
     showUserAuth, setShowUserAuth, showAdminLogin, setShowAdminLogin,
     adminTab, setAdminTab, canAccess, visibleTabs, toast, show,
     stores, setStores, addStore, updateStore, deleteStore, activeStores, currentStore, selectedStore, setSelectedStore,
+    detectNearestStore,
     orders, setOrders, addOrder, updateOrderStatus, liveOrders, customerOrders,
     stock, setStock, updateStock, addStockItem, deleteStockItem, lowStock,
     deliveryPartners, setDeliveryPartners, updatePartnerStatus, addDeliveryPartner,
@@ -421,7 +455,7 @@ export function AppProvider({ children }) {
     products, availableProducts, partnerValues, roles, settings,
     cart, cartTotal, remarketingRecords, cms, funnels, automationRules, chatbotFlows, chatMessages,
     login, logout, adminLogin, adminLogout, userSendOTP, userVerifyOTP, userLogout,
-    addStore, updateStore, deleteStore, addOrder, updateOrderStatus,
+    addStore, updateStore, deleteStore, detectNearestStore, addOrder, updateOrderStatus,
     updateStock, addStockItem, deleteStockItem,
     updatePartnerStatus, addDeliveryPartner, updateZone, addZone,
     addFranchise, updateFranchise, updateWaTemplate, addWaTemplate, toggleViralCampaign,

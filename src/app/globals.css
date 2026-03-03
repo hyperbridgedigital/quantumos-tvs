@@ -68,3 +68,37 @@ img, svg { display: block; max-width: 100%; }
 
 .topbar { position:fixed; top:0; left:0; right:0; height:54px; z-index:1000; contain:layout style; }
 .page-content { padding-top:54px; min-height:100vh; }
+
+@media (max-width: 900px) {
+  .topbar {
+    height: 58px;
+  }
+  .page-content {
+    padding-top: 58px;
+  }
+  .topbar-inner {
+    min-height: 58px !important;
+    gap: 6px !important;
+  }
+  .topbar-brand-text {
+    max-width: 40vw;
+  }
+  .topbar-right {
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar-brand-text {
+    max-width: 30vw;
+  }
+  .topbar-location-chip {
+    max-width: 110px !important;
+  }
+  .topbar-right button,
+  .topbar-right span {
+    font-size: 10px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
