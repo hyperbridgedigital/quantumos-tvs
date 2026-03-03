@@ -441,12 +441,28 @@ export function AppProvider({ children }) {
     return order;
   }, [cart, selectedStore, settings, stores, deliveryZones, stock, addOrder, updateStock, show]);
 
+  // ═══ MULTI-TENANT SCOPE ═══
+  // Franchise/Manager users only see their assigned store's data
+  const userStoreId = useMemo(() => {
+    if (!user) return null;
+    if (user.role === 'superadmin' || user.role === 'admin') return null; // null = all stores
+    const au = adminUsers.find(u => u.email === user.email);
+    return au?.store || null;
+  }, [user, adminUsers]);
+
   // ═══ DERIVED DATA ═══
-  const activeStores = useMemo(() => stores.filter(s => s.status === 'active'), [stores]);
+  const activeStores = useMemo(() => {
+    const all = stores.filter(s => s.status === 'active');
+    return userStoreId ? all.filter(s => s.id === userStoreId) : all;
+  }, [stores, userStoreId]);
   const currentStore = useMemo(() => stores.find(s => s.id === selectedStore), [stores, selectedStore]);
   const storeZones = useMemo(() => deliveryZones.filter(z => z.store === selectedStore && z.active), [deliveryZones, selectedStore]);
   const lowStock = useMemo(() => stock.filter(s => s.qty <= (s.reorder || 10)), [stock]);
-  const liveOrders = useMemo(() => orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled'), [orders]);
+  const liveOrders = useMemo(() => {
+    const all = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+    return userStoreId ? all.filter(o => o.store === userStoreId) : all;
+  }, [orders, userStoreId]);
+  const scopedOrders = useMemo(() => userStoreId ? orders.filter(o => o.store === userStoreId) : orders, [orders, userStoreId]);
   const cartTotal = useMemo(() => cart.reduce((a, i) => a + i.price * i.qty, 0), [cart]);
   const availableProducts = useMemo(() => products.map(p => { const inStock = stock.find(s => s.name?.toLowerCase().includes(p.name.toLowerCase().split(' ')[0])); return { ...p, available: !inStock || inStock.qty > 0 }; }), [products, stock]);
 
@@ -456,7 +472,7 @@ export function AppProvider({ children }) {
     showUserAuth, setShowUserAuth, showAdminLogin, setShowAdminLogin,
     adminTab, setAdminTab, canAccess, visibleTabs, toast, show,
     stores, setStores, addStore, updateStore, deleteStore, activeStores, currentStore, selectedStore, setSelectedStore,
-    detectNearestStore,
+    detectNearestStore, userStoreId, scopedOrders,
     orders, setOrders, addOrder, updateOrderStatus, liveOrders, customerOrders,
     stock, setStock, updateStock, addStockItem, deleteStockItem, lowStock,
     deliveryPartners, setDeliveryPartners, updatePartnerStatus, addDeliveryPartner,
