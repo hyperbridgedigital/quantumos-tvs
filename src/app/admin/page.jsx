@@ -1,13 +1,19 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useApp } from '@/context/AppContext';
 
 export default function AdminLoginPage() {
+  const { adminLogin, user } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    if (user) router.replace('/');
+  }, [user, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -15,22 +21,11 @@ export default function AdminLoginPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      const authToken = data.accessToken || data.token;
-      if (res.ok && authToken) {
-        localStorage.setItem('qos_token', authToken);
-        localStorage.setItem('qos_user', JSON.stringify(data.user));
-        // Keep legacy full admin flow as primary; Kynetra overlays on top there.
+      const res = await adminLogin(email.trim().toLowerCase(), password);
+      if (res.ok) {
         router.push('/');
       } else {
-        setError(data.error || 'Invalid credentials');
+        setError(res.error || 'Invalid credentials');
       }
     } catch {
       setError('Connection failed. Please try again.');

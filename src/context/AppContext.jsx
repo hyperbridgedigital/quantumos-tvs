@@ -146,12 +146,14 @@ export function AppProvider({ children }) {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: (email || '').trim().toLowerCase(), password }),
       });
       const data = await res.json();
       if (!data.ok) { setAuthLoading(false); return data; }
-      setAuthToken(data.accessToken);
-      if (typeof window !== 'undefined') localStorage.setItem('qos_token', data.accessToken);
+      const token = data.accessToken || data.token;
+      if (!token) { setAuthLoading(false); return { ok: false, error: 'No token received' }; }
+      setAuthToken(token);
+      if (typeof window !== 'undefined') localStorage.setItem('qos_token', token);
       const u = DEMO_USERS[data.user.role] || { id: data.user.email, name: data.user.name, role: data.user.role, email: data.user.email };
       setUser(u); setView('admin'); setAdminTab('dashboard'); setShowAdminLogin(false);
       show('Welcome back, ' + data.user.name);

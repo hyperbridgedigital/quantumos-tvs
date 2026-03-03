@@ -1,6 +1,6 @@
 'use client';
 import { lazy, Suspense } from 'react';
-import { AppProvider, useApp } from '@/context/AppContext';
+import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
 import TopBar from '@/components/layout/TopBar';
 import AdminSidebar from '@/components/layout/AdminSidebar';
@@ -141,5 +141,5 @@ function AppContent() {
 }
 
 export default function HomePage() {
-  return <AppProvider><AppContent /></AppProvider>;
+  return <AppContent />;
 }
