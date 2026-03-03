@@ -1,12 +1,12 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'HyperBridge QuantumOS v11.1.0 — Charminar Mehfil & Mount Road Sangam',
-  description: 'HyperBridge QuantumOS Enterprise Platform — Store Locator, 60-Min Delivery, WhatsApp Viral, Franchise/POS/Stock/WMS/OMS, CRM, Remarketing, CMS, SEO & Geo, Rewards, Promo Engine',
+  title: 'QuantumOS Charminar Mehfil v1.2.0 — Powered by Kynetra AI',
+  description: 'HyperBridge QuantumOS Enterprise Restaurant Platform — AI-Powered Admin, Multi-Mode Operations, Kynetra Intelligence',
   metadataBase: new URL('https://charminarmehfil.com'),
   openGraph: {
-    title: 'HyperBridge QuantumOS v11.1.0',
-    description: 'Powered by HyperBridge QuantumOS — Enterprise Restaurant Platform',
+    title: 'QuantumOS Charminar Mehfil v1.2.0',
+    description: 'Powered by Kynetra AI | HyperBridge Digital',
     type: 'website',
   },
 };
@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Figtree:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body>{children}</body>
     </html>

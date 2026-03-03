@@ -1,11 +1,11 @@
-// Brand Config — HyperBridge QuantumOS v11.2.0
-// Charminar Mehfil: Deep Green + White + Gold (from logo)
+// Brand Config — HyperBridge QuantumOS v1.2.0
+// Charminar Mehfil: Deep Green + White + Gold (from logo) + Kynetra AI
 export const brand = {
   platform: 'HyperBridge QuantumOS',
   name: 'Charminar Mehfil',
   tagline: 'The Real Taste of Hyderabad',
-  version: '11.3.0',
-  poweredBy: 'Powered by HyperBridge QuantumOS',
+  version: '1.2.0',
+  poweredBy: 'Powered by Kynetra AI | HyperBridge QuantumOS',
 
   // ═══ LOGO COLORS (primary) ═══
   green: '#1B5E20',
@@ -39,10 +39,20 @@ export const brand = {
   fontDisplay: "'Playfair Display', Georgia, serif",
   fontBody: "'Figtree', system-ui, sans-serif",
 
+  // ═══ KYNETRA AI DESIGN SYSTEM ═══
+  kynBg: '#070B14',
+  kynAccent: '#3DD8F5',
+  kynAccent2: '#2B7FE0',
+  kynGradient: 'linear-gradient(135deg, #3DD8F5, #2B7FE0)',
+  kynFontDisplay: "'Fraunces', Georgia, serif",
+  kynFontBody: "'Outfit', system-ui, sans-serif",
+  kynFontMono: "'JetBrains Mono', monospace",
+
   // ═══ META ═══
-  footer: '© 2026 HyperBridge Group — All Rights Reserved · Powered by HyperBridge QuantumOS v11.3.0',
+  footer: '© 2026 HyperBridge Group — All Rights Reserved · Powered by Kynetra AI | QuantumOS v1.2.0',
   links: {
     hyperbridge: 'https://hyperbridgegroup.com',
     quantumos: 'https://hyperbridgegroup.com/quantumos',
+    kynetra: 'https://api.kynetra.hyperbridge.digital',
   },
 };

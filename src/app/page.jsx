@@ -40,6 +40,9 @@ const Remarketing = lazy(() => import('@/components/admin/Remarketing'));
 const FunnelBuilder = lazy(() => import('@/components/admin/FunnelBuilder'));
 const AutomationRules = lazy(() => import('@/components/admin/AutomationRules'));
 
+// v1.2.0 — Kynetra AI
+const KynetraChat = lazy(() => import('@/components/admin/KynetraChat'));
+
 function Loader() {
   return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:60 }}>
     <div style={{ width:28, height:28, border:'3px solid '+brand.border, borderTop:'3px solid '+brand.gold, borderRadius:'50%', animation:'spin .8s linear infinite' }} />
@@ -110,6 +113,7 @@ function AppContent() {
             <div className="admin-content" style={{ flex:1, padding:24, overflowY:'auto', maxHeight:'calc(100vh - 54px)', background:brand.bg }}>
               <Suspense fallback={<Loader />}><Mod /></Suspense>
             </div>
+            <Suspense fallback={null}><KynetraChat /></Suspense>
           </div>
         )}
 
