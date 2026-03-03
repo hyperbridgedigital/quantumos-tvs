@@ -42,6 +42,7 @@ const AutomationRules = lazy(() => import('@/components/admin/AutomationRules'))
 
 // v1.2.0 — Kynetra AI
 const KynetraChat = lazy(() => import('@/components/admin/KynetraChat'));
+const KynetraInsights = lazy(() => import('@/components/admin/KynetraInsights'));
 
 function Loader() {
   return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:60 }}>
@@ -111,6 +112,9 @@ function AppContent() {
           <div style={{ display:'flex', minHeight:'calc(100vh - 54px)', background:brand.bg }}>
             <AdminSidebar />
             <div className="admin-content" style={{ flex:1, padding:24, overflowY:'auto', maxHeight:'calc(100vh - 54px)', background:brand.bg }}>
+              <div style={{ marginBottom: 16 }}>
+                <Suspense fallback={null}><KynetraInsights /></Suspense>
+              </div>
               <Suspense fallback={<Loader />}><Mod /></Suspense>
             </div>
             <Suspense fallback={null}><KynetraChat /></Suspense>

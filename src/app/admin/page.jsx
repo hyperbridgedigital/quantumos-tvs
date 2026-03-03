@@ -23,10 +23,12 @@ export default function AdminLoginPage() {
 
       const data = await res.json();
 
-      if (res.ok && data.accessToken) {
-        localStorage.setItem('qos_token', data.accessToken);
+      const authToken = data.accessToken || data.token;
+      if (res.ok && authToken) {
+        localStorage.setItem('qos_token', authToken);
         localStorage.setItem('qos_user', JSON.stringify(data.user));
-        router.push('/admin/dashboard');
+        // Keep legacy full admin flow as primary; Kynetra overlays on top there.
+        router.push('/');
       } else {
         setError(data.error || 'Invalid credentials');
       }

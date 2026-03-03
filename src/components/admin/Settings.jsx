@@ -5,6 +5,7 @@ import { brand } from '@/lib/brand';
 import { settingsConfig } from '@/data/settings';
 import { addressProviders as addrCfg } from '@/data/addressProviders';
 import { verificationProviders as verifCfg } from '@/data/verificationProviders';
+import ModeSwitcher from '@/components/admin/ModeSwitcher';
 
 const s = { card:{ background:brand.bg2, border:'1px solid '+brand.border, borderRadius:12, padding:16 }, label:{ fontSize:10, fontWeight:700, letterSpacing:'.08em', color:brand.dim, textTransform:'uppercase' } };
 
@@ -51,13 +52,15 @@ function ProviderCard({ p, type, isActive, onToggle }) {
 
 function Settings() {
   const { settings, updateSetting, saveSettings } = useApp();
-  const [tab, setTab] = useState('general');
+  const [tab, setTab] = useState('operations');
   const [activeAddr, setActiveAddr] = useState(addrCfg.active);
   const [activeSMS, setActiveSMS] = useState(verifCfg.activeProviders.sms);
   const [activeEmail, setActiveEmail] = useState(verifCfg.activeProviders.email);
   const [activeWA, setActiveWA] = useState(verifCfg.activeProviders.whatsapp);
+  const activeOpsMode = settings.OPS_MODE || 'hybrid';
 
   const tabs = [
+    { k:'operations', l:'🧭 Operations & Channels' },
     { k:'general', l:'⚙️ General' },
     { k:'address', l:'📍 Address Providers' },
     { k:'verify', l:'📱 Verification' },
@@ -75,6 +78,57 @@ function Settings() {
       <div style={{ display:'flex', gap:4, marginBottom:16 }}>
         {tabs.map(t => <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:'7px 14px', borderRadius:8, fontSize:10, fontWeight:700, cursor:'pointer', background:tab===t.k?brand.gold+'22':'rgba(255,255,255,.04)', color:tab===t.k?brand.gold:brand.dim, border:'1px solid '+(tab===t.k?brand.gold+'44':brand.border) }}>{t.l}</button>)}
       </div>
+
+      {/* OPERATIONS + CHANNEL CONTROL */}
+      {tab === 'operations' && <>
+        <div style={{ ...s.card, marginBottom:16, background:'linear-gradient(135deg,'+brand.bg2+','+brand.card+')' }}>
+          <div style={{ fontSize:13, fontWeight:800, color:brand.heading, marginBottom:10 }}>🧭 Site Operating Mode</div>
+          <p style={{ fontSize:11, color:brand.dim, margin:'0 0 12px', lineHeight:1.5 }}>
+            Control how the restaurant runs from admin. Kynetra AI augments these settings; it does not replace them.
+          </p>
+          <ModeSwitcher
+            currentMode={activeOpsMode}
+            onChange={(mode) => updateSetting('OPS_MODE', mode)}
+          />
+          <div style={{ marginTop:8, fontSize:10, color:brand.gold }}>
+            Active mode: <b style={{ textTransform:'uppercase' }}>{activeOpsMode}</b>
+          </div>
+        </div>
+
+        <div style={{ ...s.card, marginBottom:16 }}>
+          <div style={{ fontSize:13, fontWeight:800, color:brand.heading, marginBottom:10 }}>📲 Channel Controls (SMS / Email / WhatsApp)</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
+            {[
+              { key:'OTP_SMS', label:'SMS OTP', providerKey:'OTP_SMS_PROVIDER', color:brand.emerald, activeProvider:activeSMS, setProvider:setActiveSMS, providers: verifCfg.sms },
+              { key:'OTP_EMAIL', label:'Email OTP', providerKey:'OTP_EMAIL_PROVIDER', color:brand.blue, activeProvider:activeEmail, setProvider:setActiveEmail, providers: verifCfg.email },
+              { key:'OTP_WHATSAPP', label:'WhatsApp OTP', providerKey:'OTP_WA_PROVIDER', color:brand.whatsapp, activeProvider:activeWA, setProvider:setActiveWA, providers: verifCfg.whatsapp },
+            ].map(c => {
+              const enabled = (settings[c.key] ?? 'true') === 'true';
+              return (
+                <div key={c.key} style={{ ...s.card, padding:12, background:'rgba(255,255,255,.03)' }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+                    <div style={{ fontSize:11, fontWeight:700, color:c.color }}>{c.label}</div>
+                    <button onClick={() => updateSetting(c.key, enabled ? 'false' : 'true')} style={{ width:36, height:20, borderRadius:10, border:'none', cursor:'pointer', position:'relative', background: enabled ? c.color : brand.dim+'40' }}>
+                      <span style={{ position:'absolute', top:2, left:enabled?18:2, width:16, height:16, borderRadius:'50%', background:'#fff', transition:'left .2s' }} />
+                    </button>
+                  </div>
+                  <div style={{ fontSize:9, color:brand.dim, marginBottom:6 }}>{enabled ? 'Enabled' : 'Disabled'}</div>
+                  <select
+                    value={settings[c.providerKey] || c.providers.find(p=>p.id===c.activeProvider)?.name || ''}
+                    onChange={e => updateSetting(c.providerKey, e.target.value)}
+                    style={{ width:'100%', background:'rgba(255,255,255,.06)', border:'1px solid '+brand.border, borderRadius:6, padding:'6px 8px', color:brand.heading, fontSize:10, outline:'none' }}
+                  >
+                    {c.providers.map(p => <option key={p.id} value={p.name} style={{ background:brand.bg2, color:brand.heading }}>{p.name}</option>)}
+                  </select>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ marginTop:10, fontSize:10, color:brand.dim }}>
+            Default verification channel: <b style={{ color:brand.gold }}>{settings.VERIFY_DEFAULT_CHANNEL || 'whatsapp'}</b>
+          </div>
+        </div>
+      </>}
 
       {/* GENERAL SETTINGS */}
       {tab === 'general' && <>
