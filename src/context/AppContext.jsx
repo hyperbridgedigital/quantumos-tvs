@@ -113,8 +113,9 @@ export function AppProvider({ children }) {
           if (data.ok && data.user) {
             setAuthToken(token);
             const u = DEMO_USERS[data.user.role] || { id: data.user.id, name: data.user.name, role: data.user.role, email: data.user.email };
-            // Restore identity only; do not auto-switch into admin view.
             setUser(u);
+            setView('admin');
+            setAdminTab('dashboard');
             return;
           }
           localStorage.removeItem('qos_token');
