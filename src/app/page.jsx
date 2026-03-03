@@ -40,9 +40,10 @@ const Remarketing = lazy(() => import('@/components/admin/Remarketing'));
 const FunnelBuilder = lazy(() => import('@/components/admin/FunnelBuilder'));
 const AutomationRules = lazy(() => import('@/components/admin/AutomationRules'));
 
-// v1.2.0 — Kynetra AI
+// v1.2.0 — Kynetra AI + User Management
 const KynetraChat = lazy(() => import('@/components/admin/KynetraChat'));
 const KynetraInsights = lazy(() => import('@/components/admin/KynetraInsights'));
+const UserManager = lazy(() => import('@/components/admin/UserManager'));
 
 function Loader() {
   return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:60 }}>
@@ -61,6 +62,8 @@ const MODULES = {
   rewards: RewardsEngine, promo: PromoEngine, remarketing: Remarketing,
   // v11.3.0
   funnels: FunnelBuilder, automation: AutomationRules,
+  // v1.2.0
+  users: UserManager,
 };
 
 function AppContent() {

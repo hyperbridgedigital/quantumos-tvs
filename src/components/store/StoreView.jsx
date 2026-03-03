@@ -18,7 +18,7 @@ export default function StoreView() {
     availableProducts, cart, addToCart, removeFromCart, updateCartQty, cartTotal,
     placeOrder, customerOrders, settings, partnerValues, show,
     customer, setShowUserAuth, offers, rewardsConf,
-    userLocation, setUserLocation, stores, cms
+    userLocation, setUserLocation, stores, cms, addFranchise
   } = useApp();
 
   const [tab, setTab] = useState('menu');
@@ -559,7 +559,7 @@ export default function StoreView() {
             <option value="">F&B Experience</option><option value="none">None</option><option value="1-3">1-3 years</option><option value="3+">3+ years</option>
           </select>
           <textarea placeholder="Tell us about yourself..." value={franchiseForm.message} onChange={e => setFranchiseForm(p=>({...p,message:e.target.value}))} rows={3} style={{ ...inp, marginBottom:14, resize:'vertical' }} />
-          <button onClick={() => { if(!franchiseForm.name||!franchiseForm.phone) return show('Fill name & phone','error'); show('✅ Inquiry submitted!'); setFranchiseForm({name:'',phone:'',email:'',city:'',investment:'',experience:'',message:''}); }} style={{ ...greenBtn, width:'100%' }}>🏢 Submit Franchise Inquiry</button>
+          <button onClick={() => { if(!franchiseForm.name||!franchiseForm.phone) return show('Fill name & phone','error'); addFranchise({ name: franchiseForm.name, owner: franchiseForm.phone, phone: franchiseForm.phone, city: franchiseForm.city, investment: franchiseForm.investment, email: franchiseForm.email, status: 'inquiry' }); show('✅ Inquiry submitted!'); setFranchiseForm({name:'',phone:'',email:'',city:'',investment:'',experience:'',message:''}); }} style={{ ...greenBtn, width:'100%' }}>🏢 Submit Franchise Inquiry</button>
         </div>
       </div>}
 

@@ -69,6 +69,7 @@ export const SIDEBAR_GROUPS = [
   {
     key: 'system', label: 'SYSTEM', icon: '⚙️',
     tabs: [
+      { key:'users', label:'Users & Groups', emoji:'👤' },
       { key:'security', label:'Security', emoji:'🔒' },
       { key:'data', label:'Data Lifecycle', emoji:'🗄' },
       { key:'rbac', label:'RBAC', emoji:'🛡' },

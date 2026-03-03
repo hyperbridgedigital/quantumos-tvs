@@ -91,6 +91,15 @@ export function AppProvider({ children }) {
     { id:4, from:'customer', name:'Ahmed J', phone:'+919112233445', msg:'I want to open a franchise', time:'15m ago', bot:'BOT04', status:'escalated' },
   ]);
 
+  // ═══ ADMIN USERS ═══
+  const [adminUsers, setAdminUsers] = useState([
+    { id:'AU001', name:'Spaden Silver', email:'spadensilver@gmail.com', role:'superadmin', store:'ST001', status:'active', lastLogin:'2026-03-03 14:22' },
+    { id:'AU002', name:'Rizwan Khan', email:'rizwan@mehfil.com', role:'admin', store:'ST001', status:'active', lastLogin:'2026-03-03 11:05' },
+    { id:'AU003', name:'Priya Sharma', email:'priya@mehfil.com', role:'manager', store:'ST002', status:'active', lastLogin:'2026-03-02 19:30' },
+    { id:'AU004', name:'Ahmed Hussain', email:'ahmed@mehfil.com', role:'franchise', store:'ST003', status:'active', lastLogin:'2026-03-01 08:15' },
+    { id:'AU005', name:'Neha Reddy', email:'neha@mehfil.com', role:'staff', store:'ST001', status:'suspended', lastLogin:'2026-02-20 16:45' },
+  ]);
+
   // ═══ TOAST ═══
   const [toast, setToast] = useState(null);
   const show = useCallback((msg, type = 'success') => {
@@ -339,7 +348,21 @@ export function AppProvider({ children }) {
   const addZone = useCallback((zone) => { const z = { id: 'Z' + uid(), active: true, ...zone }; setDeliveryZones(p => [...p, z]); show('Zone added'); return z; }, [show]);
 
   // ═══ FRANCHISE OPS ═══
-  const addFranchise = useCallback((f) => { const fr = { id: 'FR' + uid(), revenue: 0, orders: 0, since: new Date().toISOString().slice(0, 7), ...f }; setFranchises(p => [...p, fr]); show('Franchise added'); return fr; }, [show]);
+  const addFranchise = useCallback((f) => {
+    const fr = { id: 'FR' + uid(), revenue: 0, orders: 0, since: new Date().toISOString().slice(0, 7), ...f };
+    setFranchises(p => [...p, fr]);
+    setCustomers(p => {
+      if (p.find(c => c.phone === f.phone || c.phone === f.owner)) return p;
+      return [...p, {
+        id: 'C' + uid(), name: f.owner || f.name, phone: f.phone || '', email: f.email || '',
+        orders: 0, ltv: 0, tier: 'Bronze', lastOrder: 'never', mood: '😊',
+        joined: new Date().toISOString().slice(0, 7), tags: ['franchise-inquiry'],
+        preferred_store: '', preferred_items: [], consent_status: 'opted_in',
+      }];
+    });
+    show('Franchise added');
+    return fr;
+  }, [show]);
   const updateFranchise = useCallback((id, updates) => { setFranchises(p => p.map(f => f.id === id ? { ...f, ...updates } : f)); show('Franchise updated'); }, [show]);
 
   // ═══ WHATSAPP OPS ═══
@@ -388,6 +411,11 @@ export function AppProvider({ children }) {
   const addBotFlow = useCallback((f) => { const flow = { id:'BOT'+uid(), conversations:0, active:true, ...f }; setChatbotFlows(p => [...p, flow]); show('Bot flow created'); return flow; }, [show]);
   const updateBotFlow = useCallback((id, updates) => { setChatbotFlows(p => p.map(f => f.id === id ? { ...f, ...updates } : f)); show('Bot flow updated'); }, [show]);
   const addChatMessage = useCallback((msg) => { setChatMessages(p => [{ id: Date.now(), time:'just now', ...msg }, ...p]); }, []);
+
+  // ═══ ADMIN USER OPS ═══
+  const addAdminUser = useCallback((u) => { const au = { id:'AU'+uid(), status:'active', lastLogin:'Never', ...u }; setAdminUsers(p => [...p, au]); show('Admin user added'); return au; }, [show]);
+  const updateAdminUser = useCallback((id, updates) => { setAdminUsers(p => p.map(u => u.id === id ? { ...u, ...updates } : u)); show('Admin user updated'); }, [show]);
+  const deleteAdminUser = useCallback((id) => { setAdminUsers(p => p.filter(u => u.id !== id)); show('Admin user removed'); }, [show]);
 
   // ═══ CART / STOREFRONT OPS ═══
   const addToCart = useCallback((item) => { setCart(p => { const ex = p.find(i => i.id === item.id); if (ex) return p.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i); return [...p, { ...item, qty: 1 }]; }); }, []);
@@ -446,6 +474,7 @@ export function AppProvider({ children }) {
     funnels, addFunnel, updateFunnel, deleteFunnel,
     automationRules, addRule, updateRule, deleteRule, toggleRule,
     chatbotFlows, addBotFlow, updateBotFlow, chatMessages, addChatMessage,
+    adminUsers, addAdminUser, updateAdminUser, deleteAdminUser,
   }), [
     view, user, customer, adminTab, canAccess, visibleTabs, toast, show,
     showUserAuth, showAdminLogin,
@@ -454,7 +483,7 @@ export function AppProvider({ children }) {
     stock, lowStock, deliveryPartners, deliveryZones, storeZones,
     franchises, waTemplates, viralCampaigns, customers, offers, rewardsConf, userLocation,
     products, availableProducts, partnerValues, roles, settings,
-    cart, cartTotal, remarketingRecords, cms, funnels, automationRules, chatbotFlows, chatMessages,
+    cart, cartTotal, remarketingRecords, cms, funnels, automationRules, chatbotFlows, chatMessages, adminUsers,
     login, logout, adminLogin, adminLogout, userSendOTP, userVerifyOTP, userLogout,
     addStore, updateStore, deleteStore, detectNearestStore, addOrder, updateOrderStatus,
     updateStock, addStockItem, deleteStockItem,
@@ -463,6 +492,7 @@ export function AppProvider({ children }) {
     addProduct, updateProduct, deleteProduct,
     updatePartnerConfig, savePartnerConfig, toggleRoleTab, updateSetting, saveSettings,
     addToCart, removeFromCart, updateCartQty, placeOrder,
+    addAdminUser, updateAdminUser, deleteAdminUser,
   ]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
