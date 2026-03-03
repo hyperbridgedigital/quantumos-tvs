@@ -1,24 +1,58 @@
 'use client';
 import { useState, useCallback } from 'react';
 import { brand } from '@/lib/brand';
-import { cmsDb as initialCms } from '@/data/cmsDb';
+import { useApp } from '@/context/AppContext';
 
 const s = { card:{ background:brand.bg2, border:'1px solid '+brand.border, borderRadius:12, padding:16 }, label:{ fontSize:10, fontWeight:700, letterSpacing:'.08em', color:brand.dim, textTransform:'uppercase', marginBottom:6 }, btn:{ padding:'8px 16px', borderRadius:8, fontSize:11, fontWeight:700, cursor:'pointer', border:'none' }, input:{ padding:'8px 12px', borderRadius:6, background:brand.bg, color:brand.text, border:'1px solid '+brand.border, fontSize:12, width:'100%' } };
 
 export default function CMSManager() {
-  const [cms, setCms] = useState(initialCms);
+  const { cms, setCms } = useApp();
   const [tab, setTab] = useState('hero');
   const [preview, setPreview] = useState(false);
   const [editBanner, setEditBanner] = useState(null);
   const [editBlog, setEditBlog] = useState(null);
+  const [newInstaUrl, setNewInstaUrl] = useState('');
+  const [newInstaCaption, setNewInstaCaption] = useState('');
 
   const tabs = [
     { key:'hero', label:'🖼 Hero Banners' },{ key:'menu', label:'🍽 Menu Display' },
     { key:'offers', label:'🎁 Offers Strip' },{ key:'blog', label:'📝 Blog/Stories' },
     { key:'community', label:'💬 Community' },{ key:'text', label:'📄 Text Blocks' },
     { key:'footer', label:'🔗 Footer' },{ key:'announce', label:'📢 Announcement' },
+    { key:'instagram', label:'📸 Instagram Embed' },
     { key:'order', label:'📋 Section Order' },
   ];
+
+  const inferInstagramMediaType = (url) => {
+    if (!url) return 'image';
+    const lower = url.toLowerCase();
+    return lower.includes('/reel/') || lower.includes('/tv/') ? 'video' : 'image';
+  };
+
+  const addInstagramPost = () => {
+    const url = newInstaUrl.trim();
+    if (!url) return;
+    const mediaType = inferInstagramMediaType(url);
+    setCms((p) => ({
+      ...p,
+      instagramFeed: {
+        ...p.instagramFeed,
+        posts: [
+          ...(p.instagramFeed?.posts || []),
+          {
+            id: 'IG' + Date.now(),
+            url,
+            mediaType,
+            caption: newInstaCaption.trim() || '',
+            active: true,
+            order: (p.instagramFeed?.posts?.length || 0) + 1,
+          },
+        ],
+      },
+    }));
+    setNewInstaUrl('');
+    setNewInstaCaption('');
+  };
 
   const updateBanner = (id, field, value) => {
     setCms(p => ({...p, heroBanners: p.heroBanners.map(b => b.id===id ? {...b,[field]:value} : b)}));
@@ -200,6 +234,55 @@ export default function CMSManager() {
         <div style={s.label}>Active Promos in Offers Strip</div>
         <p style={{ fontSize:12, color:brand.text }}>{cms.offersStrip.promos.join(', ')}</p>
         <button onClick={()=>setCms(p=>({...p,offersStrip:{...p.offersStrip,active:!p.offersStrip.active}}))} style={{ ...s.btn, background:cms.offersStrip.active?brand.emerald+'22':brand.red+'22', color:cms.offersStrip.active?brand.emerald:brand.red, fontSize:10, padding:'6px 12px', marginTop:8 }}>{cms.offersStrip.active?'Enabled':'Disabled'}</button>
+      </div>}
+
+      {/* Instagram Embed */}
+      {tab==='instagram' && <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+        <div style={s.card}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
+            <div style={s.label}>Homepage Instagram Section</div>
+            <button onClick={()=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,active:!p.instagramFeed?.active}}))} style={{ ...s.btn, background:cms.instagramFeed?.active?brand.emerald+'22':brand.red+'22', color:cms.instagramFeed?.active?brand.emerald:brand.red, fontSize:10, padding:'4px 12px' }}>
+              {cms.instagramFeed?.active?'Active':'Hidden'}
+            </button>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:8 }}>
+            <input value={cms.instagramFeed?.title || ''} onChange={e=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,title:e.target.value}}))} style={s.input} placeholder="Section title" />
+            <input value={String(cms.instagramFeed?.maxItems || 8)} onChange={e=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,maxItems:Number(e.target.value)||8}}))} style={s.input} placeholder="Max items" />
+          </div>
+          <textarea value={cms.instagramFeed?.subtitle || ''} onChange={e=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,subtitle:e.target.value}}))} style={{ ...s.input, minHeight:60, resize:'vertical' }} placeholder="Section subtitle" />
+        </div>
+
+        <div style={s.card}>
+          <div style={s.label}>Add Instagram Post/Reel Embed</div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr auto', gap:8 }}>
+            <input value={newInstaUrl} onChange={e=>setNewInstaUrl(e.target.value)} style={s.input} placeholder="https://www.instagram.com/p/... or /reel/..." />
+            <input value={newInstaCaption} onChange={e=>setNewInstaCaption(e.target.value)} style={s.input} placeholder="Caption (optional)" />
+            <button onClick={addInstagramPost} style={{ ...s.btn, background:brand.gold+'22', color:brand.gold, border:'1px solid '+brand.gold+'44' }}>+ Add</button>
+          </div>
+          <div style={{ marginTop:8, fontSize:10, color:brand.dim }}>
+            If multiple videos are active, homepage will render them in a carousel automatically.
+          </div>
+        </div>
+
+        {(cms.instagramFeed?.posts || []).sort((a,b)=>(a.order||0)-(b.order||0)).map((post, idx) => (
+          <div key={post.id} style={s.card}>
+            <div style={{ display:'flex', gap:8, alignItems:'center', marginBottom:8 }}>
+              <span style={{ fontSize:10, padding:'2px 8px', borderRadius:4, background:'rgba(255,255,255,.06)', color:brand.dim }}>#{idx+1}</span>
+              <span style={{ fontSize:10, padding:'2px 8px', borderRadius:4, background:(post.mediaType==='video'?brand.blue:brand.gold)+'22', color:post.mediaType==='video'?brand.blue:brand.gold, fontWeight:700 }}>
+                {post.mediaType === 'video' ? 'VIDEO/REEL' : 'IMAGE/POST'}
+              </span>
+              <span style={{ fontSize:10, padding:'2px 8px', borderRadius:4, background:post.active?brand.emerald+'22':brand.red+'22', color:post.active?brand.emerald:brand.red }}>
+                {post.active ? 'Active' : 'Hidden'}
+              </span>
+            </div>
+            <input value={post.url} onChange={e=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,posts:p.instagramFeed.posts.map(x=>x.id===post.id?{...x,url:e.target.value,mediaType:inferInstagramMediaType(e.target.value)}:x)}}))} style={{ ...s.input, marginBottom:6 }} />
+            <input value={post.caption || ''} onChange={e=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,posts:p.instagramFeed.posts.map(x=>x.id===post.id?{...x,caption:e.target.value}:x)}}))} style={s.input} placeholder="Caption" />
+            <div style={{ display:'flex', gap:6, marginTop:8 }}>
+              <button onClick={()=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,posts:p.instagramFeed.posts.map(x=>x.id===post.id?{...x,active:!x.active}:x)}}))} style={{ ...s.btn, background:'rgba(255,255,255,.04)', color:brand.dim, fontSize:10, padding:'4px 10px' }}>{post.active?'Hide':'Show'}</button>
+              <button onClick={()=>setCms(p=>({...p,instagramFeed:{...p.instagramFeed,posts:p.instagramFeed.posts.filter(x=>x.id!==post.id)}}))} style={{ ...s.btn, background:brand.red+'22', color:brand.red, fontSize:10, padding:'4px 10px' }}>Delete</button>
+            </div>
+          </div>
+        ))}
       </div>}
     </div>
   );

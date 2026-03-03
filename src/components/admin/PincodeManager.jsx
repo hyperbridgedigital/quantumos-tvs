@@ -8,7 +8,7 @@ import { allChennaiPincodes, chennaipincodes, chennaiDeliveryPartners } from '@/
 
 function PincodeManager() {
   const { stores, updateStore, show, settings } = useApp();
-  const [selectedStoreId, setSelectedStoreId] = useState('ST017');
+  const [selectedStoreId, setSelectedStoreId] = useState('ST001');
   const [sub, setSub] = useState('map'); // map | list | delivery | partners
   const [search, setSearch] = useState('');
   const [editPin, setEditPin] = useState(null);

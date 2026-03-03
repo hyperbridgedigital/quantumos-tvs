@@ -13,6 +13,7 @@ import { partnerConfig, getPartnerDefaults } from '@/data/partners';
 import { ROLES as roleData, ADMIN_TABS, DEMO_USERS } from '@/data/roles';
 import { getDefaultSettings } from '@/data/settings';
 import { remarketingRecords as rmData } from '@/data/remarketingDb';
+import { cmsDb as initialCmsDb } from '@/data/cmsDb';
 import { uid, fmt } from '@/lib/utils';
 
 const AppContext = createContext(null);
@@ -47,6 +48,17 @@ export function AppProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [customerOrders, setCustomerOrders] = useState([]);
   const [remarketingRecords, setRemarketingRecords] = useState(rmData);
+  const [cms, setCms] = useState(() => {
+    if (typeof window === 'undefined') return initialCmsDb;
+    try {
+      const raw = localStorage.getItem('qos_cms');
+      if (!raw) return initialCmsDb;
+      const parsed = JSON.parse(raw);
+      return { ...initialCmsDb, ...parsed };
+    } catch {
+      return initialCmsDb;
+    }
+  });
 
   // ═══ NEW STATE: Funnels, Automation Rules, Chatbot ═══
   const [funnels, setFunnels] = useState([
@@ -101,7 +113,8 @@ export function AppProvider({ children }) {
           if (data.ok && data.user) {
             setAuthToken(token);
             const u = DEMO_USERS[data.user.role] || { id: data.user.id, name: data.user.name, role: data.user.role, email: data.user.email };
-            setUser(u); setView('admin'); setAdminTab('dashboard');
+            // Restore identity only; do not auto-switch into admin view.
+            setUser(u);
             return;
           }
           localStorage.removeItem('qos_token');
@@ -109,6 +122,14 @@ export function AppProvider({ children }) {
       } catch (e) { console.warn('Session init:', e); }
     })();
   }, []);
+
+  // Persist CMS so admin-configured Instagram/posts survive refresh.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem('qos_cms', JSON.stringify(cms));
+    } catch {}
+  }, [cms]);
 
   const adminLogin = useCallback(async (email, password) => {
     setAuthLoading(true);
@@ -386,6 +407,7 @@ export function AppProvider({ children }) {
     roles, toggleRoleTab, settings, updateSetting, saveSettings,
     cart, addToCart, removeFromCart, updateCartQty, placeOrder, cartTotal,
     remarketingRecords, setRemarketingRecords,
+    cms, setCms,
     funnels, addFunnel, updateFunnel, deleteFunnel,
     automationRules, addRule, updateRule, deleteRule, toggleRule,
     chatbotFlows, addBotFlow, updateBotFlow, chatMessages, addChatMessage,
@@ -397,7 +419,7 @@ export function AppProvider({ children }) {
     stock, lowStock, deliveryPartners, deliveryZones, storeZones,
     franchises, waTemplates, viralCampaigns, customers, offers, rewardsConf, userLocation,
     products, availableProducts, partnerValues, roles, settings,
-    cart, cartTotal, remarketingRecords, funnels, automationRules, chatbotFlows, chatMessages,
+    cart, cartTotal, remarketingRecords, cms, funnels, automationRules, chatbotFlows, chatMessages,
     login, logout, adminLogin, adminLogout, userSendOTP, userVerifyOTP, userLogout,
     addStore, updateStore, deleteStore, addOrder, updateOrderStatus,
     updateStock, addStockItem, deleteStockItem,

@@ -34,7 +34,19 @@ export const cmsDb = {
     contact: { phone:'+91 44 4500 1234', email:'hello@charminarmehfil.com', address:'Chennai, Tamil Nadu' },
   },
   announcementBar: { active:true, text:'🎉 Grand Opening Special — 20% OFF with code WELCOME20', link:'/offers', bgColor:'#C9A84C', textColor:'#0C0B09' },
-  sectionOrder: ['announcementBar','heroBanners','offersStrip','menuDisplay','blogPosts','communityPosts','textBlocks','footer'],
+  instagramFeed: {
+    active: true,
+    title: 'Follow Us on Instagram',
+    subtitle: 'Latest moments, dishes, and reels from Charminar Mehfil',
+    maxItems: 8,
+    posts: [
+      { id:'IG01', url:'https://www.instagram.com/p/C8m1mQmP1Q1/', mediaType:'image', caption:'Signature Dum Biryani', active:true, order:1 },
+      { id:'IG02', url:'https://www.instagram.com/reel/C9a2aQaR2R2/', mediaType:'video', caption:'Kitchen reel: dum process', active:true, order:2 },
+      { id:'IG03', url:'https://www.instagram.com/p/C9c3cQcP3P3/', mediaType:'image', caption:'Weekend family platter', active:true, order:3 },
+      { id:'IG04', url:'https://www.instagram.com/reel/C9d4dQdR4R4/', mediaType:'video', caption:'Live tandoor action', active:true, order:4 },
+    ],
+  },
+  sectionOrder: ['announcementBar','heroBanners','instagramFeed','offersStrip','menuDisplay','blogPosts','communityPosts','textBlocks','footer'],
   versionHistory: [],
   scheduledPublishes: [],
 };

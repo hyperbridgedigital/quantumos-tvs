@@ -5,28 +5,49 @@ import { brand } from '@/lib/brand';
 import { statusColor } from '@/lib/utils';
 import { Badge } from '@/components/shared/Badge';
 
-const EMPTY = { name:'', code:'', status:'active', manager:'', phone:'', hours:'08:00-22:00', radius:5, prepTime:20, maxOrders:50, type:'express', delivery:true, pickup:true, dineIn:false, seating:12, address:'', lat:17.43, lng:78.40 };
+const EMPTY = { name:'', code:'', status:'active', manager:'', phone:'', hours:'10:30 AM - 3:00 AM (Next Day)', radius:5, prepTime:20, maxOrders:50, type:'express', delivery:true, pickup:true, dineIn:false, seating:12, address:'', lat:17.43, lng:78.40, pincodesText:'' };
 
 function StoreLocator() {
   const { stores, addStore, updateStore, deleteStore, show } = useApp();
   const [editing, setEditing] = useState(null); // null | 'new' | store id
   const [form, setForm] = useState(EMPTY);
 
-  const startEdit = (s) => { setEditing(s.id); setForm(s); };
+  const startEdit = (s) => { setEditing(s.id); setForm({ ...s, pincodesText: (s.pincodes || []).join(', ') }); };
   const startNew = () => { setEditing('new'); setForm(EMPTY); };
   const save = () => {
     if (!form.name || !form.code) return show('Name and code required', 'error');
-    if (editing === 'new') addStore(form);
-    else updateStore(editing, form);
+    const nextForm = {
+      ...form,
+      pincodes: (form.pincodesText || '')
+        .split(',')
+        .map(p => p.trim())
+        .filter(Boolean),
+    };
+    delete nextForm.pincodesText;
+    if (editing === 'new') addStore(nextForm);
+    else updateStore(editing, nextForm);
     setEditing(null);
   };
   const cancel = () => setEditing(null);
+
+  const applyDefaultTimings = () => {
+    stores.forEach((s) => {
+      const isTnagar = (s.name || '').toLowerCase().includes('charminar mehfil') && (s.area || '').toLowerCase().includes('t. nagar');
+      updateStore(s.id, {
+        hours: isTnagar ? '11:00 AM - 11:59 PM' : '10:30 AM - 3:00 AM (Next Day)',
+      });
+    });
+    show('Default store timings applied');
+  };
 
   return (
     <div>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
         <h2 style={{ fontFamily:brand.fontDisplay, fontSize:22, color:brand.heading }}>🏪 Store Locator & Management</h2>
-        <button onClick={startNew} style={{ padding:'8px 16px', borderRadius:8, background:brand.emerald+'18', border:'1px solid '+brand.emerald, color:brand.emerald, fontSize:12, fontWeight:700 }}>+ Add Store</button>
+        <div style={{ display:'flex', gap:8 }}>
+          <button onClick={applyDefaultTimings} style={{ padding:'8px 16px', borderRadius:8, background:brand.blue+'18', border:'1px solid '+brand.blue, color:brand.blue, fontSize:12, fontWeight:700 }}>🕐 Apply Default Timings</button>
+          <button onClick={startNew} style={{ padding:'8px 16px', borderRadius:8, background:brand.emerald+'18', border:'1px solid '+brand.emerald, color:brand.emerald, fontSize:12, fontWeight:700 }}>+ Add Store</button>
+        </div>
       </div>
 
       {editing && (
@@ -54,6 +75,15 @@ function StoreLocator() {
               </div>
             ))}
           </div>
+          <div style={{ marginTop:10 }}>
+            <label style={{ fontSize:10, color:brand.dim, fontWeight:600 }}>SERVICEABLE PINCODES (comma separated)</label>
+            <textarea
+              value={form.pincodesText || ''}
+              onChange={e => setForm(p => ({ ...p, pincodesText: e.target.value }))}
+              placeholder="600017, 600018, 600033"
+              style={{ width:'100%', minHeight:70, marginTop:4, padding:'8px 10px', borderRadius:8, background:'rgba(255,255,255,.04)', border:'1px solid '+brand.border, color:brand.heading, fontSize:12, outline:'none', resize:'vertical' }}
+            />
+          </div>
           <div style={{ display:'flex', gap:8, marginTop:12 }}>
             {['delivery','pickup','dineIn'].map(f => (
               <label key={f} style={{ display:'flex', alignItems:'center', gap:4, fontSize:12, color:brand.text, cursor:'pointer' }}>
@@ -78,6 +108,7 @@ function StoreLocator() {
                 <Badge color={sc}>{s.status}</Badge>
               </div>
               <div style={{ fontSize:12, color:brand.text, marginBottom:8 }}>👤 {s.manager} · 📞 {s.phone} · 🕐 {s.hours} · 📍 {s.radius}km</div>
+              <div style={{ fontSize:11, color:brand.dim, marginBottom:8 }}>📮 Serviceable pincodes: {(s.pincodes || []).length}</div>
               {s.status === 'active' && <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:6, marginBottom:8 }}>
                 <div style={{ background:brand.bg, borderRadius:6, padding:4, textAlign:'center' }}><div style={{ fontSize:14, fontWeight:700, color:s.load/s.maxOrders>.8?brand.red:brand.emerald }}>{s.load}</div><div style={{ fontSize:8, color:brand.dim }}>/{s.maxOrders}</div></div>
                 <div style={{ background:brand.bg, borderRadius:6, padding:4, textAlign:'center' }}><div style={{ fontSize:14, fontWeight:700, color:brand.gold }}>{s.prepTime}m</div><div style={{ fontSize:8, color:brand.dim }}>prep</div></div>

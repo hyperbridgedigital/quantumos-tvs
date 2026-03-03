@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
 import { fmt } from '@/lib/utils';
@@ -18,7 +18,7 @@ export default function StoreView() {
     availableProducts, cart, addToCart, removeFromCart, updateCartQty, cartTotal,
     placeOrder, customerOrders, settings, partnerValues, show,
     customer, setShowUserAuth, offers, rewardsConf,
-    userLocation, setUserLocation, stores
+    userLocation, setUserLocation, stores, cms
   } = useApp();
 
   const [tab, setTab] = useState('menu');
@@ -30,6 +30,18 @@ export default function StoreView() {
   const [franchiseForm, setFranchiseForm] = useState({ name:'', phone:'', email:'', city:'', investment:'', experience:'', message:'' });
   const [shareOpen, setShareOpen] = useState(false);
   const [catFilter, setCatFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [vegOnly, setVegOnly] = useState(false);
+  const [sortBy, setSortBy] = useState('recommended');
+  const [spotlightEndsAt] = useState(() => Date.now() + 1000 * 60 * 60 * 18);
+  const [nowTs, setNowTs] = useState(Date.now());
+  const videoCarouselRef = useRef(null);
+  const autoLocationTriedRef = useRef(false);
+
+  useEffect(() => {
+    const t = setInterval(() => setNowTs(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   const freeAbove = Number(settings.DELIVERY_FREE_ABOVE || 499);
   const deliveryCharge = Number(settings.DELIVERY_CHARGE || 29);
@@ -45,7 +57,7 @@ export default function StoreView() {
   }, [appliedOffer, cartTotal]);
   const grandTotal = Math.max(0, cartTotal + gst + finalDeliveryFee - discount);
 
-  const detectLocation = () => {
+  const detectLocation = ({ silent = false } = {}) => {
     setLocLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -57,15 +69,22 @@ export default function StoreView() {
             const d = Math.sqrt((s.lat - loc.lat) ** 2 + (s.lng - loc.lng) ** 2) * 111;
             if (d < minDist) { minDist = d; nearest = s; }
           });
-          if (nearest) { setSelectedStore(nearest.id); show('📍 ' + nearest.name + ' (' + minDist.toFixed(1) + ' km)'); }
+          if (nearest) {
+            setSelectedStore(nearest.id);
+            if (!silent) show('📍 ' + nearest.name + ' (' + minDist.toFixed(1) + ' km)');
+          }
           setLocLoading(false);
         },
-        () => { show('Location denied', 'error'); setLocLoading(false); }
+        () => { if (!silent) show('Location denied', 'error'); setLocLoading(false); }
       );
     } else { setLocLoading(false); }
   };
 
-  useEffect(() => { if (!userLocation && !selectedStore) detectLocation(); }, []);
+  useEffect(() => {
+    if (autoLocationTriedRef.current) return;
+    autoLocationTriedRef.current = true;
+    if (!userLocation) detectLocation({ silent: true });
+  }, [userLocation]);
 
   const openCheckout = () => {
     if (customer) setCustInfo(p => ({ ...p, name: customer.name || '', phone: customer.phone || '' }));
@@ -91,13 +110,78 @@ export default function StoreView() {
   };
 
   const categories = useMemo(() => ['all', ...new Set(availableProducts.map(p => p.category || 'Main'))], [availableProducts]);
-  const filteredProducts = catFilter === 'all' ? availableProducts : availableProducts.filter(p => p.category === catFilter);
+  const filteredProducts = useMemo(() => {
+    let list = catFilter === 'all'
+      ? availableProducts
+      : availableProducts.filter(p => p.category === catFilter);
+
+    if (vegOnly) {
+      list = list.filter(p => !!p.isVeg || /veg/i.test(p.name));
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      list = list.filter((p) => {
+        const name = (p.name || '').toLowerCase();
+        const category = (p.category || '').toLowerCase();
+        return name.includes(q) || category.includes(q);
+      });
+    }
+
+    if (sortBy === 'price_asc') list = [...list].sort((a, b) => (a.price || 0) - (b.price || 0));
+    else if (sortBy === 'price_desc') list = [...list].sort((a, b) => (b.price || 0) - (a.price || 0));
+    else if (sortBy === 'popular') list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+
+    return list;
+  }, [availableProducts, catFilter, vegOnly, searchQuery, sortBy]);
   const activeOffers = offers.filter(o => o.active);
   const waPhone = partnerValues.WA_PHONE_NUMBER_ID || settings.SUPPORT_PHONE || '+91 98765 43210';
+  const quickReorderItems = useMemo(() => {
+    const latest = customerOrders?.[0];
+    if (!latest?.items?.length) return [];
+    return latest.items.slice(0, 3);
+  }, [customerOrders]);
+  const spotlightSeconds = Math.max(0, Math.floor((spotlightEndsAt - nowTs) / 1000));
+  const spotlightH = Math.floor(spotlightSeconds / 3600);
+  const spotlightM = Math.floor((spotlightSeconds % 3600) / 60);
+  const spotlightS = spotlightSeconds % 60;
+  const instagramFeed = cms?.instagramFeed || { active:false, posts:[] };
+  const instagramPosts = (instagramFeed.posts || []).filter(p => p.active).slice(0, instagramFeed.maxItems || 8);
+  const instagramVideoPosts = instagramPosts.filter(p => p.mediaType === 'video');
+  const shouldUseVideoCarousel = instagramVideoPosts.length > 1;
+
+  const toInstagramEmbedUrl = (url) => {
+    if (!url) return '';
+    const clean = url.trim().replace(/\?.*$/, '').replace(/\/$/, '');
+    if (clean.endsWith('/embed')) return clean;
+    return clean + '/embed';
+  };
+
+  const scrollVideoCarousel = (dir) => {
+    if (!videoCarouselRef.current) return;
+    videoCarouselRef.current.scrollBy({ left: dir * 340, behavior: 'smooth' });
+  };
 
   // ═══ DESIGN TOKENS — Green + White from logo ═══
   const G = '#1B5E20', GL = '#2E7D32', GM = '#E8F5E9', GD = '#0D3B12';
   const SH = brand.storeHeading, SD = brand.storeDim, ST = brand.storeText, SB = brand.storeBorder;
+  const trustBadges = [
+    '4.8/5 Guest Rating',
+    '60-Min Delivery Promise',
+    'HACCP-Compliant Kitchen',
+    'Secure Payments',
+    'Fresh Batch Every Service',
+  ];
+  const curatedCollections = [
+    { key:'biryani', label:'Signature Biryanis', desc:'Award-winning classics' },
+    { key:'starters', label:'Starter Favorites', desc:'Kebabs, 65s, and grills' },
+    { key:'desserts', label:'Dessert Studio', desc:'Sweet finishers' },
+  ];
+  const testimonials = [
+    { name:'Aarti V.', text:'Consistent quality, premium packaging, and delivery always on point.' },
+    { name:'Naveen R.', text:'The ordering experience feels world-class and super smooth.' },
+    { name:'Shazia K.', text:'Best biryani presentation and taste combo in the city.' },
+  ];
 
   const inp = { width:'100%', padding:'13px 16px', borderRadius:12, background:'#fff', border:'1.5px solid '+SB, color:SH, fontSize:14, outline:'none', fontFamily:"'Figtree',sans-serif", transition:'border .2s', boxSizing:'border-box' };
   const greenBtn = { padding:'14px 28px', borderRadius:12, background:G, color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer' };
@@ -129,6 +213,37 @@ export default function StoreView() {
         </div>
       </div>
 
+      {/* ═══ PREMIUM TRUST STRIP ═══ */}
+      <div style={{ ...card, marginBottom:16, padding:'12px 16px', display:'flex', gap:8, overflowX:'auto', background:'#FCFDFC' }}>
+        {trustBadges.map((b) => (
+          <span key={b} style={{ fontSize:11, color:SH, padding:'6px 12px', borderRadius:20, background:GM, border:'1px solid #D5E8D6', whiteSpace:'nowrap', fontWeight:600 }}>
+            ✓ {b}
+          </span>
+        ))}
+      </div>
+
+      {/* ═══ PREMIUM SPOTLIGHT PANEL ═══ */}
+      <div style={{ ...card, marginBottom:20, padding:0, overflow:'hidden' }}>
+        <div style={{ background:'linear-gradient(120deg,#F6FBF6,#FFFFFF)', padding:'16px 18px', display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:12 }}>
+          <div>
+            <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.18em', color:G, marginBottom:6 }}>LIMITED SPOTLIGHT</div>
+            <h3 style={{ margin:0, fontFamily:brand.fontDisplay, fontSize:24, color:SH }}>Chef's Royal Feast Week</h3>
+            <p style={{ margin:'6px 0 10px', fontSize:12, color:SD }}>Premium tasting combos, curated sides, and exclusive finishing desserts.</p>
+            <button onClick={() => setTab('offers')} style={{ padding:'9px 16px', borderRadius:10, background:G, color:'#fff', border:'none', fontWeight:700, fontSize:12, cursor:'pointer' }}>
+              View Premium Offers →
+            </button>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', background:'#fff', border:'1px solid '+SB, borderRadius:12, padding:'12px 14px' }}>
+            {[['H',spotlightH],['M',spotlightM],['S',spotlightS]].map(([k,v]) => (
+              <div key={k} style={{ textAlign:'center', flex:1 }}>
+                <div style={{ fontFamily:brand.fontDisplay, fontSize:26, fontWeight:700, color:G }}>{String(v).padStart(2,'0')}</div>
+                <div style={{ fontSize:9, color:SD, fontWeight:700, letterSpacing:'.12em' }}>{k}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ═══ NAV ═══ */}
       <div style={{ display:'flex', gap:3, marginBottom:28, background:'#F0F4F0', borderRadius:14, padding:4 }}>
         {TABS.map(t => (
@@ -141,6 +256,61 @@ export default function StoreView() {
 
       {/* ═══ MENU ═══ */}
       {tab==='menu' && <>
+        {/* Premium command bar */}
+        <div style={{ ...card, padding:14, marginBottom:16, display:'grid', gridTemplateColumns:'1.3fr auto auto auto', gap:8, alignItems:'center' }}>
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search dishes, categories, or specials..."
+            style={{ ...inp, margin:0, padding:'11px 14px' }}
+          />
+          <button onClick={() => setVegOnly(v => !v)} style={{ padding:'10px 12px', borderRadius:10, border:'1px solid '+(vegOnly ? '#8CD28E' : SB), background:vegOnly ? GM : '#fff', color:vegOnly ? G : SD, fontSize:11, fontWeight:700, cursor:'pointer' }}>
+            {vegOnly ? '🥬 Veg Only' : 'Veg'}
+          </button>
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ padding:'10px 12px', borderRadius:10, border:'1px solid '+SB, background:'#fff', color:SH, fontSize:11, fontWeight:600 }}>
+            <option value="recommended">Recommended</option>
+            <option value="popular">Popular</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+          </select>
+          <button onClick={() => setTab('track')} style={{ padding:'10px 12px', borderRadius:10, border:'1px solid '+SB, background:'#fff', color:SH, fontSize:11, fontWeight:700, cursor:'pointer' }}>
+            Quick Track
+          </button>
+        </div>
+
+        {/* Curated collections */}
+        <div style={{ marginBottom:16 }}>
+          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', textTransform:'uppercase', color:G, marginBottom:8 }}>✨ Curated Collections</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:8 }}>
+            {curatedCollections.map((c) => (
+              <button key={c.key} onClick={() => setCatFilter(c.key)} style={{ ...card, textAlign:'left', padding:'14px 16px', cursor:'pointer', border:'1px solid '+SB }}>
+                <div style={{ fontWeight:700, color:SH, fontSize:13, marginBottom:4 }}>{c.label}</div>
+                <div style={{ fontSize:11, color:SD }}>{c.desc}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick reorder */}
+        {quickReorderItems.length > 0 && (
+          <div style={{ ...card, padding:14, marginBottom:16 }}>
+            <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', textTransform:'uppercase', color:G, marginBottom:8 }}>⚡ Reorder in One Tap</div>
+            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+              {quickReorderItems.map((i) => (
+                <button key={i.name} onClick={() => {
+                  const product = availableProducts.find((p) => p.name === i.name);
+                  if (product) {
+                    addToCart(product);
+                    show('Added ' + product.name);
+                  }
+                }} style={{ padding:'8px 12px', borderRadius:18, border:'1px solid '+SB, background:'#fff', color:SH, fontSize:11, fontWeight:600, cursor:'pointer' }}>
+                  + {i.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Store selector */}
         <div style={{ marginBottom:24 }}>
           <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', textTransform:'uppercase', color:G, marginBottom:12 }}>📍 Choose Store</div>
@@ -221,6 +391,24 @@ export default function StoreView() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Premium social proof */}
+        <div style={{ marginBottom:20 }}>
+          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', textTransform:'uppercase', color:G, marginBottom:10 }}>🌍 Global Quality Signals</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:10, marginBottom:12 }}>
+            <div style={{ ...card, padding:'14px 16px' }}><div style={{ fontSize:11, color:SD }}>Avg Rating</div><div style={{ fontFamily:brand.fontDisplay, fontSize:28, color:SH }}>4.8</div></div>
+            <div style={{ ...card, padding:'14px 16px' }}><div style={{ fontSize:11, color:SD }}>On-Time Deliveries</div><div style={{ fontFamily:brand.fontDisplay, fontSize:28, color:SH }}>97%</div></div>
+            <div style={{ ...card, padding:'14px 16px' }}><div style={{ fontSize:11, color:SD }}>Repeat Guests</div><div style={{ fontFamily:brand.fontDisplay, fontSize:28, color:SH }}>71%</div></div>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:10 }}>
+            {testimonials.map((t) => (
+              <div key={t.name} style={{ ...card, padding:'14px 16px' }}>
+                <div style={{ fontSize:12, color:SH, marginBottom:8, lineHeight:1.5 }}>"{t.text}"</div>
+                <div style={{ fontSize:11, fontWeight:700, color:G }}>{t.name}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ═══ Cart ═══ */}
@@ -374,6 +562,70 @@ export default function StoreView() {
           <button onClick={() => { if(!franchiseForm.name||!franchiseForm.phone) return show('Fill name & phone','error'); show('✅ Inquiry submitted!'); setFranchiseForm({name:'',phone:'',email:'',city:'',investment:'',experience:'',message:''}); }} style={{ ...greenBtn, width:'100%' }}>🏢 Submit Franchise Inquiry</button>
         </div>
       </div>}
+
+      {/* ═══ FOLLOW US (BOTTOM) ═══ */}
+      {instagramFeed.active && instagramPosts.length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
+            <div>
+              <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', textTransform:'uppercase', color:G, marginBottom:6 }}>📸 FOLLOW US</div>
+              <h3 style={{ fontFamily:brand.fontDisplay, fontSize:24, color:SH, margin:0 }}>
+                {instagramFeed.title || 'Follow Us on Instagram'}
+              </h3>
+              {instagramFeed.subtitle && <p style={{ fontSize:12, color:SD, margin:'6px 0 0' }}>{instagramFeed.subtitle}</p>}
+            </div>
+            {shouldUseVideoCarousel && (
+              <div style={{ display:'flex', gap:6 }}>
+                <button onClick={() => scrollVideoCarousel(-1)} style={{ width:32, height:32, borderRadius:8, border:'1px solid '+SB, background:'#fff', color:SH, cursor:'pointer' }}>←</button>
+                <button onClick={() => scrollVideoCarousel(1)} style={{ width:32, height:32, borderRadius:8, border:'1px solid '+SB, background:'#fff', color:SH, cursor:'pointer' }}>→</button>
+              </div>
+            )}
+          </div>
+
+          {shouldUseVideoCarousel ? (
+            <div ref={videoCarouselRef} style={{ display:'flex', gap:12, overflowX:'auto', scrollSnapType:'x mandatory', paddingBottom:6 }}>
+              {instagramVideoPosts.map((post) => (
+                <div key={post.id} style={{ ...card, flex:'0 0 320px', scrollSnapAlign:'start', overflow:'hidden' }}>
+                  <iframe
+                    src={toInstagramEmbedUrl(post.url)}
+                    title={post.caption || post.id}
+                    width="100%"
+                    height="420"
+                    style={{ border:'none' }}
+                    loading="lazy"
+                    allowTransparency
+                  />
+                  {post.caption && <div style={{ fontSize:11, color:SD, padding:'10px 12px' }}>{post.caption}</div>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))', gap:12 }}>
+              {instagramPosts.map((post) => (
+                <div key={post.id} style={{ ...card, overflow:'hidden' }}>
+                  <iframe
+                    src={toInstagramEmbedUrl(post.url)}
+                    title={post.caption || post.id}
+                    width="100%"
+                    height="420"
+                    style={{ border:'none' }}
+                    loading="lazy"
+                    allowTransparency
+                  />
+                  {post.caption && <div style={{ fontSize:11, color:SD, padding:'10px 12px' }}>{post.caption}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Premium sticky quick actions */}
+      <div style={{ position:'fixed', left:'50%', transform:'translateX(-50%)', bottom:14, zIndex:900, background:'#ffffffee', backdropFilter:'blur(8px)', border:'1px solid '+SB, borderRadius:16, padding:'6px', display:'flex', gap:6, boxShadow:'0 8px 30px rgba(0,0,0,.08)' }}>
+        <button onClick={() => setTab('menu')} style={{ padding:'8px 12px', borderRadius:10, border:'none', background:tab==='menu'?GM:'transparent', color:tab==='menu'?G:SD, fontSize:11, fontWeight:700, cursor:'pointer' }}>🍽 Menu</button>
+        <button onClick={() => setTab('offers')} style={{ padding:'8px 12px', borderRadius:10, border:'none', background:tab==='offers'?GM:'transparent', color:tab==='offers'?G:SD, fontSize:11, fontWeight:700, cursor:'pointer' }}>🎁 Offers</button>
+        <button onClick={() => setTab('track')} style={{ padding:'8px 12px', borderRadius:10, border:'none', background:tab==='track'?GM:'transparent', color:tab==='track'?G:SD, fontSize:11, fontWeight:700, cursor:'pointer' }}>📦 Track</button>
+      </div>
 
       {/* ═══ WHATSAPP CHATBOT WIDGET ═══ */}
       <ChatBotWidget waPhone={waPhone} show={show} />

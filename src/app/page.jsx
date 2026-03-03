@@ -92,11 +92,6 @@ function AppContent() {
               <div style={{ fontSize:12, color:brand.storeDim, marginBottom:8 }}>
                 {brand.footer}
               </div>
-              <div style={{ display:'flex', justifyContent:'center', gap:16, alignItems:'center', marginBottom:8 }}>
-                <a href={brand.links.hyperbridge} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>HyperBridge Group</a>
-                <span style={{ fontSize:10, color:brand.storeDim }}>·</span>
-                <a href={brand.links.quantumos} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>Powered by QuantumOS</a>
-              </div>
               <button
                 onClick={() => setShowAdminLogin(true)}
                 style={{ fontSize:10, color:brand.storeDim+'88', background:'none', border:'none', cursor:'pointer', padding:'4px 8px' }}
