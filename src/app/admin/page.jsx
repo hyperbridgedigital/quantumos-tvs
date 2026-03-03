@@ -23,8 +23,8 @@ export default function AdminLoginPage() {
 
       const data = await res.json();
 
-      if (res.ok && data.token) {
-        localStorage.setItem('qos_token', data.token);
+      if (res.ok && data.accessToken) {
+        localStorage.setItem('qos_token', data.accessToken);
         localStorage.setItem('qos_user', JSON.stringify(data.user));
         router.push('/admin/dashboard');
       } else {
@@ -193,7 +193,7 @@ export default function AdminLoginPage() {
 
         {/* Demo credentials hint */}
         <div style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: '#475569' }}>
-          Demo: admin@charminarmehfil.com / Charminar@2026!
+          Demo: spadensilver@gmail.com / Super@4455
         </div>
 
         {/* Footer */}

@@ -26,7 +26,7 @@ vercel --prod
 
 | Email | Password | Role |
 |---|---|---|
-| spadensilver@gmail.com | Admin@123 | Super Admin |
+| spadensilver@gmail.com | Super@4455 | Super Admin |
 | admin@mehfil.com | Admin@123 | Admin |
 | manager@mehfil.com | Manager@1 | Manager |
 | franchise@mehfil.com | Franch@1 | Franchise |

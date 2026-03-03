@@ -90,7 +90,7 @@ export function AppProvider({ children }) {
   const [authToken, setAuthToken] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
 
-  // Restore session on mount — auto-login super admin for demo
+  // Restore session on mount
   useEffect(() => {
     (async () => {
       try {
@@ -105,18 +105,6 @@ export function AppProvider({ children }) {
             return;
           }
           localStorage.removeItem('qos_token');
-        }
-        // Auto-login as Super Admin for demo
-        const res = await fetch('/api/auth/login', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'spadensilver@gmail.com', password: 'Admin@123' }),
-        });
-        const data = await res.json();
-        if (data.ok) {
-          setAuthToken(data.accessToken);
-          if (typeof window !== 'undefined') localStorage.setItem('qos_token', data.accessToken);
-          const u = DEMO_USERS[data.user.role] || { id: data.user.email, name: data.user.name, role: data.user.role, email: data.user.email };
-          setUser(u); setView('admin'); setAdminTab('dashboard');
         }
       } catch (e) { console.warn('Session init:', e); }
     })();
