@@ -1,11 +1,16 @@
-// Brand Config — HyperBridge QuantumOS v11.2.0
-// Charminar Mehfil: Deep Green + White + Gold (from logo)
+// Brand Config — HyperBridge QuantumOS · Kynetra · TheReelFactory
+// TheValueStore: Gaming PCs, Laptops & Tech
 export const brand = {
   platform: 'HyperBridge QuantumOS',
-  name: 'Charminar Mehfil',
-  tagline: 'The Real Taste of Hyderabad',
+  name: 'TheValueStore',
+  tagline: 'Best Value. Maximum Performance.',
   version: '11.3.0',
   poweredBy: 'Powered by HyperBridge QuantumOS',
+  /** Full power stack for footer and agent branding */
+  poweredByFull: 'Powered by TheReelFactory & HyperBridge',
+  kynetra: 'Kynetra',
+  theReelFactory: 'TheReelFactory',
+  hyperBridge: 'HyperBridge',
 
   // ═══ LOGO COLORS (primary) ═══
   green: '#1B5E20',
@@ -40,9 +45,10 @@ export const brand = {
   fontBody: "'Figtree', system-ui, sans-serif",
 
   // ═══ META ═══
-  footer: '© 2026 HyperBridge Group — All Rights Reserved · Powered by HyperBridge QuantumOS v11.3.0',
+  footer: '© 2026 HyperBridge Group — All Rights Reserved · Powered by TheReelFactory & HyperBridge · QuantumOS v11.3.0',
   links: {
     hyperbridge: 'https://hyperbridgegroup.com',
     quantumos: 'https://hyperbridgegroup.com/quantumos',
+    theReelFactory: 'https://thereelfactory.com',
   },
 };

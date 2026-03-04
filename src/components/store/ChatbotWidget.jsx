@@ -11,10 +11,10 @@ const QUICK_REPLIES = [
 ];
 
 const BOT_RESPONSES = {
-  menu: "🍗 *Charminar Mehfil Menu*\n\n🔥 Hyderabadi Chicken Biryani — ₹299\n🔥 Mutton Biryani Special — ₹449\n☕ Irani Chai — ₹49\n🍢 Seekh Kebab Platter — ₹349\n🥗 Mirchi ka Salan — ₹129\n\nUse code *WELCOME20* for 20% off your first order!\n\nReply with an item to add to cart 🛒",
+  menu: "🛒 *" + brand.name + " — Top picks*\n\nBrowse the Menu tab to add to cart. Use code *WELCOME20* for 20% off first order!\n\nReply with an item to add to cart 🛒",
   track: "📦 Please share your Order ID (e.g., ORD-7X2K) and I'll check the status for you right away!",
   offers: "🎁 *Active Offers:*\n\n✅ WELCOME20 — 20% off first order\n✅ BIRYANI50 — ₹50 off any biryani\n✅ FAMILY200 — ₹200 off on 4+ biryanis\n✅ FREECHAI — Free Irani Chai over ₹349\n\nJust mention the code while ordering!",
-  franchise: "🏢 Exciting! Charminar Mehfil franchise starts at ₹15L.\n\n✅ Full kitchen setup\n✅ Training & ops support\n✅ QuantumOS tech platform\n✅ 18-24 month ROI\n\nPlease share your:\n1. Name\n2. Phone\n3. City\n\nOur team will call within 24 hours!",
+  franchise: "🏢 Partner with " + brand.name + " — from ₹15L.\n\n✅ Full setup & training\n✅ QuantumOS tech platform\n✅ 18-24 month ROI\n\nShare Name, Phone & City — our team will call in 24 hours!",
   help: "👋 How can I help you?\n\n📋 Menu — Browse our items\n📦 Track — Check order status\n🎁 Offers — See active deals\n🏢 Franchise — Investment info\n📞 Call us: +91 98765 43210\n\nOr just type your question!",
   default: "Thanks for your message! 😊\n\nI can help you with:\n📋 *Menu* — See our dishes\n📦 *Track* — Order status\n🎁 *Offers* — Active deals\n\nOr type *help* for more options!",
 };
@@ -32,7 +32,7 @@ function getResponse(msg) {
 function ChatbotWidget() {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([
-    { from:'bot', text:'👋 Welcome to Charminar Mehfil!\n\nI\'m your ordering assistant. How can I help you today?', time:new Date() },
+    { from:'bot', text:'👋 Welcome to ' + brand.name + '!\n\nI\'m your assistant. How can I help you today?', time:new Date() },
   ]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
@@ -79,9 +79,9 @@ function ChatbotWidget() {
       {/* Header */}
       <div style={{ background:G, padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <div style={{ width:36, height:36, borderRadius:10, background:'rgba(255,255,255,.15)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:brand.fontDisplay, fontSize:11, color:'#fff', fontWeight:800 }}>CM</div>
+          <div style={{ width:36, height:36, borderRadius:10, background:'rgba(255,255,255,.15)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:brand.fontDisplay, fontSize:11, color:'#fff', fontWeight:800 }}>TVS</div>
           <div>
-            <div style={{ color:'#fff', fontWeight:700, fontSize:14 }}>Charminar Mehfil</div>
+            <div style={{ color:'#fff', fontWeight:700, fontSize:14 }}>{brand.name}</div>
             <div style={{ color:'#C8E6C9', fontSize:10 }}>🟢 Online · Usually replies instantly</div>
           </div>
         </div>

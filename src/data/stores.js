@@ -15,8 +15,8 @@ export const stores = [
     manager: 'Arjun Nair', email: 'mountroad@sangam.in',
   },
   {
-    id: 'ST002', name: 'Charminar Mehfil', type: 'premium', status: 'active',
-    brand: 'Charminar Mehfil', location: 'T. Nagar',
+    id: 'ST002', name: 'TheValueStore', type: 'premium', status: 'active',
+    brand: 'TheValueStore', location: 'T. Nagar',
     address: '1, Thanikachalam Rd, T. Nagar, Chennai, Tamil Nadu 600017',
     lat: 13.0418, lng: 80.2341, city: 'Chennai', area: 'T. Nagar',
     phone: '+91 44 4500 5678', since: '2025',

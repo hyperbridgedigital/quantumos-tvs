@@ -1,6 +1,7 @@
 'use client';
 import { lazy, Suspense } from 'react';
 import { AppProvider, useApp } from '@/context/AppContext';
+import { LocaleProvider } from '@/context/LocaleContext';
 import { brand } from '@/lib/brand';
 import TopBar from '@/components/layout/TopBar';
 import AdminSidebar from '@/components/layout/AdminSidebar';
@@ -8,7 +9,7 @@ import UserAuthModal from '@/components/auth/UserAuthModal';
 import AdminLoginModal from '@/components/auth/AdminLoginModal';
 
 const StoreView = lazy(() => import('@/components/store/StoreView'));
-const ChatbotWidget = lazy(() => import('@/components/store/ChatbotWidget'));
+const KynetraAgent = lazy(() => import('@/components/store/KynetraAgent'));
 const Dashboard = lazy(() => import('@/components/admin/Dashboard'));
 const OMS = lazy(() => import('@/components/admin/OMS'));
 const StoreLocator = lazy(() => import('@/components/admin/StoreLocator'));
@@ -26,6 +27,7 @@ const DataLifecycle = lazy(() => import('@/components/admin/DataLifecycle'));
 const RBAC = lazy(() => import('@/components/admin/RBAC'));
 const Settings = lazy(() => import('@/components/admin/Settings'));
 const CommHub = lazy(() => import('@/components/admin/CommHub'));
+const KynetraTemplates = lazy(() => import('@/components/admin/KynetraTemplates'));
 const PincodeManager = lazy(() => import('@/components/admin/PincodeManager'));
 
 // New v11.1.0 modules
@@ -49,7 +51,7 @@ function Loader() {
 const MODULES = {
   dashboard: Dashboard, orders: OMS, stores: StoreLocator, delivery: DeliveryEngine,
   stock: StockWMS, pos: POS, franchise: Franchise, whatsapp: WhatsAppViral,
-  marketing: Marketing, crm: CRM, partners: PartnerIDs, commhub: CommHub, pincodes: PincodeManager,
+  marketing: Marketing, crm: CRM, partners: PartnerIDs, commhub: CommHub, kynetra: KynetraTemplates, pincodes: PincodeManager,
   ai: AIInsights, security: SecurityDashboard, data: DataLifecycle,
   rbac: RBAC, settings: Settings,
   // v11.1.0
@@ -83,16 +85,19 @@ function AppContent() {
         {view === 'store' && (
           <>
             <Suspense fallback={<Loader />}><StoreView /></Suspense>
-            <Suspense fallback={null}><ChatbotWidget /></Suspense>
+            <Suspense fallback={null}><KynetraAgent /></Suspense>
             <footer style={{ borderTop:'1px solid '+brand.storeBorder, padding:'32px 20px', textAlign:'center', background:'#F8FAF8' }}>
               <div style={{ fontSize:12, color:brand.storeDim, marginBottom:8 }}>
                 {brand.footer}
               </div>
-              <div style={{ display:'flex', justifyContent:'center', gap:16, alignItems:'center', marginBottom:8 }}>
+              <div style={{ display:'flex', justifyContent:'center', gap:16, alignItems:'center', marginBottom:8, flexWrap:'wrap' }}>
                 <a href={brand.links.hyperbridge} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>HyperBridge Group</a>
                 <span style={{ fontSize:10, color:brand.storeDim }}>·</span>
-                <a href={brand.links.quantumos} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>Powered by QuantumOS</a>
+                <a href={brand.links.theReelFactory} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>TheReelFactory</a>
+                <span style={{ fontSize:10, color:brand.storeDim }}>·</span>
+                <a href={brand.links.quantumos} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>QuantumOS</a>
               </div>
+              <div style={{ fontSize:10, color:brand.storeDim+'cc', marginBottom:4 }}>Powered by TheReelFactory & HyperBridge</div>
               <button
                 onClick={() => setShowAdminLogin(true)}
                 style={{ fontSize:10, color:brand.storeDim+'88', background:'none', border:'none', cursor:'pointer', padding:'4px 8px' }}
@@ -135,5 +140,9 @@ function AppContent() {
 }
 
 export default function HomePage() {
-  return <AppProvider><AppContent /></AppProvider>;
+  return (
+    <LocaleProvider>
+      <AppProvider><AppContent /></AppProvider>
+    </LocaleProvider>
+  );
 }

@@ -1,8 +1,13 @@
 export const settingsConfig = {
   '⚙️ General': [
     { key:'STORE_NAME', label:'Platform Name', value:'HyperBridge QuantumOS', type:'text' },
+    { key:'HERO_TITLE', label:'Hero Title (Landing)', value:'Best Value. Maximum Performance.', type:'text' },
+    { key:'HERO_SUBTITLE', label:'Hero Subtitle', value:'Gaming PCs · Laptops · Build Your PC', type:'text' },
+    { key:'ANNOUNCEMENT_BAR', label:'Show Announcement Bar', value:'true', type:'toggle' },
+    { key:'ANNOUNCEMENT_TEXT', label:'Announcement Text', value:'Free delivery on orders above ₹499', type:'text' },
     { key:'GST_RATE', label:'GST Rate (%)', value:'5', type:'number' },
     { key:'CURRENCY', label:'Currency', value:'INR', type:'text' },
+    { key:'DEFAULT_LANGUAGE', label:'Default Language', value:'en', type:'text' },
     { key:'TIMEZONE', label:'Timezone', value:'Asia/Kolkata', type:'text' },
     { key:'SUPPORT_PHONE', label:'Support Phone', value:'+91 98765 43210', type:'text' },
   ],
@@ -71,6 +76,15 @@ export const settingsConfig = {
     { key:'FRANCHISE_DEFAULT_ROYALTY', label:'Default Royalty (%)', value:'12', type:'number' },
     { key:'FRANCHISE_FORM_ENABLED', label:'Frontend Inquiry Form', value:'true', type:'toggle' },
     { key:'FRANCHISE_CONTACT_EMAIL', label:'Inquiry Email', value:'franchise@sangam.in', type:'text' },
+  ],
+  '🖥️ Storefront & Kynetra': [
+    { key:'KYNETRA_SALES', label:'Kynetra: Sales module', value:'true', type:'toggle' },
+    { key:'KYNETRA_PRESALES', label:'Kynetra: Pre-sales module', value:'true', type:'toggle' },
+    { key:'KYNETRA_POSTSALES', label:'Kynetra: Post-sales module', value:'true', type:'toggle' },
+    { key:'KYNETRA_BUILDPC', label:'Kynetra: Build PC module', value:'true', type:'toggle' },
+    { key:'KYNETRA_CSR', label:'Kynetra: CSR / Help module', value:'true', type:'toggle' },
+    { key:'BUILDPC_ENABLED', label:'Build PC configurator', value:'true', type:'toggle' },
+    { key:'CATALOG_USE_500', label:'Use 500-product catalog', value:'true', type:'toggle' },
   ],
 };
 

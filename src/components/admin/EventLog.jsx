@@ -104,7 +104,7 @@ export default function EventLog() {
         <select value={filters.store} onChange={e=>setFilters(p=>({...p,store:e.target.value}))} style={{ padding:'6px 10px', borderRadius:6, background:brand.bg, color:brand.text, border:'1px solid '+brand.border, fontSize:11 }}>
           <option value="">All Stores</option>
           <option value="ST001">ST001 Mount Road Sangam</option>
-          <option value="ST002">ST002 Charminar Mehfil</option><option value="ST003">ST003 Jamal Sangam</option>
+          <option value="ST002">ST002 TheValueStore</option><option value="ST003">ST003 Jamal Sangam</option>
         </select>
         <input type="date" value={filters.dateFrom} onChange={e=>setFilters(p=>({...p,dateFrom:e.target.value}))} style={{ padding:'6px 10px', borderRadius:6, background:brand.bg, color:brand.text, border:'1px solid '+brand.border, fontSize:11 }} />
         <input type="date" value={filters.dateTo} onChange={e=>setFilters(p=>({...p,dateTo:e.target.value}))} style={{ padding:'6px 10px', borderRadius:6, background:brand.bg, color:brand.text, border:'1px solid '+brand.border, fontSize:11 }} />

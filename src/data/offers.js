@@ -8,7 +8,7 @@ export const offersConfig = [
     code: 'MEHFIL100', discount: 100, discountType: 'flat',
     minOrder: 299, maxUses: 999, used: 342, active: true,
     icon: '🎁', color: '#25D366', channel: 'all',
-    shareText: 'Hey! Order from Charminar Mehfil and get ₹100 OFF with my code: {CODE}. Best biryani in town! 🍗🔥',
+    shareText: 'Hey! Shop at TheValueStore and get ₹100 OFF with my code: {CODE}. Best value on tech! 🎮',
   },
   {
     id: 'OFF02', type: 'first_order', name: 'First Order: 20% OFF',

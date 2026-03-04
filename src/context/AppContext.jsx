@@ -8,12 +8,14 @@ import { deliveryPartners as dpData, deliveryZones as zoneData } from '@/data/de
 import { customers as crmData } from '@/data/crm';
 import { waTemplates as tplData, viralCampaigns as viralData } from '@/data/whatsapp';
 import { offersConfig as offersData, rewardsConfig as rewardsData } from '@/data/offers';
-import { menuItems as menuData } from '@/data/products';
+import { menuItems as menuData, withBudgetTiers } from '@/data/products';
 import { partnerConfig, getPartnerDefaults } from '@/data/partners';
 import { ROLES as roleData, ADMIN_TABS, DEMO_USERS } from '@/data/roles';
 import { getDefaultSettings } from '@/data/settings';
 import { remarketingRecords as rmData } from '@/data/remarketingDb';
+import { defaultKynetraTemplates } from '@/data/kynetraTemplates';
 import { uid, fmt } from '@/lib/utils';
+import { brand } from '@/lib/brand';
 
 const AppContext = createContext(null);
 
@@ -39,7 +41,7 @@ export function AppProvider({ children }) {
   const [offers, setOffers] = useState(offersData);
   const [rewardsConf] = useState(rewardsData);
   const [userLocation, setUserLocation] = useState(null);
-  const [products, setProducts] = useState(menuData);
+  const [products, setProducts] = useState(() => withBudgetTiers(menuData));
   const [partnerValues, setPartnerValues] = useState(getPartnerDefaults);
   const [roles, setRoles] = useState(roleData);
   const [settings, setSettings] = useState(getDefaultSettings);
@@ -74,10 +76,23 @@ export function AppProvider({ children }) {
   ]);
   const [chatMessages, setChatMessages] = useState([
     { id:1, from:'customer', name:'Ravi K', phone:'+919876543210', msg:'Hi, I want to order biryani', time:'2m ago', bot:'BOT01', status:'active' },
-    { id:2, from:'bot', name:'Bot', msg:'Welcome to Charminar Mehfil! 🍗 Here is our menu...', time:'2m ago', bot:'BOT01', status:'active' },
+    { id:2, from:'bot', name:'Bot', msg:'Welcome to ' + brand.name + '! Here is our menu...', time:'2m ago', bot:'BOT01', status:'active' },
     { id:3, from:'customer', name:'Priya S', phone:'+919988776655', msg:'Where is my order ORD-7X2?', time:'8m ago', bot:'BOT02', status:'resolved' },
     { id:4, from:'customer', name:'Ahmed J', phone:'+919112233445', msg:'I want to open a franchise', time:'15m ago', bot:'BOT04', status:'escalated' },
   ]);
+
+  // ═══ Kynetra action templates (50) — admin editable ═══
+  const [kynetraTemplates, setKynetraTemplates] = useState(() => {
+    if (typeof window === 'undefined') return defaultKynetraTemplates;
+    try {
+      const s = localStorage.getItem('tvs_kynetra_templates');
+      if (s) return JSON.parse(s);
+    } catch (_) {}
+    return defaultKynetraTemplates;
+  });
+  useEffect(() => {
+    try { localStorage.setItem('tvs_kynetra_templates', JSON.stringify(kynetraTemplates)); } catch (_) {}
+  }, [kynetraTemplates]);
 
   // ═══ TOAST ═══
   const [toast, setToast] = useState(null);
@@ -120,6 +135,18 @@ export function AppProvider({ children }) {
         }
       } catch (e) { console.warn('Session init:', e); }
     })();
+  }, []);
+
+  // Sync products from backend so store and API stay in sync
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/products')
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!cancelled && data?.products?.length) setProducts(data.products);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   const adminLogin = useCallback(async (email, password) => {
@@ -346,6 +373,16 @@ export function AppProvider({ children }) {
   const updateBotFlow = useCallback((id, updates) => { setChatbotFlows(p => p.map(f => f.id === id ? { ...f, ...updates } : f)); show('Bot flow updated'); }, [show]);
   const addChatMessage = useCallback((msg) => { setChatMessages(p => [{ id: Date.now(), time:'just now', ...msg }, ...p]); }, []);
 
+  // ═══ Kynetra templates OPS ═══
+  const updateKynetraTemplate = useCallback((id, updates) => {
+    setKynetraTemplates(p => p.map(t => t.id === id ? { ...t, ...updates } : t));
+    show('Kynetra template updated');
+  }, [show]);
+  const resetKynetraTemplates = useCallback(() => {
+    setKynetraTemplates(defaultKynetraTemplates);
+    show('Kynetra templates reset to default');
+  }, [show]);
+
   // ═══ CART / STOREFRONT OPS ═══
   const addToCart = useCallback((item) => { setCart(p => { const ex = p.find(i => i.id === item.id); if (ex) return p.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i); return [...p, { ...item, qty: 1 }]; }); }, []);
   const removeFromCart = useCallback((id) => { setCart(p => p.filter(i => i.id !== id)); }, []);
@@ -401,6 +438,7 @@ export function AppProvider({ children }) {
     funnels, addFunnel, updateFunnel, deleteFunnel,
     automationRules, addRule, updateRule, deleteRule, toggleRule,
     chatbotFlows, addBotFlow, updateBotFlow, chatMessages, addChatMessage,
+    kynetraTemplates, setKynetraTemplates, updateKynetraTemplate, resetKynetraTemplates,
   }), [
     view, user, customer, adminTab, canAccess, visibleTabs, toast, show,
     showUserAuth, showAdminLogin,
@@ -410,6 +448,7 @@ export function AppProvider({ children }) {
     franchises, waTemplates, viralCampaigns, customers, offers, rewardsConf, userLocation,
     products, availableProducts, partnerValues, roles, settings,
     cart, cartTotal, remarketingRecords, funnels, automationRules, chatbotFlows, chatMessages,
+    kynetraTemplates,
     login, logout, adminLogin, adminLogout, userSendOTP, userVerifyOTP, userLogout,
     addStore, updateStore, deleteStore, addOrder, updateOrderStatus,
     updateStock, addStockItem, deleteStockItem,

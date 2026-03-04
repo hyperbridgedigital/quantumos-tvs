@@ -125,8 +125,8 @@ export const partnerConfig = {
   // ═══════════════════════════════════════════════════════
   '📧 Email — SendGrid (Global)': [
     { key:'SENDGRID_API_KEY', label:'API Key', value:'', type:'password', partner:'SendGrid', docs:'https://docs.sendgrid.com' },
-    { key:'SENDGRID_FROM_EMAIL', label:'From Email', value:'orders@charminarmehfil.com', type:'text', partner:'SendGrid' },
-    { key:'SENDGRID_FROM_NAME', label:'From Name', value:'Charminar Mehfil', type:'text', partner:'SendGrid' },
+    { key:'SENDGRID_FROM_EMAIL', label:'From Email', value:'orders@thevaluestore.com', type:'text', partner:'SendGrid' },
+    { key:'SENDGRID_FROM_NAME', label:'From Name', value:'TheValueStore', type:'text', partner:'SendGrid' },
     { key:'SENDGRID_TEMPLATE_ORDER', label:'Order Template ID', value:'', type:'text', partner:'SendGrid' },
     { key:'SENDGRID_TEMPLATE_OTP', label:'OTP Template ID', value:'', type:'text', partner:'SendGrid' },
     { key:'SENDGRID_WEBHOOK_KEY', label:'Webhook Signing Key', value:'', type:'password', partner:'SendGrid' },
@@ -140,8 +140,8 @@ export const partnerConfig = {
   ],
   '📧 Email — Mailgun (Global)': [
     { key:'MAILGUN_API_KEY', label:'API Key', value:'', type:'password', partner:'Mailgun', docs:'https://documentation.mailgun.com' },
-    { key:'MAILGUN_DOMAIN', label:'Domain', value:'mg.charminarmehfil.com', type:'text', partner:'Mailgun' },
-    { key:'MAILGUN_FROM', label:'From Address', value:'Charminar Mehfil <noreply@charminarmehfil.com>', type:'text', partner:'Mailgun' },
+    { key:'MAILGUN_DOMAIN', label:'Domain', value:'mg.thevaluestore.com', type:'text', partner:'Mailgun' },
+    { key:'MAILGUN_FROM', label:'From Address', value:'TheValueStore <noreply@thevaluestore.com>', type:'text', partner:'Mailgun' },
     { key:'MAILGUN_WEBHOOK_KEY', label:'Webhook Signing Key', value:'', type:'password', partner:'Mailgun' },
   ],
   '📧 Email — Postmark (Global)': [
@@ -153,12 +153,12 @@ export const partnerConfig = {
   '📧 Email — Resend (Global)': [
     { key:'RESEND_API_KEY', label:'API Key', value:'', type:'password', partner:'Resend', docs:'https://resend.com/docs' },
     { key:'RESEND_FROM_EMAIL', label:'From Email', value:'', type:'text', partner:'Resend' },
-    { key:'RESEND_FROM_NAME', label:'From Name', value:'Charminar Mehfil', type:'text', partner:'Resend' },
+    { key:'RESEND_FROM_NAME', label:'From Name', value:'TheValueStore', type:'text', partner:'Resend' },
   ],
   '📧 Email — Brevo / Sendinblue (Global)': [
     { key:'BREVO_API_KEY', label:'API Key (v3)', value:'', type:'password', partner:'Brevo', docs:'https://developers.brevo.com' },
     { key:'BREVO_FROM_EMAIL', label:'From Email', value:'', type:'text', partner:'Brevo' },
-    { key:'BREVO_FROM_NAME', label:'From Name', value:'Charminar Mehfil', type:'text', partner:'Brevo' },
+    { key:'BREVO_FROM_NAME', label:'From Name', value:'TheValueStore', type:'text', partner:'Brevo' },
     { key:'BREVO_TEMPLATE_OTP', label:'OTP Template ID', value:'', type:'text', partner:'Brevo' },
   ],
   '📧 Email — Zoho Mail (India)': [
@@ -170,7 +170,7 @@ export const partnerConfig = {
   '📧 Email — Pepipost / Netcore (India)': [
     { key:'PEPIPOST_API_KEY', label:'API Key', value:'', type:'password', partner:'Pepipost', docs:'https://netcorecloud.com/email-api' },
     { key:'PEPIPOST_FROM_EMAIL', label:'From Email', value:'', type:'text', partner:'Pepipost' },
-    { key:'PEPIPOST_FROM_NAME', label:'From Name', value:'Charminar Mehfil', type:'text', partner:'Pepipost' },
+    { key:'PEPIPOST_FROM_NAME', label:'From Name', value:'TheValueStore', type:'text', partner:'Pepipost' },
   ],
   '📧 Email — Mailchimp / Mandrill (Global)': [
     { key:'MANDRILL_API_KEY', label:'API Key', value:'', type:'password', partner:'Mailchimp', docs:'https://mandrillapp.com/api/docs' },

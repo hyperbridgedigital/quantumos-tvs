@@ -88,7 +88,7 @@ export default function CMSManager() {
 
       {/* Blog/Stories */}
       {tab==='blog' && <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-        <button onClick={()=>setCms(p=>({...p,blogPosts:[...p.blogPosts,{id:'BP'+Date.now(),title:'New Post',slug:'new-post',excerpt:'',body:'',tags:[],seoTitle:'',seoDesc:'',author:'Team Mehfil',published:false,publishedAt:'',featured:false}]}))} style={{ ...s.btn, background:brand.gold+'22', color:brand.gold, border:'1px solid '+brand.gold+'44', alignSelf:'flex-start' }}>+ New Post</button>
+        <button onClick={()=>setCms(p=>({...p,blogPosts:[...p.blogPosts,{id:'BP'+Date.now(),title:'New Post',slug:'new-post',excerpt:'',body:'',tags:[],seoTitle:'',seoDesc:'',author:'TheValueStore Team',published:false,publishedAt:'',featured:false}]}))} style={{ ...s.btn, background:brand.gold+'22', color:brand.gold, border:'1px solid '+brand.gold+'44', alignSelf:'flex-start' }}>+ New Post</button>
         {cms.blogPosts.map(p=>(
           <div key={p.id} style={{ ...s.card }}>
             <div style={{ display:'flex', gap:12, alignItems:'center', marginBottom:8 }}>

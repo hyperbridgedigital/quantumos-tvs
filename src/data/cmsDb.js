@@ -10,9 +10,9 @@ export const cmsDb = {
   menuDisplay: { featuredCategories:['biryani','starters','desserts'], sortBy:'popularity', showPrices:true, showTags:true },
   offersStrip: { active:true, promos:['WELCOME20','BIRYANI50','FLAT100'] },
   blogPosts: [
-    { id:'BP01', title:'The Secret Behind Our Biryani', slug:'secret-biryani', excerpt:'Discover the 200-year-old recipe...', body:'Our biryani traces its roots to the royal kitchens of tradition...', tags:['food','heritage','biryani'], seoTitle:'Secret Behind Signature Biryani | Charminar Mehfil', seoDesc:'Discover the 200-year-old recipe behind our legendary biryani.', author:'Chef Mahmood', published:true, publishedAt:'2025-12-15', featured:true },
-    { id:'BP02', title:'Chennai Food Scene: Our Journey', slug:'chennai-journey', excerpt:'How we brought signature flavors to Chennai...', body:'When we decided to open in Chennai, we knew the city deserved authentic cuisine...', tags:['chennai','story','launch'], seoTitle:'Chennai Food Journey | Charminar Mehfil', seoDesc:'Our journey bringing authentic cuisine to Chennai.', author:'Team Mehfil', published:true, publishedAt:'2026-01-10', featured:true },
-    { id:'BP03', title:'Irani Chai: A Cup of Heritage', slug:'irani-chai-heritage', excerpt:'The story of our signature Irani Chai...', body:'Irani Chai is more than just a beverage...', tags:['chai','heritage','beverages'], seoTitle:'Irani Chai Heritage | Charminar Mehfil', seoDesc:'The story behind our signature Irani Chai.', author:'Chef Mahmood', published:true, publishedAt:'2026-02-01', featured:false },
+    { id:'BP01', title:'The Secret Behind Our Biryani', slug:'secret-biryani', excerpt:'Discover the 200-year-old recipe...', body:'Our biryani traces its roots to the royal kitchens of tradition...', tags:['food','heritage','biryani'], seoTitle:'Secret Behind Signature Biryani | TheValueStore', seoDesc:'Discover the 200-year-old recipe behind our legendary biryani.', author:'Chef Mahmood', published:true, publishedAt:'2025-12-15', featured:true },
+    { id:'BP02', title:'Chennai Food Scene: Our Journey', slug:'chennai-journey', excerpt:'How we brought signature flavors to Chennai...', body:'When we decided to open in Chennai, we knew the city deserved authentic cuisine...', tags:['chennai','story','launch'], seoTitle:'Chennai Food Journey | TheValueStore', seoDesc:'Our journey bringing authentic cuisine to Chennai.', author:'TheValueStore Team', published:true, publishedAt:'2026-01-10', featured:true },
+    { id:'BP03', title:'Irani Chai: A Cup of Heritage', slug:'irani-chai-heritage', excerpt:'The story of our signature Irani Chai...', body:'Irani Chai is more than just a beverage...', tags:['chai','heritage','beverages'], seoTitle:'Irani Chai Heritage | TheValueStore', seoDesc:'The story behind our signature Irani Chai.', author:'Chef Mahmood', published:true, publishedAt:'2026-02-01', featured:false },
   ],
   communityPosts: [
     { id:'UGC01', author:'Priya S.', text:'Best biryani in Chennai! 🔥', rating:5, status:'approved', featured:true, date:'2026-02-20' },
@@ -21,8 +21,8 @@ export const cmsDb = {
     { id:'UGC04', author:'Farhan M.', text:'Party box was perfect for our gathering', rating:5, status:'pending', featured:false, date:'2026-02-22' },
   ],
   textBlocks: {
-    about: 'Charminar Mehfil brings the authentic taste of tradition to Chennai. Our recipes have been perfected over generations, using the finest spices and traditional cooking methods.',
-    story: 'Founded with a passion for preserving culinary heritage, Charminar Mehfil has been serving iconic dishes since 2006.',
+    about: 'TheValueStore delivers best value and maximum performance — gaming PCs, laptops, components, and tech.',
+    story: 'Founded to bring premium tech at fair prices, TheValueStore has been serving gamers and professionals.',
   },
   footer: {
     links: [
@@ -30,8 +30,8 @@ export const cmsDb = {
       { label:'Stores', url:'/stores' },{ label:'Careers', url:'/careers' },
       { label:'Contact', url:'/contact' },{ label:'Privacy Policy', url:'/privacy' },
     ],
-    social: { instagram:'@charminarmehfil', facebook:'charminarmehfil', twitter:'@mehfil_chennai', youtube:'charminarmehfil' },
-    contact: { phone:'+91 44 4500 1234', email:'hello@charminarmehfil.com', address:'Chennai, Tamil Nadu' },
+    social: { instagram:'@thevaluestore', facebook:'thevaluestore', twitter:'@thevaluestore', youtube:'thevaluestore' },
+    contact: { phone:'+91 44 4500 1234', email:'hello@thevaluestore.com', address:'Chennai, Tamil Nadu' },
   },
   announcementBar: { active:true, text:'🎉 Grand Opening Special — 20% OFF with code WELCOME20', link:'/offers', bgColor:'#C9A84C', textColor:'#0C0B09' },
   sectionOrder: ['announcementBar','heroBanners','offersStrip','menuDisplay','blogPosts','communityPosts','textBlocks','footer'],

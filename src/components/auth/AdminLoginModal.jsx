@@ -104,7 +104,7 @@ function AdminLoginModal() {
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
             <div style={{ marginBottom: 14 }}>
               <div style={{ fontFamily: brand.fontDisplay, fontSize: 26, fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>QuantumOS</div>
-              <div style={{ fontSize: 9, color: brand.gold, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', marginTop: 2 }}>Powered by HyperBridge</div>
+              <div style={{ fontSize: 9, color: brand.gold, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', marginTop: 2 }}>Powered by TheReelFactory & HyperBridge</div>
             </div>
             <h3 style={{ fontFamily: brand.fontDisplay, fontSize: 20, color: brand.heading, margin: '0 0 4px' }}>
               {step === 'verify' ? 'Enter Verification Code' : 'Sign In'}
@@ -135,7 +135,7 @@ function AdminLoginModal() {
             <div style={{ marginBottom: 14 }}>
               <label style={{ display: 'block', fontSize: 10, color: brand.dim, fontWeight: 600, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '.08em' }}>Email Address</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="admin@mehfil.com" autoFocus autoComplete="email" style={inputStyle}
+                placeholder="admin@thevaluestore.com" autoFocus autoComplete="email" style={inputStyle}
                 onKeyDown={e => e.key === 'Enter' && document.getElementById('admin-pass')?.focus()} />
             </div>
             <div style={{ marginBottom: 18 }}>

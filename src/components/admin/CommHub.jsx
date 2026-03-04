@@ -21,7 +21,7 @@ function CommHub() {
   const [search, setSearch] = useState('');
   const [testPhone, setTestPhone] = useState('');
   const [testEmail, setTestEmail] = useState('');
-  const [testMsg, setTestMsg] = useState('Hello from Charminar Mehfil! Your OTP is 1234.');
+  const [testMsg, setTestMsg] = useState('Hello from ' + brand.name + '! Your OTP is 1234.');
   const [sending, setSending] = useState(false);
   const [showPass, setShowPass] = useState({});
 

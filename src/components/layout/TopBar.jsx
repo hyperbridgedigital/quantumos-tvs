@@ -28,10 +28,10 @@ function TopBar() {
         ) : (
           /* LIGHT STOREFRONT — Green badge + text */
           <>
-            <div style={{ width:36, height:36, borderRadius:10, background:G, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:brand.fontDisplay, fontSize:11, color:'#fff', fontWeight:800 }}>CM</div>
+            <div style={{ width:36, height:36, borderRadius:10, background:G, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:brand.fontDisplay, fontSize:11, color:'#fff', fontWeight:800 }}>TVS</div>
             <div>
-              <div style={{ fontFamily:brand.fontDisplay, fontSize:15, color:brand.storeHeading, fontWeight:700, lineHeight:1.1 }}>Charminar Mehfil</div>
-              <div style={{ fontSize:8, color:G, fontWeight:700, letterSpacing:'.15em', textTransform:'uppercase' }}>The Real Taste of Hyderabad</div>
+              <div style={{ fontFamily:brand.fontDisplay, fontSize:15, color:brand.storeHeading, fontWeight:700, lineHeight:1.1 }}>{brand.name}</div>
+              <div style={{ fontSize:8, color:G, fontWeight:700, letterSpacing:'.15em', textTransform:'uppercase' }}>{brand.tagline}</div>
             </div>
           </>
         )}

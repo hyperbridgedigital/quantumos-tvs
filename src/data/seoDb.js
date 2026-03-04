@@ -1,16 +1,16 @@
-// SEO Database — v11.1.0
+// SEO Database — v11.1.0 — TheValueStore
 export const seoDb = {
   pages: {
-    home: { title:'Charminar Mehfil & Mount Road Sangam | Best Biryani in Chennai', description:'Authentic Signature Biryani, Irani Chai & more. Order online for delivery in 60 minutes from ECR & ECR Chennai.', keywords:'biryani chennai, signature biryani, irani chai, chennai restaurant, mehfil', ogImage:'/og-home.jpg', canonical:'https://charminarmehfil.com', robots:'index,follow', h1:'Authentic Signature Cuisine in Chennai' },
-    menu: { title:'Menu | Charminar Mehfil Chennai', description:'Browse our full menu — Biryani, Kebabs, Desserts, Beverages & more. Order online now.', keywords:'biryani menu, kebab menu, chennai food menu', ogImage:'/og-menu.jpg', canonical:'https://charminarmehfil.com/menu', robots:'index,follow', h1:'Our Menu' },
-    stores: { title:'Store Locations | ECR & ECR Chennai', description:'Visit Charminar Mehfil at ECR or Mount Road Sangam at ECR. Open 11 AM - 11:30 PM.', keywords:'mehfil t nagar, mehfil ecr, chennai restaurant location', ogImage:'/og-stores.jpg', canonical:'https://charminarmehfil.com/stores', robots:'index,follow', h1:'Our Locations' },
+    home: { title:'TheValueStore — Best Value. Maximum Performance. | Gaming PCs, Laptops & Tech', description:'Premium computer and gaming ecommerce — Build your PC, shop RTX gaming rigs, AI-ready laptops, components, and tech.', keywords:'gaming PC, laptop, RTX, build your PC, tech store, TheValueStore', ogImage:'/og-home.jpg', canonical:'https://thevaluestore.com', robots:'index,follow', h1:'Best Value. Maximum Performance.' },
+    menu: { title:'Products | TheValueStore', description:'Browse gaming PCs, laptops, components, and tech. Order online.', keywords:'gaming PC, laptop, components, tech menu', ogImage:'/og-menu.jpg', canonical:'https://thevaluestore.com/menu', robots:'index,follow', h1:'Our Products' },
+    stores: { title:'Store Locations | TheValueStore', description:'Visit TheValueStore locations. Online and nationwide.', keywords:'TheValueStore locations, tech store', ogImage:'/og-stores.jpg', canonical:'https://thevaluestore.com/stores', robots:'index,follow', h1:'Our Locations' },
   },
   schemas: {
-    restaurant: { '@context':'https://schema.org', '@type':'Restaurant', name:'Charminar Mehfil', servesCuisine:['Signature','Indian','Mughlai'], priceRange:'₹₹', address:{ '@type':'PostalAddress', streetAddress:'1, Thanikachalam Rd', addressLocality:'Chennai', postalCode:'600017', addressCountry:'IN' } },
-    localBusiness: { '@context':'https://schema.org', '@type':'LocalBusiness', name:'Charminar Mehfil & Mount Road Sangam', telephone:'+91 44 4500 1234', openingHours:'Mo-Su 11:00-23:30' },
+    restaurant: { '@context':'https://schema.org', '@type':'Store', name:'TheValueStore', address:{ '@type':'PostalAddress', addressLocality:'Chennai', postalCode:'600017', addressCountry:'IN' } },
+    localBusiness: { '@context':'https://schema.org', '@type':'LocalBusiness', name:'TheValueStore', telephone:'+91 44 4500 1234', openingHours:'Mo-Su 10:00-22:00' },
   },
-  sitemap: { lastGenerated:'2026-02-28', urls:['/','menu','/stores','/blog','/about','/contact'] },
-  robotsTxt: 'User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: https://charminarmehfil.com/sitemap.xml',
+  sitemap: { lastGenerated:'2026-02-28', urls:['/','/menu','/stores','/blog','/about','/contact'] },
+  robotsTxt: 'User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: https://thevaluestore.com/sitemap.xml',
   redirects: [],
   internalLinks: [],
   altTexts: {},

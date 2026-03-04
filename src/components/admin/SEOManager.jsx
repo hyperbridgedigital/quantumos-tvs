@@ -116,7 +116,7 @@ export default function SEOManager() {
           <div style={s.label}>XML Sitemap</div>
           <p style={{ fontSize:11, color:brand.dim }}>Last generated: {seo.sitemap.lastGenerated}</p>
           <div style={{ marginTop:8, padding:8, background:brand.bg, borderRadius:6 }}>
-            {seo.sitemap.urls.map(u=><div key={u} style={{ fontSize:11, color:brand.text, padding:'2px 0' }}>https://charminarmehfil.com{u}</div>)}
+            {seo.sitemap.urls.map(u=><div key={u} style={{ fontSize:11, color:brand.text, padding:'2px 0' }}>https://thevaluestore.com{u}</div>)}
           </div>
           <button style={{ ...s.btn, background:brand.emerald+'22', color:brand.emerald, border:'1px solid '+brand.emerald+'44', marginTop:8, fontSize:10 }}>🔄 Regenerate Sitemap</button>
         </div>

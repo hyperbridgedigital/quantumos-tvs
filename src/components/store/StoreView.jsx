@@ -4,9 +4,16 @@ import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
 import { fmt } from '@/lib/utils';
 import { Badge } from '@/components/shared/Badge';
+import { moods } from '@/data/moods';
+import { BUDGET_TIERS } from '@/data/products';
+import { catalogProducts, catalogCategories } from '@/data/catalog';
+import BuildPCView from '@/components/store/BuildPCView';
+import StoreHome from '@/components/store/StoreHome';
 
 const TABS = [
+  { key:'home', label:'Home', icon:'🏠' },
   { key:'menu', label:'Menu', icon:'🍽' },
+  { key:'buildpc', label:'Build PC', icon:'🖥️' },
   { key:'offers', label:'Offers', icon:'🎁' },
   { key:'track', label:'Orders', icon:'📦' },
   { key:'franchise', label:'Franchise', icon:'🏢' },
@@ -21,15 +28,17 @@ export default function StoreView() {
     userLocation, setUserLocation, stores
   } = useApp();
 
-  const [tab, setTab] = useState('menu');
+  const [tab, setTab] = useState('home');
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [custInfo, setCustInfo] = useState({ name:'', phone:'', email:'', address:'', locality:'', city:'Chennai', state:'Tamil Nadu', pincode:'', landmark:'', type:'delivery', coupon:'' });
   const [locLoading, setLocLoading] = useState(false);
   const [appliedOffer, setAppliedOffer] = useState(null);
-  const [refCode] = useState(() => 'CM' + Math.random().toString(36).slice(2,6).toUpperCase());
+  const [refCode] = useState(() => 'TVS' + Math.random().toString(36).slice(2,6).toUpperCase());
   const [franchiseForm, setFranchiseForm] = useState({ name:'', phone:'', email:'', city:'', investment:'', experience:'', message:'' });
   const [shareOpen, setShareOpen] = useState(false);
   const [catFilter, setCatFilter] = useState('all');
+  const [moodFilter, setMoodFilter] = useState('');
+  const [budgetFilter, setBudgetFilter] = useState('');
 
   const freeAbove = Number(settings.DELIVERY_FREE_ABOVE || 499);
   const deliveryCharge = Number(settings.DELIVERY_CHARGE || 29);
@@ -67,6 +76,23 @@ export default function StoreView() {
 
   useEffect(() => { if (!userLocation && !selectedStore) detectLocation(); }, []);
 
+  // Kynetra can request tab change (e.g. "Open Build PC")
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.detail?.tab) setTab(e.detail.tab);
+      if (e.detail?.category) setCatFilter(e.detail.category);
+    };
+    window.addEventListener('tvs-navigate', handler);
+    return () => window.removeEventListener('tvs-navigate', handler);
+  }, []);
+
+  // Build PC: when URL has ?build=, switch to Build PC tab (share link restore)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('build')) setTab('buildpc');
+  }, []);
+
   const openCheckout = () => {
     if (customer) setCustInfo(p => ({ ...p, name: customer.name || '', phone: customer.phone || '' }));
     setCheckoutOpen(true);
@@ -84,14 +110,26 @@ export default function StoreView() {
     if (order) { setCheckoutOpen(false); setCustInfo({ name:'', phone:'', address:'', type:'delivery', coupon:'' }); setAppliedOffer(null); setTab('track'); }
   };
   const shareReferral = (p) => {
-    const txt = 'Order from Charminar Mehfil – ₹' + (settings.VIRAL_REFERRAL_FRIEND||100) + ' OFF with code: ' + refCode + ' 🍗';
+    const txt = 'Shop at ' + brand.name + ' – ₹' + (settings.VIRAL_REFERRAL_FRIEND||100) + ' OFF with code: ' + refCode + ' 🎮';
     if (p === 'whatsapp') window.open?.('https://wa.me/?text=' + encodeURIComponent(txt));
     else if (p === 'copy') { navigator.clipboard?.writeText(refCode); show('Copied!'); }
     setShareOpen(false);
   };
 
-  const categories = useMemo(() => ['all', ...new Set(availableProducts.map(p => p.category || 'Main'))], [availableProducts]);
-  const filteredProducts = catFilter === 'all' ? availableProducts : availableProducts.filter(p => p.category === catFilter);
+  const categories = useMemo(() => {
+    if (catalogProducts?.length) return ['all', ...catalogCategories.map((c) => c.id)];
+    return ['all', ...new Set(availableProducts.map(p => p.category || 'Main'))];
+  }, [availableProducts]);
+  const filteredProducts = useMemo(() => {
+    let list = catalogProducts?.length ? catalogProducts : availableProducts;
+    if (catFilter && catFilter !== 'all') list = list.filter(p => (p.category || p.categoryLabel) === catFilter || p.category === catFilter);
+    if (moodFilter) list = list.filter(p => (p.moods || []).includes(moodFilter));
+    if (budgetFilter) {
+      const tier = BUDGET_TIERS.find(t => t.id === budgetFilter);
+      if (tier) list = list.filter(p => p.price >= tier.min && p.price <= tier.max);
+    }
+    return list;
+  }, [availableProducts, catalogProducts, catFilter, moodFilter, budgetFilter]);
   const activeOffers = offers.filter(o => o.active);
   const waPhone = partnerValues.WA_PHONE_NUMBER_ID || settings.SUPPORT_PHONE || '+91 98765 43210';
 
@@ -113,13 +151,13 @@ export default function StoreView() {
 
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
           <span style={{ width:8, height:8, borderRadius:'50%', background:'#4ADE80', boxShadow:'0 0 10px #4ADE80' }} />
-          <span style={{ fontSize:10, fontWeight:700, letterSpacing:'.22em', textTransform:'uppercase', color:'#A5D6A7' }}>Live · {activeStores.length} Locations in Chennai</span>
+          <span style={{ fontSize:10, fontWeight:700, letterSpacing:'.22em', textTransform:'uppercase', color:'#A5D6A7' }}>Live · {activeStores.length} locations</span>
         </div>
 
         <h1 style={{ fontFamily:brand.fontDisplay, fontSize:'clamp(34px,7vw,54px)', color:'#fff', lineHeight:1, marginBottom:6 }}>
-          Charminar{' '}<span style={{ color:brand.gold }}>Mehfil</span>
+          {brand.name}
         </h1>
-        <p style={{ fontFamily:brand.fontDisplay, fontSize:17, color:'#C8E6C9', fontStyle:'italic', marginBottom:24, letterSpacing:'.01em' }}>The Real Taste of Hyderabad</p>
+        <p style={{ fontFamily:brand.fontDisplay, fontSize:17, color:'#C8E6C9', fontStyle:'italic', marginBottom:24, letterSpacing:'.01em' }}>{brand.tagline}</p>
 
         <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
           <button onClick={detectLocation} disabled={locLoading} style={{ display:'flex', alignItems:'center', gap:6, padding:'11px 22px', borderRadius:12, background:'rgba(255,255,255,.14)', backdropFilter:'blur(10px)', border:'1px solid rgba(255,255,255,.18)', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer' }}>
@@ -138,6 +176,12 @@ export default function StoreView() {
           </button>
         ))}
       </div>
+
+      {/* ═══ HOME (50-feature landing) ═══ */}
+      {tab==='home' && <StoreHome onNavigate={(targetTab, productId, categoryId) => { setTab(targetTab || 'menu'); if (categoryId) setCatFilter(categoryId); }} />}
+
+      {/* ═══ BUILD PC (CSR) ═══ */}
+      {tab==='buildpc' && <BuildPCView />}
 
       {/* ═══ MENU ═══ */}
       {tab==='menu' && <>
@@ -204,19 +248,49 @@ export default function StoreView() {
 
         {/* Category filter */}
         <div style={{ display:'flex', gap:6, marginBottom:18, overflowX:'auto', paddingBottom:4 }}>
-          {categories.map(c => <button key={c} onClick={() => setCatFilter(c)} style={{ padding:'8px 20px', borderRadius:24, fontSize:12, fontWeight:600, border:'1px solid '+(catFilter===c?G:SB), background:catFilter===c?G:'#fff', color:catFilter===c?'#fff':ST, cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'all .15s' }}>{c==='all'?'🍽 All':c}</button>)}
+          {categories.map(c => <button key={c} onClick={() => setCatFilter(c)} style={{ padding:'8px 20px', borderRadius:24, fontSize:12, fontWeight:600, border:'1px solid '+(catFilter===c?G:SB), background:catFilter===c?G:'#fff', color:catFilter===c?'#fff':ST, cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'all .15s' }}>{c==='all'?'All':(catalogCategories?.find(x=>x.id===c)?.label||c)}</button>)}
+        </div>
+
+        {/* Budget filter — find goodies within your budget */}
+        <div style={{ marginBottom:14 }}>
+          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.18em', textTransform:'uppercase', color:G, marginBottom:10 }}>💰 Budget</div>
+          <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+            <button onClick={() => setBudgetFilter('')} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(budgetFilter===''?G:SB), background:budgetFilter===''?GM:'#fff', color:budgetFilter===''?G:SD, cursor:'pointer', transition:'all .15s', boxShadow:budgetFilter===''?'0 1px 6px rgba(27,94,32,.08)':'none' }}>Any</button>
+            {BUDGET_TIERS.map(t => (
+              <button key={t.id} onClick={() => setBudgetFilter(budgetFilter===t.id?'':t.id)} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(budgetFilter===t.id?G:SB), background:budgetFilter===t.id?GM:'#fff', color:budgetFilter===t.id?G:SD, cursor:'pointer', transition:'all .15s', boxShadow:budgetFilter===t.id?'0 1px 6px rgba(27,94,32,.08)':'none' }}>{t.label}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Mood filter — emotional / vibe */}
+        <div style={{ marginBottom:18 }}>
+          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.18em', textTransform:'uppercase', color:G, marginBottom:10 }}>✨ Vibe</div>
+          <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+            <button onClick={() => setMoodFilter('')} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(moodFilter===''?G:SB), background:moodFilter===''?GM:'#fff', color:moodFilter===''?G:SD, cursor:'pointer', transition:'all .15s', boxShadow:moodFilter===''?'0 1px 6px rgba(27,94,32,.08)':'none' }}>All vibes</button>
+            {moods.map(m => (
+              <button key={m.slug} onClick={() => setMoodFilter(moodFilter===m.slug?'':m.slug)} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(moodFilter===m.slug?m.color:SB), background:moodFilter===m.slug?m.color+'18':'#fff', color:moodFilter===m.slug?m.color:SD, cursor:'pointer', transition:'all .15s', boxShadow:moodFilter===m.slug?'0 1px 6px rgba(0,0,0,.06)':'none' }}><span style={{ marginRight:4 }}>{m.emoji}</span>{m.name}</button>
+            ))}
+          </div>
         </div>
 
         {/* Products grid */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(210px,1fr))', gap:14, marginBottom:28 }}>
-          {filteredProducts.map(p => (
-            <div key={p.id} style={{ ...card, padding:18, opacity:p.available?1:.4, position:'relative' }}>
+          {filteredProducts.length === 0 ? (
+            <div style={{ gridColumn:'1 / -1', textAlign:'center', padding:'48px 24px', background:GM, borderRadius:16, border:'1px solid #C8E6C9' }}>
+              <div style={{ fontSize:40, marginBottom:12 }}>🔍</div>
+              <div style={{ fontWeight:700, color:SH, fontSize:16, marginBottom:6 }}>No items match your filters</div>
+              <div style={{ fontSize:13, color:SD, marginBottom:16 }}>Try relaxing Budget or Vibe to see more goodies.</div>
+              <button onClick={() => { setBudgetFilter(''); setMoodFilter(''); setCatFilter('all'); }} style={{ ...greenBtn }}>Clear filters</button>
+            </div>
+          ) : filteredProducts.map(p => (
+            <div key={p.id} style={{ ...card, padding:18, opacity:(p.available !== false && p.inStock !== false) ? 1 : .4, position:'relative' }}>
+              {p.image && <img src={p.image} alt={p.name} style={{ width:'100%', aspectRatio:1, objectFit:'cover', borderRadius:12, marginBottom:12 }} />}
               {p.tag && <span style={{ position:'absolute', top:12, right:12, fontSize:8, padding:'3px 10px', borderRadius:6, background:G, color:'#fff', fontWeight:800 }}>{p.tag}</span>}
               <div style={{ fontWeight:700, color:SH, fontSize:15, marginBottom:4 }}>{p.name}</div>
-              {p.category && <div style={{ fontSize:10, color:SD, marginBottom:10 }}>{p.category}</div>}
+              {(p.category || p.categoryLabel) && <div style={{ fontSize:10, color:SD, marginBottom:10 }}>{p.categoryLabel || p.category}</div>}
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <span style={{ fontFamily:brand.fontDisplay, fontSize:22, fontWeight:700, color:G }}>{fmt(p.price)}</span>
-                {p.available ? <button onClick={() => addToCart(p)} style={{ padding:'8px 18px', borderRadius:10, background:G, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', border:'none' }}>+ Add</button>
+                {(p.available !== false && p.inStock !== false) ? <button onClick={() => addToCart(p)} style={{ padding:'8px 18px', borderRadius:10, background:G, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', border:'none' }}>+ Add</button>
                 : <span style={{ fontSize:10, color:brand.red, fontWeight:600 }}>Sold Out</span>}
               </div>
             </div>
@@ -338,7 +412,7 @@ export default function StoreView() {
       {tab==='franchise' && settings.FRANCHISE_ENABLED!=='false' && <div>
         <div style={{ background:'linear-gradient(150deg, '+GD+', '+G+', '+GL+')', borderRadius:20, padding:'40px 30px', marginBottom:24, textAlign:'center' }}>
           <div style={{ fontSize:48, marginBottom:12 }}>🏢</div>
-          <h2 style={{ fontFamily:brand.fontDisplay, fontSize:30, color:'#fff', marginBottom:8 }}>Own a Charminar Mehfil</h2>
+          <h2 style={{ fontFamily:brand.fontDisplay, fontSize:30, color:'#fff', marginBottom:8 }}>Partner with {brand.name}</h2>
           <p style={{ fontSize:14, color:'#C8E6C9', maxWidth:500, margin:'0 auto 22px' }}>₹{settings.FRANCHISE_MIN_INVESTMENT||15}L – ₹{settings.FRANCHISE_MAX_INVESTMENT||35}L investment</p>
           <div style={{ display:'flex', justifyContent:'center', gap:24, flexWrap:'wrap' }}>
             {[{ l:'Investment', v:'₹'+(settings.FRANCHISE_MIN_INVESTMENT||15)+'-'+(settings.FRANCHISE_MAX_INVESTMENT||35)+'L' },{ l:'Royalty', v:(settings.FRANCHISE_DEFAULT_ROYALTY||12)+'%' },{ l:'Locations', v:activeStores.length+'+' },{ l:'ROI', v:'18-24mo' }].map(s2 => (
@@ -347,7 +421,7 @@ export default function StoreView() {
           </div>
         </div>
 
-        <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', color:G, marginBottom:12 }}>✨ WHY CHARMINAR MEHFIL</div>
+        <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', color:G, marginBottom:12 }}>✨ WHY {brand.name.toUpperCase()}</div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:10, marginBottom:24 }}>
           {[{i:'🍗',t:'Proven Menu',d:'Signature biryani & kebabs loved across Chennai'},{i:'📦',t:'Full Support',d:'Kitchen, training, ops, marketing'},{i:'💻',t:'Tech Platform',d:'POS, OMS, delivery, WhatsApp — included'},{i:'📈',t:'High Margins',d:'60%+ gross, optimized supply chain'},{i:'🎯',t:'Marketing',d:'Viral engine, social, SEO done for you'},{i:'🤝',t:'Community',d:'Network of franchise owners'}].map(f => (
             <div key={f.t} style={{ ...card, padding:18 }}><div style={{ fontSize:28, marginBottom:8 }}>{f.i}</div><div style={{ fontWeight:700, color:SH, fontSize:14, marginBottom:4 }}>{f.t}</div><div style={{ fontSize:12, color:SD }}>{f.d}</div></div>
@@ -384,7 +458,7 @@ export default function StoreView() {
 function ChatBotWidget({ waPhone, show }) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([
-    { from:'bot', text:'👋 Welcome to Charminar Mehfil! I can help you with:\n\n🍗 Order food\n📦 Track order\n🎁 View offers\n🏢 Franchise info\n\nJust type or tap below!' }
+    { from:'bot', text:'👋 Welcome to ' + brand.name + '! I can help you with:\n\n🛒 Shop\n📦 Track order\n🎁 View offers\n🏢 Partner info\n\nJust type or tap below!' }
   ]);
   const [input, setInput] = useState('');
   const G = '#1B5E20';
@@ -415,7 +489,7 @@ function ChatBotWidget({ waPhone, show }) {
       <div style={{ padding:'14px 18px', background:G, color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <div style={{ width:36, height:36, borderRadius:18, background:'rgba(255,255,255,.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>🤖</div>
-          <div><div style={{ fontWeight:700, fontSize:14 }}>Charminar Mehfil</div><div style={{ fontSize:10, opacity:.8 }}>Online · Replies instantly</div></div>
+          <div><div style={{ fontWeight:700, fontSize:14 }}>{brand.name}</div><div style={{ fontSize:10, opacity:.8 }}>Online · Replies instantly</div></div>
         </div>
         <button onClick={() => setOpen(false)} style={{ color:'#fff', background:'none', border:'none', fontSize:18, cursor:'pointer' }}>✕</button>
       </div>

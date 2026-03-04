@@ -2,7 +2,7 @@
 export const ROLES = {
   superadmin: { label:'Super Admin', emoji:'👑', color:'#C9A84C', tabs:['all'] },
   admin: { label:'Admin', emoji:'🔑', color:'#3B82F6', tabs:['all'] },
-  manager: { label:'Manager', emoji:'👔', color:'#22C55E', tabs:['dashboard','orders','stores','delivery','stock','pos','crm','cms','promo','whatsapp'] },
+  manager: { label:'Manager', emoji:'👔', color:'#22C55E', tabs:['dashboard','orders','stores','delivery','stock','pos','crm','cms','promo','whatsapp','commhub','kynetra'] },
   franchise: { label:'Franchise Owner', emoji:'🏪', color:'#8B5CF6', tabs:['dashboard','orders','pos','stock'] },
   staff: { label:'Staff', emoji:'👤', color:'#06B6D4', tabs:['orders','pos'] },
 };
@@ -40,6 +40,7 @@ export const SIDEBAR_GROUPS = [
     tabs: [
       { key:'crm', label:'CRM', emoji:'👥' },
       { key:'commhub', label:'Comm Hub', emoji:'📡' },
+      { key:'kynetra', label:'Kynetra Templates', emoji:'💬' },
       { key:'automation', label:'Automation', emoji:'🤖' },
     ],
   },

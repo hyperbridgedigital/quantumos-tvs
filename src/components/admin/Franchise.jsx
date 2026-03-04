@@ -30,7 +30,7 @@ function Franchise() {
         {franchises.map(fr => (
           <div key={fr.id} style={{ background:brand.card, border:'1px solid '+brand.border, borderLeft:'4px solid '+statusColor(fr.status), borderRadius:12, padding:16 }}>
             <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8 }}>
-              <div><div style={{ fontWeight:700, color:brand.heading }}>{fr.name.replace('Charminar Mehfil — ','')}</div><div style={{ fontSize:11, color:brand.dim }}>{fr.owner} · {fr.city} · Since {fr.since}</div></div>
+              <div><div style={{ fontWeight:700, color:brand.heading }}>{fr.name.replace('TheValueStore — ','').replace('Charminar Mehfil — ','')}</div><div style={{ fontSize:11, color:brand.dim }}>{fr.owner} · {fr.city} · Since {fr.since}</div></div>
               <select value={fr.status} onChange={e => updateFranchise(fr.id, { status: e.target.value })} style={{ fontSize:10, padding:'2px 8px', borderRadius:6, background:'rgba(255,255,255,.04)', border:'1px solid '+brand.border, color:statusColor(fr.status), outline:'none' }}>
                 <option value="active">Active</option><option value="setup">Setup</option><option value="suspended">Suspended</option><option value="closed">Closed</option>
               </select>
