@@ -111,11 +111,18 @@ export function AppProvider({ children }) {
   const [authToken, setAuthToken] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
 
-  // Restore session on mount
+  // Restore session on mount (disabled in production; skip when ?noSession=1 in dev)
   useEffect(() => {
     (async () => {
+      if (typeof window === 'undefined') return;
+      const isProd = process.env.NODE_ENV === 'production';
+      const skipSession = new URLSearchParams(window.location.search).get('noSession') === '1';
+      if (isProd || skipSession) {
+        if (skipSession) localStorage.removeItem('qos_token');
+        return;
+      }
       try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('qos_token') : null;
+        const token = localStorage.getItem('qos_token');
         if (token) {
           const res = await fetch('/api/auth/session', { headers: { Authorization: 'Bearer ' + token } });
           const data = await parseJsonFromResponse(res, '/api/auth/session');
