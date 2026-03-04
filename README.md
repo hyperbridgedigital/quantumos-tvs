@@ -22,6 +22,22 @@ npm run build && npm start
 vercel --prod
 ```
 
+### Database (Neon)
+
+The app uses [Neon](https://neon.tech) serverless PostgreSQL. Add to `.env`:
+
+```
+DATABASE_URL=postgresql://user:password@ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require
+```
+
+Run the migration:
+
+```bash
+npm run db:migrate
+```
+
+Use `getDb()` from `@/lib/db` in API routes and Server Components.
+
 ### Default Admin Credentials
 
 | Email | Password | Role |

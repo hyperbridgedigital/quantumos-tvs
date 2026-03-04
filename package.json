@@ -8,12 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "test": "echo \"Tests passed\" && exit 0",
+    "db:migrate": "node scripts/migrate-neon.mjs",
     "generate": "node scripts/generateTestData.mjs --seed 111 --days 90",
     "prebuild": "mkdir -p .next/server && echo \"{}\" > .next/server/pages-manifest.json"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "jsonwebtoken": "^9.0.3",
     "next": "^14.2.0",
+    "postgres": "^3.4.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
