@@ -164,10 +164,10 @@ const promoSeeds = [
 // Generate 200-400 events
 const EVENT_TYPES = ['order_placed','order_status_changed','customer_created','customer_updated','stock_updated','promo_redeemed','campaign_sent','admin_login','setting_changed'];
 const ACTORS = [
-  { type:'system', id:'SYS', email:'system@mehfil.com', role:'system' },
+  { type:'system', id:'SYS', email:'system@thevaluestore.com', role:'system' },
   { type:'admin', id:'U001', email:'spadensilver@gmail.com', role:'superadmin' },
-  { type:'admin', id:'U002', email:'admin@mehfil.com', role:'admin' },
-  { type:'admin', id:'U003', email:'manager@mehfil.com', role:'manager' },
+  { type:'admin', id:'U002', email:'admin@thevaluestore.com', role:'admin' },
+  { type:'admin', id:'U003', email:'manager@thevaluestore.com', role:'manager' },
   { type:'customer', id:'CUST', email:'customer@gmail.com', role:'customer' },
 ];
 const eventCount = randInt(250, 350);
@@ -253,7 +253,7 @@ writeFileSync(join(dataDir, 'promoEngine.js'), `// Auto-generated — v11.1.0\ne
 
 // Franchise
 const franchises = [
-  { id:'FR001', name:'Charminar Mehfil T. Nagar', owner:'HyperBridge Group', phone:'+91 44 4500 1234', status:'active', city:'Chennai', store:'ST001', revenue:485000, orders:1240, royalty:0, since:'2025-01', investment:2500000 },
+  { id:'FR001', name:'TheValueStore T. Nagar', owner:'HyperBridge Group', phone:'+91 44 4500 1234', status:'active', city:'Chennai', store:'ST001', revenue:485000, orders:1240, royalty:0, since:'2025-01', investment:2500000 },
   { id:'FR002', name:'Mount Road Sangam ECR', owner:'HyperBridge Group', phone:'+91 44 4500 5678', status:'active', city:'Chennai', store:'ST002', revenue:380000, orders:980, royalty:0, since:'2025-06', investment:3000000 },
 ];
 writeFileSync(join(dataDir, 'franchise.js'), toExport('franchises', franchises));

@@ -1,7 +1,8 @@
 'use client';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { AppProvider, useApp } from '@/context/AppContext';
 import { LocaleProvider } from '@/context/LocaleContext';
+import { AppErrorBoundary } from '@/components/AppErrorBoundary';
 import { brand } from '@/lib/brand';
 import TopBar from '@/components/layout/TopBar';
 import AdminSidebar from '@/components/layout/AdminSidebar';
@@ -41,6 +42,7 @@ const Remarketing = lazy(() => import('@/components/admin/Remarketing'));
 // New v11.3.0 modules
 const FunnelBuilder = lazy(() => import('@/components/admin/FunnelBuilder'));
 const AutomationRules = lazy(() => import('@/components/admin/AutomationRules'));
+const StoreFeaturesAdmin = lazy(() => import('@/components/admin/StoreFeaturesAdmin'));
 
 function Loader() {
   return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:60 }}>
@@ -50,7 +52,7 @@ function Loader() {
 
 const MODULES = {
   dashboard: Dashboard, orders: OMS, stores: StoreLocator, delivery: DeliveryEngine,
-  stock: StockWMS, pos: POS, franchise: Franchise, whatsapp: WhatsAppViral,
+  stock: StockWMS, pos: POS, storefeatures: StoreFeaturesAdmin, franchise: Franchise, whatsapp: WhatsAppViral,
   marketing: Marketing, crm: CRM, partners: PartnerIDs, commhub: CommHub, kynetra: KynetraTemplates, pincodes: PincodeManager,
   ai: AIInsights, security: SecurityDashboard, data: DataLifecycle,
   rbac: RBAC, settings: Settings,
@@ -62,8 +64,19 @@ const MODULES = {
 };
 
 function AppContent() {
-  const { view, setView, user, adminTab, toast, setShowAdminLogin } = useApp();
+  const { view, setView, user, adminTab, toast, setShowAdminLogin, storeTheme } = useApp();
   const Mod = MODULES[adminTab] || Dashboard;
+
+  // Force TheValueStore theme on storefront (light/dark), admin theme in dashboard
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    try {
+      let theme = 'store';
+      if (view === 'admin') theme = 'admin';
+      else if (storeTheme === 'dark') theme = 'store-dark';
+      if (document.body) document.body.setAttribute('data-theme', theme);
+    } catch (_) {}
+  }, [view, storeTheme]);
 
   return (
     <div>
@@ -86,21 +99,25 @@ function AppContent() {
           <>
             <Suspense fallback={<Loader />}><StoreView /></Suspense>
             <Suspense fallback={null}><KynetraAgent /></Suspense>
-            <footer style={{ borderTop:'1px solid '+brand.storeBorder, padding:'32px 20px', textAlign:'center', background:'#F8FAF8' }}>
-              <div style={{ fontSize:12, color:brand.storeDim, marginBottom:8 }}>
+            <footer style={{
+              borderTop: '1px solid ' + (storeTheme === 'dark' ? brand.storeDark.storeBorder : brand.storeBorder),
+              padding: '32px 20px', textAlign: 'center',
+              background: storeTheme === 'dark' ? brand.storeDark.storeBg2 : '#F8FAF8',
+            }}>
+              <div style={{ fontSize: 12, color: storeTheme === 'dark' ? brand.storeDark.storeDim : brand.storeDim, marginBottom: 8 }}>
                 {brand.footer}
               </div>
-              <div style={{ display:'flex', justifyContent:'center', gap:16, alignItems:'center', marginBottom:8, flexWrap:'wrap' }}>
-                <a href={brand.links.hyperbridge} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>HyperBridge Group</a>
-                <span style={{ fontSize:10, color:brand.storeDim }}>·</span>
-                <a href={brand.links.theReelFactory} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>TheReelFactory</a>
-                <span style={{ fontSize:10, color:brand.storeDim }}>·</span>
-                <a href={brand.links.quantumos} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:brand.green+'99', textDecoration:'none' }}>QuantumOS</a>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 16, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
+                <a href={brand.links.hyperbridge} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, color: brand.green + '99', textDecoration: 'none' }}>HyperBridge Group</a>
+                <span style={{ fontSize: 10, color: storeTheme === 'dark' ? brand.storeDark.storeDim : brand.storeDim }}>·</span>
+                <a href={brand.links.theReelFactory} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, color: brand.green + '99', textDecoration: 'none' }}>TheReelFactory</a>
+                <span style={{ fontSize: 10, color: storeTheme === 'dark' ? brand.storeDark.storeDim : brand.storeDim }}>·</span>
+                <a href={brand.links.quantumos} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, color: brand.green + '99', textDecoration: 'none' }}>QuantumOS</a>
               </div>
-              <div style={{ fontSize:10, color:brand.storeDim+'cc', marginBottom:4 }}>Powered by TheReelFactory & HyperBridge</div>
+              <div style={{ fontSize: 10, color: (storeTheme === 'dark' ? brand.storeDark.storeDim : brand.storeDim) + 'cc', marginBottom: 4 }}>Powered by TheReelFactory & HyperBridge</div>
               <button
                 onClick={() => setShowAdminLogin(true)}
-                style={{ fontSize:10, color:brand.storeDim+'88', background:'none', border:'none', cursor:'pointer', padding:'4px 8px' }}
+                style={{ fontSize: 10, color: (storeTheme === 'dark' ? brand.storeDark.storeDim : brand.storeDim) + '88', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
               >
                 QuantumOS Admin →
               </button>
@@ -141,8 +158,10 @@ function AppContent() {
 
 export default function HomePage() {
   return (
-    <LocaleProvider>
-      <AppProvider><AppContent /></AppProvider>
-    </LocaleProvider>
+    <AppErrorBoundary>
+      <LocaleProvider>
+        <AppProvider><AppContent /></AppProvider>
+      </LocaleProvider>
+    </AppErrorBoundary>
   );
 }

@@ -101,7 +101,7 @@ export const partnerConfig = {
   '📨 SMS — Vonage / Nexmo (Global)': [
     { key:'VONAGE_API_KEY', label:'API Key', value:'', type:'text', partner:'Vonage', docs:'https://developer.vonage.com/messaging/sms' },
     { key:'VONAGE_API_SECRET', label:'API Secret', value:'', type:'password', partner:'Vonage' },
-    { key:'VONAGE_FROM', label:'From Number / Brand', value:'MEHFIL', type:'text', partner:'Vonage' },
+    { key:'VONAGE_FROM', label:'From Number / Brand', value:'TVS', type:'text', partner:'Vonage' },
   ],
   '📨 SMS — Sinch (Global)': [
     { key:'SINCH_APP_ID', label:'App ID', value:'', type:'text', partner:'Sinch', docs:'https://developers.sinch.com/docs/sms' },
@@ -117,7 +117,7 @@ export const partnerConfig = {
     { key:'AWS_SNS_ACCESS_KEY', label:'Access Key ID', value:'', type:'text', partner:'AWS SNS', docs:'https://docs.aws.amazon.com/sns' },
     { key:'AWS_SNS_SECRET_KEY', label:'Secret Key', value:'', type:'password', partner:'AWS SNS' },
     { key:'AWS_SNS_REGION', label:'Region', value:'ap-south-1', type:'text', partner:'AWS SNS' },
-    { key:'AWS_SNS_SENDER_ID', label:'Sender ID', value:'MEHFIL', type:'text', partner:'AWS SNS' },
+    { key:'AWS_SNS_SENDER_ID', label:'Sender ID', value:'TVS', type:'text', partner:'AWS SNS' },
   ],
 
   // ═══════════════════════════════════════════════════════

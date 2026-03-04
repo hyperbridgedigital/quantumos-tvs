@@ -31,7 +31,8 @@ function runAction(resolved) {
 }
 
 function KynetraAgent() {
-  const { kynetraTemplates } = useApp();
+  const { kynetraTemplates, storeTheme } = useApp();
+  const theme = storeTheme === 'dark' ? brand.storeDark : brand;
   const [open, setOpen] = useState(false);
   const [module, setModule] = useState('sales');
   const [msgs, setMsgs] = useState([
@@ -40,8 +41,21 @@ function KynetraAgent() {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const endRef = useRef(null);
+  const sendMsgRef = useRef(null);
 
-  const templates = kynetraTemplates || [];
+  // Deep integration: open Kynetra from anywhere with optional pre-filled message
+  useEffect(() => {
+    const handler = (e) => {
+      const { message, send = true } = e.detail || {};
+      setOpen(true);
+      if (message && sendMsgRef.current) {
+        if (send) setTimeout(() => sendMsgRef.current(message), 100);
+        else setInput(message);
+      }
+    };
+    window.addEventListener('kynetra-open', handler);
+    return () => window.removeEventListener('kynetra-open', handler);
+  }, []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,7 +68,7 @@ function KynetraAgent() {
     setInput('');
     setTyping(true);
 
-    const template = matchTemplate(text.trim(), templates);
+    const template = matchTemplate(text.trim(), kynetraTemplates || []);
     if (template) {
       const resolved = resolveAction(template);
       runAction(resolved);
@@ -102,13 +116,14 @@ function KynetraAgent() {
       setTyping(false);
     }
   };
+  sendMsgRef.current = sendMsg;
 
   const G = brand.green || '#1B5E20';
   const GM = brand.greenMint || '#E8F5E9';
 
   const repliesByModule = {
     sales: [
-      { label: 'Menu & products', msg: 'Show me products and menu' },
+      { label: 'Shop & products', msg: 'Show me products and deals' },
       { label: 'Deals', msg: 'What offers do you have?' },
       { label: 'Franchise', msg: 'Franchise inquiry' },
     ],
@@ -179,8 +194,8 @@ function KynetraAgent() {
         display: 'flex',
         flexDirection: 'column',
         boxShadow: '0 10px 50px rgba(0,0,0,.2)',
-        border: '1px solid #E0E8E0',
-        background: '#fff',
+        border: '1px solid ' + theme.storeBorder,
+        background: theme.storeBg,
       }}
     >
       <div style={{ background: G, padding: '12px 16px', flexShrink: 0 }}>
@@ -218,7 +233,7 @@ function KynetraAgent() {
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', background: '#F0F4F0' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', background: theme.storeBg2 }}>
         {msgs.map((m, i) => (
           <div key={i} style={{ display: 'flex', justifyContent: m.from === 'user' ? 'flex-end' : 'flex-start', marginBottom: 8 }}>
             <div
@@ -226,51 +241,52 @@ function KynetraAgent() {
                 maxWidth: '85%',
                 padding: '10px 14px',
                 borderRadius: 14,
-                background: m.from === 'user' ? '#DCF8C6' : '#fff',
+                background: m.from === 'user' ? GM : theme.storeCard,
+                border: '1px solid ' + (m.from === 'user' ? '#C8E6C9' : theme.storeBorder),
                 borderBottomRightRadius: m.from === 'user' ? 4 : 14,
                 borderBottomLeftRadius: m.from === 'bot' ? 4 : 14,
                 boxShadow: '0 1px 2px rgba(0,0,0,.06)',
               }}
             >
-              <div style={{ fontSize: 13, color: '#1A2E1C', whiteSpace: 'pre-wrap', lineHeight: 1.45 }}>{m.text}</div>
-              <div style={{ fontSize: 9, color: '#8A9588', textAlign: 'right', marginTop: 4 }}>{m.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+              <div style={{ fontSize: 13, color: theme.storeHeading, whiteSpace: 'pre-wrap', lineHeight: 1.45 }}>{m.text}</div>
+              <div style={{ fontSize: 9, color: theme.storeDim, textAlign: 'right', marginTop: 4 }}>{m.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
             </div>
           </div>
         ))}
         {typing && (
           <div style={{ display: 'flex', marginBottom: 8 }}>
-            <div style={{ padding: '10px 16px', borderRadius: 14, background: '#fff', boxShadow: '0 1px 2px rgba(0,0,0,.06)' }}>
-              <span style={{ fontSize: 13, color: '#8A9588' }}>Kynetra typing<span style={{ animation: 'pulse 1s infinite' }}>...</span></span>
+            <div style={{ padding: '10px 16px', borderRadius: 14, background: theme.storeCard, border: '1px solid ' + theme.storeBorder, boxShadow: '0 1px 2px rgba(0,0,0,.06)' }}>
+              <span style={{ fontSize: 13, color: theme.storeDim }}>Kynetra typing<span style={{ animation: 'pulse 1s infinite' }}>...</span></span>
             </div>
           </div>
         )}
         <div ref={endRef} />
       </div>
 
-      <div style={{ padding: '8px 12px', background: '#fff', borderTop: '1px solid #E0E8E0', display: 'flex', gap: 6, overflowX: 'auto', flexShrink: 0 }}>
+      <div style={{ padding: '8px 12px', background: theme.storeBg, borderTop: '1px solid ' + theme.storeBorder, display: 'flex', gap: 6, overflowX: 'auto', flexShrink: 0 }}>
         {replies.map((q) => (
           <button
             key={q.label}
             onClick={() => sendMsg(q.msg)}
-            style={{ padding: '6px 12px', borderRadius: 16, border: '1px solid #C8E6C9', background: GM, color: G, fontSize: 11, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+            style={{ padding: '6px 12px', borderRadius: 16, border: '1px solid ' + theme.storeBorder, background: theme.storeBg2, color: theme.storeHeading, fontSize: 11, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
           >
             {q.label}
           </button>
         ))}
       </div>
 
-      <div style={{ padding: '10px 12px', background: '#fff', borderTop: '1px solid #E0E8E0', display: 'flex', gap: 8, flexShrink: 0 }}>
+      <div style={{ padding: '10px 12px', background: theme.storeBg, borderTop: '1px solid ' + theme.storeBorder, display: 'flex', gap: 8, flexShrink: 0 }}>
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMsg(input)}
-          placeholder="Ask anything — templates will suggest and run actions..."
-          style={{ flex: 1, padding: '10px 14px', borderRadius: 24, border: '1px solid #DCE6DC', background: '#F8FAF8', fontSize: 13, outline: 'none', color: '#1A2E1C' }}
+          placeholder="Ask anything — products, Build PC, track order..."
+          style={{ flex: 1, padding: '10px 14px', borderRadius: 24, border: '1px solid ' + theme.storeBorder, background: theme.storeBg2, fontSize: 13, outline: 'none', color: theme.storeHeading }}
         />
         <button onClick={() => sendMsg(input)} style={{ width: 40, height: 40, borderRadius: 20, background: G, color: '#fff', border: 'none', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>➤</button>
       </div>
 
-      <div style={{ padding: '6px 12px', background: GM, borderTop: '1px solid #C8E6C9', textAlign: 'center', fontSize: 9, color: G, fontWeight: 600, letterSpacing: '.05em', flexShrink: 0 }}>
+      <div style={{ padding: '6px 12px', background: theme.storeBg2, borderTop: '1px solid ' + theme.storeBorder, textAlign: 'center', fontSize: 9, color: theme.storeDim, fontWeight: 600, letterSpacing: '.05em', flexShrink: 0 }}>
         Powered by TheReelFactory & HyperBridge · QuantumOS
       </div>
     </div>

@@ -2,7 +2,7 @@
 export const ROLES = {
   superadmin: { label:'Super Admin', emoji:'👑', color:'#C9A84C', tabs:['all'] },
   admin: { label:'Admin', emoji:'🔑', color:'#3B82F6', tabs:['all'] },
-  manager: { label:'Manager', emoji:'👔', color:'#22C55E', tabs:['dashboard','orders','stores','delivery','stock','pos','crm','cms','promo','whatsapp','commhub','kynetra'] },
+  manager: { label:'Manager', emoji:'👔', color:'#22C55E', tabs:['dashboard','orders','stores','delivery','stock','pos','storefeatures','crm','cms','promo','whatsapp','commhub','kynetra'] },
   franchise: { label:'Franchise Owner', emoji:'🏪', color:'#8B5CF6', tabs:['dashboard','orders','pos','stock'] },
   staff: { label:'Staff', emoji:'👤', color:'#06B6D4', tabs:['orders','pos'] },
 };
@@ -49,6 +49,7 @@ export const SIDEBAR_GROUPS = [
     tabs: [
       { key:'stores', label:'Stores', emoji:'🏪' },
       { key:'stock', label:'Stock/WMS', emoji:'📦' },
+      { key:'storefeatures', label:'Store Features', emoji:'✨' },
       { key:'franchise', label:'Franchise', emoji:'🏢' },
       { key:'partners', label:'Partners/Keys', emoji:'🔑' },
     ],
@@ -83,7 +84,7 @@ export const ADMIN_TABS = SIDEBAR_GROUPS.flatMap(g => g.tabs);
 
 export const DEMO_USERS = {
   superadmin: { name:'Spaden Silver', email:'spadensilver@gmail.com', role:'superadmin' },
-  admin: { name:'Admin User', email:'admin@mehfil.com', role:'admin' },
-  manager: { name:'Store Manager', email:'manager@mehfil.com', role:'manager' },
-  franchise: { name:'Franchise Owner', email:'franchise@mehfil.com', role:'franchise' },
+  admin: { name:'Admin User', email:'admin@thevaluestore.com', role:'admin' },
+  manager: { name:'Store Manager', email:'manager@thevaluestore.com', role:'manager' },
+  franchise: { name:'Franchise Owner', email:'franchise@thevaluestore.com', role:'franchise' },
 };

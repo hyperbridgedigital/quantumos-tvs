@@ -179,7 +179,7 @@ function PincodeManager() {
             <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,.85)', borderRadius: 10, padding: '10px 14px' }}>
               <div style={{ fontSize: 12, color: brand.heading, fontWeight: 700 }}>{selectedStore?.name}</div>
               <div style={{ fontSize: 10, color: brand.dim }}>{selectedStore?.address}</div>
-              <div style={{ fontSize: 10, color: brand.gold, marginTop: 4 }}>Prep: {selectedStore?.prepTime}min · {selectedStore?.hours}</div>
+              <div style={{ fontSize: 10, color: brand.gold, marginTop: 4 }}>Fulfill: {selectedStore?.prepTime}min · {selectedStore?.hours}</div>
             </div>
           </div>
 
@@ -281,7 +281,7 @@ function PincodeManager() {
             <div style={{ fontSize: 12, fontWeight: 700, color: brand.gold, marginBottom: 16 }}>🏪 {selectedStore.name} — Delivery Settings</div>
 
             {[
-              { key: 'prepTime', label: 'Kitchen Prep Time (min)', type: 'number' },
+              { key: 'prepTime', label: 'Fulfillment Time (min)', type: 'number' },
               { key: 'hours', label: 'Operating Hours', type: 'text' },
               { key: 'status', label: 'Store Status', type: 'select', options: ['active', 'paused', 'closed', 'maintenance'] },
               { key: 'type', label: 'Store Type', type: 'select', options: ['flagship', 'premium', 'express', 'cloud', 'franchise'] },

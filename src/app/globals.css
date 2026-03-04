@@ -1,4 +1,4 @@
-/* HyperBridge QuantumOS v11.2.0 — TheValueStore */
+/* HyperBridge QuantumOS v11.2.0 — TheValueStore (Computer Store Theme) */
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -22,13 +22,22 @@
   --whatsapp: #25D366;
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Figtree', system-ui, -apple-system, sans-serif;
+  /* Computer store storefront */
+  --store-surface: #FFFFFF;
+  --store-surface-2: #F8FAFC;
+  --store-border: #E2E8F0;
+  --store-heading: #0F172A;
+  --store-text: #334155;
+  --store-muted: #64748B;
+  --store-card-shadow: 0 1px 3px rgba(15,23,42,.06);
+  --store-card-shadow-hover: 0 10px 40px rgba(15,23,42,.08);
 }
 
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
-  background: #FFFFFF;
-  color: #4A5548;
+  background: var(--store-surface);
+  color: var(--store-text);
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
@@ -39,10 +48,33 @@ body {
   min-height: 100vh;
 }
 
+  /* Computer store storefront — explicit so no other theme can override */
+  body[data-theme="store"] {
+    background: var(--store-surface);
+    color: var(--store-text);
+  }
+  body[data-theme="store"]::-webkit-scrollbar-track { background: var(--store-surface-2); }
+  body[data-theme="store"]::-webkit-scrollbar-thumb { background: var(--store-border); border-radius: 3px; }
+
+  body[data-theme="admin"] {
+    background: var(--bg);
+    color: var(--text);
+  }
+  body[data-theme="admin"]::-webkit-scrollbar-track { background: var(--bg2); }
+  body[data-theme="admin"]::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Store dark theme */
+  body[data-theme="store-dark"] {
+    background: #0F172A;
+    color: #E2E8F0;
+  }
+  body[data-theme="store-dark"]::-webkit-scrollbar-track { background: #1E293B; }
+  body[data-theme="store-dark"]::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
 ::selection { background: var(--green); color: #fff; }
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #F0F4F0; }
-::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--store-surface-2); }
+::-webkit-scrollbar-thumb { background: var(--store-border); border-radius: 3px; }
 :focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 input, select, textarea { font-family: inherit; }

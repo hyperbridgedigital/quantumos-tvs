@@ -15,7 +15,7 @@ export const metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0C0B09',
+  themeColor: '#FFFFFF',
 };
 
 export default function RootLayout({ children }) {
@@ -26,7 +26,14 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Figtree:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body><Providers>{children}</Providers></body>
+      <body suppressHydrationMismatch>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=typeof localStorage!=='undefined'?localStorage.getItem('tvs_theme'):null;var v=t==='dark'?'store-dark':'store';if(document.body)document.body.setAttribute('data-theme',v);})();`,
+          }}
+        />
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

@@ -80,7 +80,7 @@ function StoreLocator() {
               <div style={{ fontSize:12, color:brand.text, marginBottom:8 }}>👤 {s.manager} · 📞 {s.phone} · 🕐 {s.hours} · 📍 {s.radius}km</div>
               {s.status === 'active' && <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:6, marginBottom:8 }}>
                 <div style={{ background:brand.bg, borderRadius:6, padding:4, textAlign:'center' }}><div style={{ fontSize:14, fontWeight:700, color:s.load/s.maxOrders>.8?brand.red:brand.emerald }}>{s.load}</div><div style={{ fontSize:8, color:brand.dim }}>/{s.maxOrders}</div></div>
-                <div style={{ background:brand.bg, borderRadius:6, padding:4, textAlign:'center' }}><div style={{ fontSize:14, fontWeight:700, color:brand.gold }}>{s.prepTime}m</div><div style={{ fontSize:8, color:brand.dim }}>prep</div></div>
+                <div style={{ background:brand.bg, borderRadius:6, padding:4, textAlign:'center' }}><div style={{ fontSize:14, fontWeight:700, color:brand.gold }}>{s.prepTime}m</div><div style={{ fontSize:8, color:brand.dim }}>fulfill</div></div>
                 <div style={{ background:brand.bg, borderRadius:6, padding:4, textAlign:'center' }}><div style={{ fontSize:14, fontWeight:700, color:brand.gold }}>⭐{s.rating}</div><div style={{ fontSize:8, color:brand.dim }}>rating</div></div>
                 <div style={{ background:brand.bg, borderRadius:6, padding:4, textAlign:'center' }}><div style={{ fontSize:14, fontWeight:700, color:brand.dim }}>{s.seating}</div><div style={{ fontSize:8, color:brand.dim }}>seats</div></div>
               </div>}

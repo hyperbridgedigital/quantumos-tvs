@@ -1,6 +1,6 @@
-# Charminar Mehfil — Enterprise Ecommerce Platform v10.4.0
+# TheValueStore — Enterprise Ecommerce Platform v10.4.0
 
-**The complete enterprise-grade food commerce platform powering India's fastest-growing Hyderabadi food chain.**
+**The complete enterprise-grade tech commerce platform: gaming PCs, laptops, and build-your-PC.**
 
 Built with Next.js 15, React 19, and a modular admin architecture spanning 18 admin modules, 158 API key integrations, 18 store locations, and a premium customer-facing storefront with viral marketing, loyalty rewards, and franchise acquisition.
 
@@ -27,9 +27,9 @@ vercel --prod
 | Email | Password | Role |
 |---|---|---|
 | spadensilver@gmail.com | Admin@123 | Super Admin |
-| admin@mehfil.com | Admin@123 | Admin |
-| manager@mehfil.com | Manager@1 | Manager |
-| franchise@mehfil.com | Franch@1 | Franchise |
+| admin@thevaluestore.com | Admin@123 | Admin |
+| manager@thevaluestore.com | Manager@1 | Manager |
+| franchise@thevaluestore.com | Franch@1 | Franchise |
 
 ---
 
@@ -84,29 +84,29 @@ Access via the subtle admin link in the storefront footer or direct login.
 
 | ID | Name | Area | Type |
 |---|---|---|---|
-| ST001 | Charminar Mehfil Heritage | Old City / Charminar | flagship |
-| ST002 | Mehfil Jubilee Hills | Jubilee Hills Rd 36 | premium |
-| ST003 | Mehfil Banjara Express | Banjara Hills Rd 12 | express |
-| ST004 | Mehfil Madhapur Tech Hub | Madhapur / Hitech City | express |
-| ST005 | Mehfil Kukatpally | KPHB Colony | standard |
-| ST006 | Mehfil Secunderabad Club | Secunderabad, MG Road | premium |
-| ST007 | Mehfil Tolichowki | Tolichowki | standard |
-| ST008 | Mehfil Miyapur | Miyapur Main Road | express |
-| ST009 | Mehfil Ameerpet | Ameerpet Junction | cloud |
-| ST010 | Mehfil Gachibowli | Financial District | premium |
-| ST011 | Mehfil Dilsukhnagar | Dilsukhnagar Main Road | standard |
-| ST012 | Mehfil LB Nagar | LB Nagar Ring Road | standard |
-| ST013 | Mehfil Abids | Abids / GPO | express |
-| ST014 | Mehfil Kompally | Kompally ORR | franchise |
-| ST015 | Mehfil Uppal | Uppal Metro Station | franchise |
-| ST016 | Mehfil Shamshabad | Airport Road | cloud |
+| ST001 | TheValueStore Heritage | Old City / Hyderabad | flagship |
+| ST002 | TVS Jubilee Hills | Jubilee Hills Rd 36 | premium |
+| ST003 | TVS Banjara Express | Banjara Hills Rd 12 | express |
+| ST004 | TVS Madhapur Tech Hub | Madhapur / Hitech City | express |
+| ST005 | TVS Kukatpally | KPHB Colony | standard |
+| ST006 | TVS Secunderabad Club | Secunderabad, MG Road | premium |
+| ST007 | TVS Tolichowki | Tolichowki | standard |
+| ST008 | TVS Miyapur | Miyapur Main Road | express |
+| ST009 | TVS Ameerpet | Ameerpet Junction | cloud |
+| ST010 | TVS Gachibowli | Financial District | premium |
+| ST011 | TVS Dilsukhnagar | Dilsukhnagar Main Road | standard |
+| ST012 | TVS LB Nagar | LB Nagar Ring Road | standard |
+| ST013 | TVS Abids | Abids / GPO | express |
+| ST014 | TVS Kompally | Kompally ORR | franchise |
+| ST015 | TVS Uppal | Uppal Metro Station | franchise |
+| ST016 | TVS Shamshabad | Airport Road | cloud |
 
 ### Chennai (2 Stores)
 
 | ID | Name | Address | Type |
 |---|---|---|---|
-| ST017 | Charminar Mehfil T. Nagar | 1, Thanikachalam Rd, T. Nagar, Chennai 600017 | flagship |
-| ST018 | Charminar Mehfil ECR Sangam | 281, East Coast Rd, Akkarai, Sholinganallur, Chennai 600119 | premium |
+| ST017 | TheValueStore T. Nagar | 1, Thanikachalam Rd, T. Nagar, Chennai 600017 | flagship |
+| ST018 | TheValueStore ECR Sangam | 281, East Coast Rd, Akkarai, Sholinganallur, Chennai 600119 | premium |
 
 ---
 
@@ -152,7 +152,7 @@ Supports SMS, WhatsApp, and Email OTP with admin-configurable settings: provider
 
 | Code | Type | Offer |
 |---|---|---|
-| MEHFIL100 | Referral | ₹100 off for friend, ₹100 wallet credit for referrer |
+| TVS100 | Referral | ₹100 off for friend, ₹100 wallet credit for referrer |
 | WELCOME20 | First Order | 20% off, max ₹150 |
 | FREECHAI | Freebie | Free Irani Chai with biryani above ₹349 |
 | FAMILY200 | Bundle | ₹200 off on 4+ biryanis |
@@ -272,6 +272,6 @@ Environment variables are managed through the Admin → Partners panel (158 keys
 
 ## License
 
-Proprietary — Charminar Mehfil / HyperBridge Group. All rights reserved.
+Proprietary — TheValueStore / HyperBridge Group. All rights reserved.
 
 **Document Version: 1.0.1**

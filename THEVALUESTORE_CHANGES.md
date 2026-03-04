@@ -1,6 +1,6 @@
 # TheValueStore branding — change log
 
-This project was rebranded from **Charminar Mehfil** (restaurant) to **TheValueStore** (gaming PCs, laptops & tech). Summary of changes and reference for future updates.
+This project is **TheValueStore** (gaming PCs, laptops & tech). Summary of changes and reference for future updates.
 
 ---
 
@@ -35,8 +35,8 @@ This project was rebranded from **Charminar Mehfil** (restaurant) to **TheValueS
 
 ## Not changed (by design)
 
-- **Auth credentials** (`src/lib/auth/credentials.js`, `AdminLoginModal` demo logins): remain `*@mehfil.com` so existing demo logins (e.g. admin@mehfil.com / Admin@123) keep working.
-- **Event log / audit data** (`src/data/eventLog.js`): historical actor emails left as `*@mehfil.com` for consistency of logs.
+- **Auth credentials** (`src/lib/auth/credentials.js`, `AdminLoginModal` demo logins): use `*@thevaluestore.com` for demo logins (e.g. admin@thevaluestore.com / Admin@123).
+- **Event log / audit data** (`src/data/eventLog.js`): actor emails use `*@thevaluestore.com` for consistency.
 
 ---
 
@@ -51,4 +51,4 @@ This project was rebranded from **Charminar Mehfil** (restaurant) to **TheValueS
 
 - Prefer `brand.name` and `brand.tagline` from `@/lib/brand` in UI.
 - For emails/domains use `thevaluestore.com` (or your live domain).
-- Demo logins stay on `*@mehfil.com` unless you add new TheValueStore demo users.
+- Demo logins use `*@thevaluestore.com` unless you add new demo users.

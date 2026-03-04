@@ -177,7 +177,7 @@ export default function CMSManager() {
         <div style={s.label}>Featured Categories</div>
         <p style={{ fontSize:12, color:brand.text, marginBottom:8 }}>Categories shown prominently: {cms.menuDisplay.featuredCategories.join(', ')}</p>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-          {['biryani','starters','desserts','beverages','snacks','combos'].map(c=>(
+          {['gaming-pcs','laptops','components','peripherals','accessories','software'].map(c=>(
             <button key={c} onClick={()=>setCms(p=>({...p,menuDisplay:{...p.menuDisplay,featuredCategories:p.menuDisplay.featuredCategories.includes(c)?p.menuDisplay.featuredCategories.filter(x=>x!==c):[...p.menuDisplay.featuredCategories,c]}}))} style={{ ...s.btn, background:cms.menuDisplay.featuredCategories.includes(c)?brand.gold+'22':'rgba(255,255,255,.04)', color:cms.menuDisplay.featuredCategories.includes(c)?brand.gold:brand.dim, border:'1px solid '+(cms.menuDisplay.featuredCategories.includes(c)?brand.gold+'44':brand.border), fontSize:10, padding:'4px 12px' }}>{c}</button>
           ))}
         </div>

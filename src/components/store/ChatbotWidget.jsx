@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, memo } from 'react';
 import { brand } from '@/lib/brand';
 
 const QUICK_REPLIES = [
-  { label:'📋 Menu', msg:'Show me the menu' },
+  { label:'🛒 Shop', msg:'Show me products' },
   { label:'📦 Track Order', msg:'Track my order' },
   { label:'🎁 Offers', msg:'What offers do you have?' },
   { label:'🏢 Franchise', msg:'Franchise inquiry' },
@@ -11,17 +11,17 @@ const QUICK_REPLIES = [
 ];
 
 const BOT_RESPONSES = {
-  menu: "🛒 *" + brand.name + " — Top picks*\n\nBrowse the Menu tab to add to cart. Use code *WELCOME20* for 20% off first order!\n\nReply with an item to add to cart 🛒",
+  menu: "🛒 *" + brand.name + " — Top picks*\n\nBrowse the Shop tab for Gaming PCs, laptops & Build Your PC. Use code *WELCOME20* for 20% off first order!\n\nReply with an item to add to cart 🛒",
   track: "📦 Please share your Order ID (e.g., ORD-7X2K) and I'll check the status for you right away!",
-  offers: "🎁 *Active Offers:*\n\n✅ WELCOME20 — 20% off first order\n✅ BIRYANI50 — ₹50 off any biryani\n✅ FAMILY200 — ₹200 off on 4+ biryanis\n✅ FREECHAI — Free Irani Chai over ₹349\n\nJust mention the code while ordering!",
+  offers: "🎁 *Active Offers:*\n\n✅ WELCOME20 — 20% off first order\n✅ GAMING50 — ₹500 off gaming PCs\n✅ BUILD100 — ₹1,000 off Build Your PC\n✅ FREESHIP — Free delivery over ₹999\n\nJust mention the code at checkout!",
   franchise: "🏢 Partner with " + brand.name + " — from ₹15L.\n\n✅ Full setup & training\n✅ QuantumOS tech platform\n✅ 18-24 month ROI\n\nShare Name, Phone & City — our team will call in 24 hours!",
-  help: "👋 How can I help you?\n\n📋 Menu — Browse our items\n📦 Track — Check order status\n🎁 Offers — See active deals\n🏢 Franchise — Investment info\n📞 Call us: +91 98765 43210\n\nOr just type your question!",
-  default: "Thanks for your message! 😊\n\nI can help you with:\n📋 *Menu* — See our dishes\n📦 *Track* — Order status\n🎁 *Offers* — Active deals\n\nOr type *help* for more options!",
+  help: "👋 How can I help you?\n\n🛒 Shop — Gaming PCs, laptops, Build PC\n📦 Track — Check order status\n🎁 Offers — See active deals\n🏢 Franchise — Investment info\n📞 Call us: +91 98765 43210\n\nOr just type your question!",
+  default: "Thanks for your message! 😊\n\nI can help you with:\n🛒 *Shop* — PCs, laptops, Build PC\n📦 *Track* — Order status\n🎁 *Offers* — Active deals\n\nOr type *help* for more options!",
 };
 
 function getResponse(msg) {
   const lower = msg.toLowerCase();
-  if (lower.match(/menu|food|biryani|order|eat|hungry/)) return BOT_RESPONSES.menu;
+  if (lower.match(/menu|shop|gaming|laptop|build|pc|order|buy|product/)) return BOT_RESPONSES.menu;
   if (lower.match(/track|status|where|delivery|order id/)) return BOT_RESPONSES.track;
   if (lower.match(/offer|discount|coupon|deal|code/)) return BOT_RESPONSES.offers;
   if (lower.match(/franchise|invest|business|own/)) return BOT_RESPONSES.franchise;

@@ -37,7 +37,7 @@ function FranchiseForm() {
           style={{ width: '100%', padding: '12px 16px', borderRadius: 12, background: 'rgba(255,255,255,.06)', border: '1px solid ' + brand.border, color: brand.heading, fontSize: 14, outline: 'none' }}>
           <option value="" style={{ background: brand.bg2 }}>Select...</option>
           {key === 'investment' && ['Below ₹10L', '₹10-15L', '₹15-25L', '₹25-35L', 'Above ₹35L'].map(o => <option key={o} value={o} style={{ background: brand.bg2 }}>{o}</option>)}
-          {key === 'experience' && ['No prior F&B experience', '1-3 years', '3-5 years', '5+ years', 'Currently in F&B business'].map(o => <option key={o} value={o} style={{ background: brand.bg2 }}>{o}</option>)}
+          {key === 'experience' && ['No prior retail experience', '1-3 years', '3-5 years', '5+ years', 'Currently in retail/tech'].map(o => <option key={o} value={o} style={{ background: brand.bg2 }}>{o}</option>)}
         </select>
       ) : (
         <input type={type} value={form[key]} onChange={e => upd(key, e.target.value)} placeholder={label}
@@ -71,7 +71,7 @@ function FranchiseForm() {
             Own a <span style={{ color: brand.gold }}>{brand.name}</span>
           </h2>
           <p style={{ fontSize: 14, color: brand.dim, maxWidth: 480 }}>
-            Join India's fastest-growing premium restaurant chain. {franchises?.length || 16}+ outlets across Chennai. Investment: ₹{minInv}L - ₹{maxInv}L.
+            Join India's fastest-growing tech retail brand. {franchises?.length || 16}+ stores. Investment: ₹{minInv}L - ₹{maxInv}L.
           </p>
         </div>
       </div>
@@ -95,9 +95,9 @@ function FranchiseForm() {
       {/* Benefits */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 10, marginBottom: 24 }}>
         {[
-          { e: '🍗', t: 'Proven Menu', d: 'Award-winning signature biryani & kebabs loved across Chennai' },
+          { e: '🖥️', t: 'Proven Catalog', d: 'Gaming PCs, laptops & components — award-winning value across India' },
           { e: '📱', t: 'Tech-Powered', d: 'Full admin dashboard, POS, inventory, delivery & WhatsApp automation' },
-          { e: '🎓', t: 'Training & Support', d: 'Complete kitchen training, operations manual & ongoing guidance' },
+          { e: '🎓', t: 'Training & Support', d: 'Complete setup training, operations manual & ongoing guidance' },
           { e: '📣', t: 'Marketing Engine', d: 'Viral WhatsApp marketing, referral programs & brand campaigns' },
           { e: '🛵', t: 'Delivery Network', d: 'Integrated with Dunzo, Swiggy, Porter & 10+ delivery partners' },
           { e: '📊', t: 'Real-time Analytics', d: 'AI insights, demand forecasting & performance dashboards' },
@@ -122,7 +122,7 @@ function FranchiseForm() {
           {input('email', 'Email Address', 'email')}
           {input('city', 'Preferred City / Area', 'text', true)}
           {input('investment', 'Investment Budget', 'select')}
-          {input('experience', 'F&B Experience', 'select')}
+          {input('experience', 'Retail / Tech Experience', 'select')}
         </div>
         {input('currentBusiness', 'Current Business (if any)', 'text')}
         {input('message', 'Why ' + brand.name + '?', 'textarea')}

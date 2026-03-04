@@ -28,7 +28,19 @@ export function AppProvider({ children }) {
   const [showUserAuth, setShowUserAuth] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
 
-  // ═══ CORE DATA ═══
+  // ═══ STORE THEME (light/dark) — persisted ═══
+  const [storeTheme, setStoreTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'light';
+    try {
+      const s = localStorage.getItem('tvs_theme');
+      return (s === 'dark' || s === 'light') ? s : 'light';
+    } catch (_) { return 'light'; }
+  });
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') localStorage.setItem('tvs_theme', storeTheme);
+    } catch (_) {}
+  }, [storeTheme]);
   const [stores, setStores] = useState(storeData);
   const [orders, setOrders] = useState(sampleOrders);
   const [stock, setStock] = useState(stockData || []);
@@ -68,15 +80,15 @@ export function AppProvider({ children }) {
     { id:'AR08', name:'VIP Tier Upgrade', trigger:'ltv_milestone', condition:'ltv>5000', action:'send_whatsapp', template:'vip_welcome', delay:'0h', active:true, fired:42, converted:42 },
   ]);
   const [chatbotFlows, setChatbotFlows] = useState([
-    { id:'BOT01', name:'Order Flow', trigger:'order|menu|food|biryani', steps:['Show Menu','Select Items','Confirm Order','Payment Link','Track Order'], active:true, conversations:2340 },
+    { id:'BOT01', name:'Shop Flow', trigger:'order|menu|shop|gaming|build|pc|laptop|buy', steps:['Show Catalog','Select Items','Confirm Order','Payment Link','Track Order'], active:true, conversations:2340 },
     { id:'BOT02', name:'Track Order', trigger:'track|status|where|delivery', steps:['Ask Order ID','Fetch Status','Show ETA','Live Map Link'], active:true, conversations:1890 },
     { id:'BOT03', name:'Complaint', trigger:'complaint|issue|problem|wrong', steps:['Apologize','Ask Order ID','Log Ticket','Assign Agent','Follow Up'], active:true, conversations:340 },
     { id:'BOT04', name:'Franchise Inquiry', trigger:'franchise|own|invest|business', steps:['Share Info','Collect Name/Phone','Book Call','Send Brochure'], active:true, conversations:120 },
     { id:'BOT05', name:'Promo/Offer', trigger:'offer|discount|deal|coupon', steps:['List Active Promos','Apply Code','Generate Link','Confirm'], active:true, conversations:780 },
   ]);
   const [chatMessages, setChatMessages] = useState([
-    { id:1, from:'customer', name:'Ravi K', phone:'+919876543210', msg:'Hi, I want to order biryani', time:'2m ago', bot:'BOT01', status:'active' },
-    { id:2, from:'bot', name:'Bot', msg:'Welcome to ' + brand.name + '! Here is our menu...', time:'2m ago', bot:'BOT01', status:'active' },
+    { id:1, from:'customer', name:'Ravi K', phone:'+919876543210', msg:'Hi, I want to build a PC', time:'2m ago', bot:'BOT01', status:'active' },
+    { id:2, from:'bot', name:'Bot', msg:'Welcome to ' + brand.name + '! Here is our shop...', time:'2m ago', bot:'BOT01', status:'active' },
     { id:3, from:'customer', name:'Priya S', phone:'+919988776655', msg:'Where is my order ORD-7X2?', time:'8m ago', bot:'BOT02', status:'resolved' },
     { id:4, from:'customer', name:'Ahmed J', phone:'+919112233445', msg:'I want to open a franchise', time:'15m ago', bot:'BOT04', status:'escalated' },
   ]);
@@ -94,6 +106,60 @@ export function AppProvider({ children }) {
     try { localStorage.setItem('tvs_kynetra_templates', JSON.stringify(kynetraTemplates)); } catch (_) {}
   }, [kynetraTemplates]);
 
+  // ═══ STORE FEATURES (wishlist, price alerts, preorders, trade-in, build guides, warranty, expert booking, loyalty, stock-by-store, compare) ═══
+  const [storeFeaturesData, setStoreFeaturesData] = useState({
+    wishlist: [], priceAlerts: [], preorders: [], tradeins: [], buildGuides: [], warranties: [], expertBookings: [], loyaltyPoints: [], stockByStore: [], comparisons: [],
+  });
+  const fetchStoreFeatures = useCallback(async (type) => {
+    try {
+      const res = await fetch(`/api/store-features?type=${type}`);
+      const data = await res.json();
+      if (data[type]) setStoreFeaturesData(p => ({ ...p, [type]: data[type] }));
+    } catch (_) {}
+  }, []);
+  const createStoreFeature = useCallback(async (type, payload) => {
+    try {
+      const res = await fetch('/api/store-features', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, ...payload }) });
+      const data = await res.json();
+      if (data.ok && data.item) {
+        setStoreFeaturesData(p => ({ ...p, [type]: [...(p[type] || []), data.item] }));
+        show('Saved');
+        return data.item;
+      }
+      return null;
+    } catch (e) { show('Failed to save', 'error'); return null; }
+  }, [show]);
+  const updateStoreFeature = useCallback(async (type, id, payload) => {
+    try {
+      const res = await fetch(`/api/store-features/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, ...payload }) });
+      const data = await res.json();
+      if (data.ok && data.item) {
+        setStoreFeaturesData(p => ({ ...p, [type]: (p[type] || []).map(x => x.id === id ? data.item : x) }));
+        show('Updated');
+        return data.item;
+      }
+      return null;
+    } catch (e) { show('Failed to update', 'error'); return null; }
+  }, [show]);
+  const deleteStoreFeature = useCallback(async (type, id) => {
+    try {
+      const res = await fetch(`/api/store-features/${id}?type=${type}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.ok) {
+        setStoreFeaturesData(p => ({ ...p, [type]: (p[type] || []).filter(x => x.id !== id) }));
+        show('Removed');
+        return true;
+      }
+      return false;
+    } catch (e) { show('Failed to remove', 'error'); return false; }
+  }, [show]);
+  useEffect(() => {
+    const types = ['wishlist', 'priceAlerts', 'preorders', 'tradeins', 'buildGuides', 'warranties', 'expertBookings', 'loyaltyPoints', 'stockByStore', 'comparisons'];
+    types.forEach((t) => fetch('/api/store-features?type=' + t).then((res) => res.json()).then((data) => {
+      if (data[t]) setStoreFeaturesData((p) => ({ ...p, [t]: data[t] }));
+    }).catch(() => {}));
+  }, []);
+
   // ═══ TOAST ═══
   const [toast, setToast] = useState(null);
   const show = useCallback((msg, type = 'success') => {
@@ -105,7 +171,7 @@ export function AppProvider({ children }) {
   const [authToken, setAuthToken] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
 
-  // Restore session on mount — auto-login super admin for demo
+  // Restore session on mount — only if user already has a token (no auto-login so store shows first)
   useEffect(() => {
     (async () => {
       try {
@@ -117,22 +183,11 @@ export function AppProvider({ children }) {
             setAuthToken(token);
             const u = DEMO_USERS[data.user.role] || { id: data.user.id, name: data.user.name, role: data.user.role, email: data.user.email };
             setUser(u); setView('admin'); setAdminTab('dashboard');
-            return;
+          } else {
+            localStorage.removeItem('qos_token');
           }
-          localStorage.removeItem('qos_token');
         }
-        // Auto-login as Super Admin for demo
-        const res = await fetch('/api/auth/login', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'spadensilver@gmail.com', password: 'Admin@123' }),
-        });
-        const data = await res.json();
-        if (data.ok) {
-          setAuthToken(data.accessToken);
-          if (typeof window !== 'undefined') localStorage.setItem('qos_token', data.accessToken);
-          const u = DEMO_USERS[data.user.role] || { id: data.user.email, name: data.user.name, role: data.user.role, email: data.user.email };
-          setUser(u); setView('admin'); setAdminTab('dashboard');
-        }
+        // No auto-login: app opens on store so TheValueStore storefront is visible first
       } catch (e) { console.warn('Session init:', e); }
     })();
   }, []);
@@ -143,7 +198,7 @@ export function AppProvider({ children }) {
     fetch('/api/products')
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
-        if (!cancelled && data?.products?.length) setProducts(data.products);
+        if (!cancelled && data?.products && Array.isArray(data.products) && data.products.length > 0) setProducts(data.products);
       })
       .catch(() => {});
     return () => { cancelled = true; };
@@ -414,7 +469,10 @@ export function AppProvider({ children }) {
   const lowStock = useMemo(() => stock.filter(s => s.qty <= (s.reorder || 10)), [stock]);
   const liveOrders = useMemo(() => orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled'), [orders]);
   const cartTotal = useMemo(() => cart.reduce((a, i) => a + i.price * i.qty, 0), [cart]);
-  const availableProducts = useMemo(() => products.map(p => { const inStock = stock.find(s => s.name?.toLowerCase().includes(p.name.toLowerCase().split(' ')[0])); return { ...p, available: !inStock || inStock.qty > 0 }; }), [products, stock]);
+  const availableProducts = useMemo(() => {
+    if (!Array.isArray(products)) return [];
+    return products.map(p => { const inStock = stock.find(s => s.name?.toLowerCase().includes((p.name || '').toLowerCase().split(' ')[0])); return { ...p, available: !inStock || inStock.qty > 0 }; });
+  }, [products, stock]);
 
   const value = useMemo(() => ({
     view, setView, user, customer, login, logout,
@@ -433,12 +491,14 @@ export function AppProvider({ children }) {
     products, setProducts, addProduct, updateProduct, deleteProduct, availableProducts,
     partnerValues, updatePartnerConfig, savePartnerConfig, partnerConfig,
     roles, toggleRoleTab, settings, updateSetting, saveSettings,
+    storeTheme, setStoreTheme,
     cart, addToCart, removeFromCart, updateCartQty, placeOrder, cartTotal,
     remarketingRecords, setRemarketingRecords,
     funnels, addFunnel, updateFunnel, deleteFunnel,
     automationRules, addRule, updateRule, deleteRule, toggleRule,
     chatbotFlows, addBotFlow, updateBotFlow, chatMessages, addChatMessage,
     kynetraTemplates, setKynetraTemplates, updateKynetraTemplate, resetKynetraTemplates,
+    storeFeaturesData, fetchStoreFeatures, createStoreFeature, updateStoreFeature, deleteStoreFeature,
   }), [
     view, user, customer, adminTab, canAccess, visibleTabs, toast, show,
     showUserAuth, showAdminLogin,
@@ -448,7 +508,8 @@ export function AppProvider({ children }) {
     franchises, waTemplates, viralCampaigns, customers, offers, rewardsConf, userLocation,
     products, availableProducts, partnerValues, roles, settings,
     cart, cartTotal, remarketingRecords, funnels, automationRules, chatbotFlows, chatMessages,
-    kynetraTemplates,
+    kynetraTemplates, storeTheme,
+    storeFeaturesData, fetchStoreFeatures, createStoreFeature, updateStoreFeature, deleteStoreFeature,
     login, logout, adminLogin, adminLogout, userSendOTP, userVerifyOTP, userLogout,
     addStore, updateStore, deleteStore, addOrder, updateOrderStatus,
     updateStock, addStockItem, deleteStockItem,

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════
--- CHARMINAR MEHFIL v10 — COMPLETE DATABASE SCHEMA
+-- THEVALUESTORE (TVS) v10 — COMPLETE DATABASE SCHEMA
 -- Supabase Postgres + RLS
 -- ═══════════════════════════════════════════════════════════
 

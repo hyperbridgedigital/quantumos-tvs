@@ -1,13 +1,13 @@
-# Charminar Mehfil — System Architecture Document
+# TheValueStore — System Architecture Document
 
-**Version: 1.0.1 | Platform: v10.4.0-enterprise**
+**Version: 1.0.2 | Platform: v11.4.0**
 **Prepared by: HyperBridge Group — Digital Architecture Division**
 
 ---
 
 ## 1. Executive Summary
 
-Charminar Mehfil is an enterprise-grade food commerce platform designed as a monolithic Next.js application with a modular admin architecture. The system follows a single-page application pattern where a centralized React Context manages global state, and 18 lazy-loaded admin modules provide domain-specific management interfaces. The customer storefront and admin dashboard coexist within the same application, sharing data through the unified context layer.
+TheValueStore is an enterprise-grade tech commerce platform (gaming PCs, laptops, Build Your PC) designed as a monolithic Next.js application with a modular admin architecture. The system follows a single-page application pattern where a centralized React Context manages global state, and 18+ lazy-loaded admin modules provide domain-specific management interfaces. The customer storefront and admin dashboard coexist within the same application, sharing data through the unified context layer.
 
 The architecture prioritizes rapid iteration, zero-config deployment via Vercel, and progressive enhancement toward a fully microservices-ready backend. All 158 API integrations are configured through the admin UI without code changes, making the platform operationally self-service.
 
@@ -249,14 +249,16 @@ The storefront (`StoreView.jsx`, 502 lines) implements a tab-based SPA with 5 pa
 
 ```
 StoreView
-├── Hero Section (brand gradient + live stats)
-├── Navigation (5 tabs with badge counts)
+├── Navigation (tabs: Home, Build PC, Shop, Offers, Orders, Franchise)
 │
-├── [Menu Page]
-│   ├── Offer Carousel (horizontal scroll, tap-to-apply)
+├── [Home Page]
+│   └── StoreHome — hero carousel, search, categories, deals, Build PC CTA
+│
+├── [Shop / Menu Page]
 │   ├── Store Selector (auto-nearest via geolocation)
 │   ├── Delivery Promise Banner (configurable thresholds)
-│   ├── Category Filter (dynamic from products)
+│   ├── Category Filter (from catalog)
+│   ├── Budget & Vibe filters
 │   ├── Product Grid (stock-aware, inline +/- controls)
 │   └── WhatsApp CTA (deep link to WA chat)
 │
@@ -483,7 +485,7 @@ const brand = {
   text: '#E4E4E7',         // Body text
   heading: '#FAFAFA',      // Heading text
   dim: '#71717A',          // Muted text
-  gold: '#C9A84C',         // Primary accent (Mehfil gold)
+  gold: '#C9A84C',         // Primary accent (TheValueStore gold)
   saffron: '#E8A838',      // Secondary accent
   emerald: '#10B981',      // Success / active
   red: '#EF4444',          // Error / danger
@@ -501,5 +503,5 @@ See `.env.example` for the full list. All 158 API keys can be configured either 
 
 ---
 
-**Document Version: 1.0.1**
+**Document Version: 1.0.2**
 **Architecture Classification: Internal — HyperBridge Group**

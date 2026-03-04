@@ -75,7 +75,7 @@ export const settingsConfig = {
     { key:'FRANCHISE_ENABLED', label:'Franchise Mode', value:'true', type:'toggle' },
     { key:'FRANCHISE_DEFAULT_ROYALTY', label:'Default Royalty (%)', value:'12', type:'number' },
     { key:'FRANCHISE_FORM_ENABLED', label:'Frontend Inquiry Form', value:'true', type:'toggle' },
-    { key:'FRANCHISE_CONTACT_EMAIL', label:'Inquiry Email', value:'franchise@sangam.in', type:'text' },
+    { key:'FRANCHISE_CONTACT_EMAIL', label:'Inquiry Email', value:'franchise@thevaluestore.com', type:'text' },
   ],
   '🖥️ Storefront & Kynetra': [
     { key:'KYNETRA_SALES', label:'Kynetra: Sales module', value:'true', type:'toggle' },

@@ -58,7 +58,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2718",
@@ -75,7 +75,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2716",
@@ -92,7 +92,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2720",
@@ -109,7 +109,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2724",
@@ -160,7 +160,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-100",
@@ -177,7 +177,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C033",
@@ -211,7 +211,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-87",
@@ -228,7 +228,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C016",
@@ -245,7 +245,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C004",
@@ -279,7 +279,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C036",
@@ -296,7 +296,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-85",
@@ -313,7 +313,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2713",
@@ -347,7 +347,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C023",
@@ -364,7 +364,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2705",
@@ -398,7 +398,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2714",
@@ -432,7 +432,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-13",
@@ -449,7 +449,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C004",
@@ -534,7 +534,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2715",
@@ -568,7 +568,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C017",
@@ -602,7 +602,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2716",
@@ -619,7 +619,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-37",
@@ -636,7 +636,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-44",
@@ -670,7 +670,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C020",
@@ -721,7 +721,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2707",
@@ -755,7 +755,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C011",
@@ -806,7 +806,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2726",
@@ -823,7 +823,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2724",
@@ -874,7 +874,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2706",
@@ -891,7 +891,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2716",
@@ -908,7 +908,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-64",
@@ -942,7 +942,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-21",
@@ -959,7 +959,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2725",
@@ -976,7 +976,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C009",
@@ -1010,7 +1010,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-38",
@@ -1061,7 +1061,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2738",
@@ -1095,7 +1095,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-19",
@@ -1112,7 +1112,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C027",
@@ -1129,7 +1129,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2731",
@@ -1163,7 +1163,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-35",
@@ -1197,7 +1197,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2737",
@@ -1231,7 +1231,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C013",
@@ -1248,7 +1248,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-86",
@@ -1265,7 +1265,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2705",
@@ -1282,7 +1282,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-54",
@@ -1384,7 +1384,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-69",
@@ -1401,7 +1401,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-90",
@@ -1435,7 +1435,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-30",
@@ -1469,7 +1469,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-77",
@@ -1503,7 +1503,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-1",
@@ -1520,7 +1520,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-23",
@@ -1571,7 +1571,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-1",
@@ -1588,7 +1588,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-66",
@@ -1605,7 +1605,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C016",
@@ -1622,7 +1622,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C023",
@@ -1673,7 +1673,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-36",
@@ -1690,7 +1690,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C016",
@@ -1707,7 +1707,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C039",
@@ -1724,7 +1724,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2711",
@@ -1741,7 +1741,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-65",
@@ -1775,7 +1775,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-85",
@@ -1809,7 +1809,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C021",
@@ -1860,7 +1860,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-97",
@@ -1894,7 +1894,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-47",
@@ -1911,7 +1911,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C017",
@@ -1928,7 +1928,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-66",
@@ -1945,7 +1945,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C031",
@@ -1996,7 +1996,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2712",
@@ -2013,7 +2013,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2721",
@@ -2030,7 +2030,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-25",
@@ -2047,7 +2047,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C006",
@@ -2064,7 +2064,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C013",
@@ -2081,7 +2081,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C007",
@@ -2098,7 +2098,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-33",
@@ -2115,7 +2115,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-32",
@@ -2132,7 +2132,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-29",
@@ -2149,7 +2149,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-87",
@@ -2166,7 +2166,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2723",
@@ -2200,7 +2200,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C010",
@@ -2251,7 +2251,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-98",
@@ -2268,7 +2268,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C038",
@@ -2285,7 +2285,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2727",
@@ -2302,7 +2302,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2710",
@@ -2319,7 +2319,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2715",
@@ -2353,7 +2353,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-93",
@@ -2370,7 +2370,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2728",
@@ -2387,7 +2387,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C005",
@@ -2404,7 +2404,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-35",
@@ -2421,7 +2421,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-29",
@@ -2455,7 +2455,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-14",
@@ -2472,7 +2472,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-72",
@@ -2489,7 +2489,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C031",
@@ -2523,7 +2523,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-97",
@@ -2540,7 +2540,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-80",
@@ -2557,7 +2557,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-70",
@@ -2574,7 +2574,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C029",
@@ -2625,7 +2625,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-62",
@@ -2676,7 +2676,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2711",
@@ -2710,7 +2710,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-15",
@@ -2727,7 +2727,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C022",
@@ -2846,7 +2846,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C040",
@@ -2914,7 +2914,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-61",
@@ -2931,7 +2931,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-56",
@@ -2982,7 +2982,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-85",
@@ -2999,7 +2999,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-84",
@@ -3016,7 +3016,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C035",
@@ -3033,7 +3033,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-94",
@@ -3050,7 +3050,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-19",
@@ -3084,7 +3084,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2727",
@@ -3118,7 +3118,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-15",
@@ -3169,7 +3169,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C024",
@@ -3186,7 +3186,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C012",
@@ -3220,7 +3220,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2705",
@@ -3254,7 +3254,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-30",
@@ -3288,7 +3288,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C025",
@@ -3305,7 +3305,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-9",
@@ -3322,7 +3322,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-99",
@@ -3373,7 +3373,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C029",
@@ -3424,7 +3424,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-45",
@@ -3458,7 +3458,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-62",
@@ -3475,7 +3475,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-38",
@@ -3509,7 +3509,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C010",
@@ -3594,7 +3594,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2703",
@@ -3611,7 +3611,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-60",
@@ -3628,7 +3628,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-78",
@@ -3662,7 +3662,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-25",
@@ -3679,7 +3679,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-16",
@@ -3696,7 +3696,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-14",
@@ -3730,7 +3730,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-73",
@@ -3798,7 +3798,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-95",
@@ -3815,7 +3815,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-10",
@@ -3883,7 +3883,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-71",
@@ -3900,7 +3900,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-8",
@@ -3917,7 +3917,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2736",
@@ -3951,7 +3951,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2730",
@@ -3985,7 +3985,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-94",
@@ -4002,7 +4002,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2708",
@@ -4036,7 +4036,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-66",
@@ -4070,7 +4070,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-1",
@@ -4104,7 +4104,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-100",
@@ -4155,7 +4155,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2723",
@@ -4223,7 +4223,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-64",
@@ -4257,7 +4257,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2738",
@@ -4291,7 +4291,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C019",
@@ -4308,7 +4308,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2733",
@@ -4359,7 +4359,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-40",
@@ -4376,7 +4376,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-92",
@@ -4393,7 +4393,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2717",
@@ -4410,7 +4410,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C018",
@@ -4427,7 +4427,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2702",
@@ -4444,7 +4444,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-78",
@@ -4461,7 +4461,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-39",
@@ -4478,7 +4478,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-28",
@@ -4495,7 +4495,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C002",
@@ -4529,7 +4529,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-2",
@@ -4546,7 +4546,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-94",
@@ -4580,7 +4580,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-24",
@@ -4648,7 +4648,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-22",
@@ -4665,7 +4665,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-75",
@@ -4682,7 +4682,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2734",
@@ -4699,7 +4699,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C011",
@@ -4733,7 +4733,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-55",
@@ -4784,7 +4784,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-37",
@@ -4801,7 +4801,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C008",
@@ -4835,7 +4835,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-5",
@@ -4869,7 +4869,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2732",
@@ -4903,7 +4903,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2721",
@@ -4971,7 +4971,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2700",
@@ -5039,7 +5039,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C018",
@@ -5056,7 +5056,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C023",
@@ -5073,7 +5073,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2709",
@@ -5090,7 +5090,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2704",
@@ -5107,7 +5107,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-55",
@@ -5124,7 +5124,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C012",
@@ -5141,7 +5141,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-51",
@@ -5158,7 +5158,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2704",
@@ -5175,7 +5175,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-92",
@@ -5243,7 +5243,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2719",
@@ -5260,7 +5260,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C004",
@@ -5277,7 +5277,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-73",
@@ -5294,7 +5294,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2701",
@@ -5311,7 +5311,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C009",
@@ -5379,7 +5379,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "C029",
@@ -5396,7 +5396,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-65",
@@ -5413,7 +5413,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-56",
@@ -5430,7 +5430,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-95",
@@ -5464,7 +5464,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C036",
@@ -5498,7 +5498,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-81",
@@ -5515,7 +5515,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-4",
@@ -5532,7 +5532,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2702",
@@ -5549,7 +5549,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-95",
@@ -5566,7 +5566,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2708",
@@ -5651,7 +5651,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "C036",
@@ -5668,7 +5668,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ENT-70",
@@ -5719,7 +5719,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-66",
@@ -5753,7 +5753,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ENT-13",
@@ -5770,7 +5770,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ORD-2730",
@@ -5804,7 +5804,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "C010",
@@ -5821,7 +5821,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2710",
@@ -5838,7 +5838,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U002",
-      "email": "admin@mehfil.com",
+      "email": "admin@thevaluestore.com",
       "role": "admin"
     },
     "entity_id": "ORD-2713",
@@ -5855,7 +5855,7 @@ export const eventLog = [
     "actor": {
       "type": "admin",
       "id": "U003",
-      "email": "manager@mehfil.com",
+      "email": "manager@thevaluestore.com",
       "role": "manager"
     },
     "entity_id": "ORD-2739",
@@ -5906,7 +5906,7 @@ export const eventLog = [
     "actor": {
       "type": "system",
       "id": "SYS",
-      "email": "system@mehfil.com",
+      "email": "system@thevaluestore.com",
       "role": "system"
     },
     "entity_id": "ENT-40",

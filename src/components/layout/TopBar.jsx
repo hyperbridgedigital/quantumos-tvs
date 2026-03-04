@@ -5,17 +5,18 @@ import { brand } from '@/lib/brand';
 import { ROLES } from '@/data/roles';
 
 function TopBar() {
-  const { view, setView, user, customer, adminLogout, userLogout, setShowUserAuth, setShowAdminLogin, cart, settings } = useApp();
+  const { view, setView, user, customer, adminLogout, userLogout, setShowUserAuth, setShowAdminLogin, cart, settings, storeTheme, setStoreTheme } = useApp();
   const isAdmin = view === 'admin';
   const G = brand.green;
+  const isDark = storeTheme === 'dark';
 
   return (
     <div className="topbar" style={{
-      background: isAdmin ? '#0C0B09' : '#FFFFFF',
+      background: isAdmin ? '#0C0B09' : (isDark ? brand.storeDark.storeBg : brand.storeBg),
       backdropFilter: 'blur(20px)',
-      borderBottom: isAdmin ? '1px solid #2A2A3E' : '1px solid '+brand.storeBorder,
+      borderBottom: isAdmin ? '1px solid #2A2A3E' : '1px solid ' + (isDark ? brand.storeDark.storeBorder : brand.storeBorder),
       display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px',
-      boxShadow: isAdmin ? 'none' : '0 1px 8px rgba(27,94,32,.06)',
+      boxShadow: isAdmin ? 'none' : 'var(--store-card-shadow, 0 1px 3px rgba(15,23,42,.06))',
     }}>
       {/* ═══ LOGO ═══ */}
       <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => { if (!user) setView('store'); }}>
@@ -26,11 +27,11 @@ function TopBar() {
             <span style={{ fontSize:8, fontWeight:700, letterSpacing:'.2em', textTransform:'uppercase', color:brand.gold, lineHeight:1 }}>Admin</span>
           </div>
         ) : (
-          /* LIGHT STOREFRONT — Green badge + text */
+          /* LIGHT/DARK STOREFRONT — Green badge + text + theme toggle */
           <>
             <div style={{ width:36, height:36, borderRadius:10, background:G, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:brand.fontDisplay, fontSize:11, color:'#fff', fontWeight:800 }}>TVS</div>
             <div>
-              <div style={{ fontFamily:brand.fontDisplay, fontSize:15, color:brand.storeHeading, fontWeight:700, lineHeight:1.1 }}>{brand.name}</div>
+              <div style={{ fontFamily:brand.fontDisplay, fontSize:15, color: isDark ? brand.storeDark.storeHeading : brand.storeHeading, fontWeight:700, lineHeight:1.1 }}>{brand.name}</div>
               <div style={{ fontSize:8, color:G, fontWeight:700, letterSpacing:'.15em', textTransform:'uppercase' }}>{brand.tagline}</div>
             </div>
           </>
@@ -39,7 +40,16 @@ function TopBar() {
 
       {/* ═══ STOREFRONT NAV ═══ */}
       {view === 'store' && (
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <button
+            type="button"
+            onClick={() => setStoreTheme(isDark ? 'light' : 'dark')}
+            title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+            style={{ padding:6, borderRadius:8, border:'1px solid ' + (isDark ? brand.storeDark.storeBorder : brand.storeBorder), background: isDark ? brand.storeDark.storeBg2 : brand.storeBg2, color: isDark ? brand.storeDark.storeText : brand.storeDim, cursor:'pointer', fontSize:16 }}
+          >
+            {isDark ? '☀️' : '🌙'}
+          </button>
+          <span style={{ fontSize:11, color: isDark ? brand.storeDark.storeDim : brand.storeDim }} title="Search on Home">🔍</span>
           {cart.length > 0 && (
             <span style={{ padding:'5px 12px', borderRadius:8, background:brand.greenMint, color:G, fontSize:11, fontWeight:700, border:'1px solid #C8E6C9' }}>
               🛒 {cart.length}
@@ -47,9 +57,9 @@ function TopBar() {
           )}
           {customer ? (
             <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-              <span style={{ fontSize:12, color:brand.storeHeading, fontWeight:500 }}>{customer.name}</span>
+              <span style={{ fontSize:12, color: isDark ? brand.storeDark.storeHeading : brand.storeHeading, fontWeight:500 }}>{customer.name}</span>
               <span style={{ fontSize:9, padding:'2px 7px', borderRadius:4, background:brand.greenMint, color:G, fontWeight:700 }}>{customer.tier}</span>
-              <button onClick={userLogout} style={{ fontSize:10, color:brand.storeDim, background:'none', border:'none', cursor:'pointer' }}>Sign out</button>
+              <button onClick={userLogout} style={{ fontSize:10, color: isDark ? brand.storeDark.storeDim : brand.storeDim, background:'none', border:'none', cursor:'pointer' }}>Sign out</button>
             </div>
           ) : (
             <button onClick={() => setShowUserAuth(true)} style={{ padding:'8px 20px', borderRadius:10, background:G, color:'#fff', fontSize:12, fontWeight:700, border:'none', cursor:'pointer' }}>Sign In</button>

@@ -1,5 +1,5 @@
 -- ╔══════════════════════════════════════════════════════════════════════╗
--- ║  CHARMINAR MEHFIL v10 — ENTERPRISE DATABASE SCHEMA                  ║
+-- ║  THEVALUESTORE (TVS) v10 — ENTERPRISE DATABASE SCHEMA                  ║
 -- ║  Multi-tenant · Partitioned · RLS · AI-Ready · SOC2 Compliant       ║
 -- ╚══════════════════════════════════════════════════════════════════════╝
 

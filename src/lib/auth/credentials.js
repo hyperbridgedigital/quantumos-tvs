@@ -3,9 +3,9 @@
 
 export const ADMIN_CREDENTIALS = {
   'spadensilver@gmail.com': { pass: 'Admin@123', role: 'superadmin', name: 'KR · Super Admin', store: 'all' },
-  'admin@mehfil.com':       { pass: 'Admin@123', role: 'admin',      name: 'Admin',          store: 'all' },
-  'manager@mehfil.com':     { pass: 'Manager@1', role: 'manager',    name: 'Store Manager',  store: 'all' },
-  'franchise@mehfil.com':   { pass: 'Franch@1',  role: 'franchise',  name: 'Franchise Ops',  store: 'ST001' },
+  'admin@thevaluestore.com':       { pass: 'Admin@123', role: 'admin',      name: 'Admin',          store: 'all' },
+  'manager@thevaluestore.com':     { pass: 'Manager@1', role: 'manager',    name: 'Store Manager',  store: 'all' },
+  'franchise@thevaluestore.com':   { pass: 'Franch@1',  role: 'franchise',  name: 'Franchise Ops',  store: 'ST001' },
 };
 
 export const ROLE_CONFIG = {

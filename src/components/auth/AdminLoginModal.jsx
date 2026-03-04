@@ -255,9 +255,9 @@ function AdminLoginModal() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
                 {[
                   { label: '👑 Super Admin', email: 'spadensilver@gmail.com', pass: 'Admin@123', color: '#C9A84C' },
-                  { label: '🔑 Admin', email: 'admin@mehfil.com', pass: 'Admin@123', color: '#3B82F6' },
-                  { label: '👔 Manager', email: 'manager@mehfil.com', pass: 'Manager@1', color: '#22C55E' },
-                  { label: '🏪 Franchise', email: 'franchise@mehfil.com', pass: 'Franch@1', color: '#8B5CF6' },
+                  { label: '🔑 Admin', email: 'admin@thevaluestore.com', pass: 'Admin@123', color: '#3B82F6' },
+                  { label: '👔 Manager', email: 'manager@thevaluestore.com', pass: 'Manager@1', color: '#22C55E' },
+                  { label: '🏪 Franchise', email: 'franchise@thevaluestore.com', pass: 'Franch@1', color: '#8B5CF6' },
                 ].map(q => (
                   <button key={q.email} onClick={() => quickLogin(q.email, q.pass)}
                     style={{ padding: '8px 10px', borderRadius: 8, background: q.color + '10', border: '1px solid ' + q.color + '25', color: q.color, fontSize: 10, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
