@@ -32,9 +32,9 @@ function StoreLocator() {
 
   const applyDefaultTimings = () => {
     stores.forEach((s) => {
-      const isTnagar = (s.name || '').toLowerCase().includes('charminar mehfil') && (s.area || '').toLowerCase().includes('t. nagar');
+      const isFlagship = (s.type || '').toLowerCase() === 'flagship';
       updateStore(s.id, {
-        hours: isTnagar ? '11:00 AM - 11:59 PM' : '10:30 AM - 3:00 AM (Next Day)',
+        hours: isFlagship ? '10:30 AM - 8:00 PM' : '10:30 AM - 8:00 PM',
       });
     });
     show('Default store timings applied');

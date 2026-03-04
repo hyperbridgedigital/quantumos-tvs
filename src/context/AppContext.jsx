@@ -15,6 +15,7 @@ import { getDefaultSettings } from '@/data/settings';
 import { remarketingRecords as rmData } from '@/data/remarketingDb';
 import { cmsDb as initialCmsDb } from '@/data/cmsDb';
 import { uid, fmt, parseJsonFromResponse } from '@/lib/utils';
+import { getLocale, setLocale as persistLocale } from '@/data/translations';
 
 const AppContext = createContext(null);
 
@@ -46,6 +47,7 @@ export function AppProvider({ children }) {
   const [settings, setSettings] = useState(getDefaultSettings);
   const [selectedStore, setSelectedStore] = useState('ST001');
   const [cart, setCart] = useState([]);
+  const [locale, setLocaleState] = useState('en');
   const [customerOrders, setCustomerOrders] = useState([]);
   const [remarketingRecords, setRemarketingRecords] = useState(rmData);
   const [cms, setCms] = useState(() => {
@@ -105,6 +107,18 @@ export function AppProvider({ children }) {
   const show = useCallback((msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 2500);
+  }, []);
+
+  // Restore locale from storage (client-only)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const stored = getLocale();
+    if (stored && stored !== locale) setLocaleState(stored);
+  }, []);
+
+  const setLocale = useCallback((code) => {
+    persistLocale(code);
+    setLocaleState(code);
   }, []);
 
   // ═══ AUTH (Backend API) ═══
@@ -501,6 +515,7 @@ export function AppProvider({ children }) {
     automationRules, addRule, updateRule, deleteRule, toggleRule,
     chatbotFlows, addBotFlow, updateBotFlow, chatMessages, addChatMessage,
     adminUsers, addAdminUser, updateAdminUser, deleteAdminUser,
+    locale, setLocale,
   }), [
     view, user, customer, adminTab, canAccess, visibleTabs, toast, show,
     showUserAuth, showAdminLogin,
@@ -519,6 +534,7 @@ export function AppProvider({ children }) {
     updatePartnerConfig, savePartnerConfig, toggleRoleTab, updateSetting, saveSettings,
     addToCart, removeFromCart, updateCartQty, placeOrder,
     addAdminUser, updateAdminUser, deleteAdminUser,
+    locale, setLocale,
   ]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

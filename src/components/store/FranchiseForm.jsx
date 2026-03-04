@@ -14,7 +14,7 @@ function FranchiseForm() {
   const minInv = settings.FRANCHISE_MIN_INVESTMENT || '15';
   const maxInv = settings.FRANCHISE_MAX_INVESTMENT || '35';
   const royalty = settings.FRANCHISE_DEFAULT_ROYALTY || '12';
-  const contactEmail = settings.FRANCHISE_CONTACT_EMAIL || 'franchise@charminarmehfil.com';
+  const contactEmail = settings.FRANCHISE_CONTACT_EMAIL || 'franchise@thevaluestore.com';
   const contactPhone = settings.FRANCHISE_CONTACT_PHONE || '+91 98765 43210';
 
   const handleSubmit = () => {
@@ -68,7 +68,7 @@ function FranchiseForm() {
         <div style={{ position: 'relative' }}>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: brand.gold, marginBottom: 10 }}>🏢 Franchise Opportunity</div>
           <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 'clamp(24px,5vw,36px)', color: brand.heading, lineHeight: 1.1, marginBottom: 8 }}>
-            Own a <span style={{ color: brand.gold }}>Charminar Mehfil</span>
+            Own a <span style={{ color: brand.gold }}>TheValueStore</span>
           </h2>
           <p style={{ fontSize: 14, color: brand.dim, maxWidth: 480 }}>
             Join India's fastest-growing premium restaurant chain. {franchises?.length || 16}+ outlets across Chennai. Investment: ₹{minInv}L - ₹{maxInv}L.
@@ -125,7 +125,7 @@ function FranchiseForm() {
           {input('experience', 'F&B Experience', 'select')}
         </div>
         {input('currentBusiness', 'Current Business (if any)', 'text')}
-        {input('message', 'Why Charminar Mehfil?', 'textarea')}
+        {input('message', 'Why TheValueStore?', 'textarea')}
 
         <button onClick={handleSubmit}
           style={{ width: '100%', padding: 16, borderRadius: 14, fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer',

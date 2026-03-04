@@ -27,7 +27,7 @@ function Dashboard() {
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16, flexWrap:'wrap', gap:8 }}>
         <div>
           <h2 style={{ fontFamily:brand.fontDisplay, fontSize:24, color:brand.heading }}>⚡ Command Center</h2>
-          <div style={{ fontSize:12, color:brand.dim }}>Real-time · All modules connected · {settings.STORE_NAME || 'Charminar Mehfil'}</div>
+          <div style={{ fontSize:12, color:brand.dim }}>Real-time · All modules connected · {settings.STORE_NAME || 'TheValueStore'}</div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           <span style={{ width:8, height:8, borderRadius:'50%', background:brand.emerald, animation:'pulse 2s infinite' }} />

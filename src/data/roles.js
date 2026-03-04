@@ -2,7 +2,7 @@
 export const ROLES = {
   superadmin: { label:'Super Admin', emoji:'👑', color:'#C9A84C', tabs:['all'] },
   admin: { label:'Admin', emoji:'🔑', color:'#3B82F6', tabs:['all'] },
-  manager: { label:'Manager', emoji:'👔', color:'#22C55E', tabs:['dashboard','orders','stores','delivery','stock','pos','crm','cms','promo','whatsapp'] },
+  manager: { label:'Manager', emoji:'👔', color:'#22C55E', tabs:['dashboard','orders','stores','delivery','stock','pcBuilder','pos','crm','cms','promo','whatsapp'] },
   franchise: { label:'Franchise Owner', emoji:'🏪', color:'#8B5CF6', tabs:['dashboard','orders','pos','stock'] },
   staff: { label:'Staff', emoji:'👤', color:'#06B6D4', tabs:['orders','pos'] },
 };
@@ -48,6 +48,7 @@ export const SIDEBAR_GROUPS = [
     tabs: [
       { key:'stores', label:'Stores', emoji:'🏪' },
       { key:'stock', label:'Stock/WMS', emoji:'📦' },
+      { key:'pcBuilder', label:'PC Builder', emoji:'🔧' },
       { key:'franchise', label:'Franchise', emoji:'🏢' },
       { key:'partners', label:'Partners/Keys', emoji:'🔑' },
     ],
@@ -57,6 +58,21 @@ export const SIDEBAR_GROUPS = [
     tabs: [
       { key:'cms', label:'CMS', emoji:'📝' },
       { key:'seo', label:'SEO & Geo', emoji:'🌐' },
+      { key:'contentHub', label:'Content Hub', emoji:'📚' },
+    ],
+  },
+  {
+    key: 'partnersGrowth', label: 'PARTNERS & GROWTH', icon: '🤝',
+    tabs: [
+      { key:'influencers', label:'Influencers & Affiliates', emoji:'📣' },
+      { key:'marketplace', label:'Marketplace / Sellers', emoji:'🏪' },
+    ],
+  },
+  {
+    key: 'communityCsr', label: 'COMMUNITY & IMPACT', icon: '🌱',
+    tabs: [
+      { key:'community', label:'Community', emoji:'🖼️' },
+      { key:'csr', label:'CSR (Tech for Good)', emoji:'🌱' },
     ],
   },
   {

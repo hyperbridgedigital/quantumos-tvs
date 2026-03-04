@@ -97,7 +97,7 @@ function stageColor(key) {
 }
 
 function shortName(name) {
-  return (name || '').replace(/HyperBridge Group — |Charminar Mehfil — /g, '');
+  return (name || '').replace(/HyperBridge Group — |TheValueStore — /g, '');
 }
 
 // ── Style helpers ──────────────────────────────────────────────────────────────
@@ -228,7 +228,7 @@ function Franchise() {
             🏢 Franchise Lifecycle Manager
           </h2>
           <p style={{ fontSize: 12, color: brand.dim, margin: '4px 0 0' }}>
-            Charminar Mehfil · {franchises.length} franchises · {active.length} active
+            TheValueStore · {franchises.length} franchises · {active.length} active
           </p>
         </div>
       </div>

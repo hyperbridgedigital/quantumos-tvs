@@ -1,14 +1,20 @@
-/* HyperBridge QuantumOS v1.2.0 — Charminar Mehfil */
+/* TheValueStore — Premium Gaming & Computer Commerce */
 @import '../styles/kynetra.css';
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  --green: #1B5E20;
-  --green-light: #2E7D32;
-  --green-mint: #E8F5E9;
-  --green-dark: #0D3B12;
-  --gold: #C9A84C;
+  --black: #0D0D0F;
+  --black-matte: #141416;
+  --blue: #2563EB;
+  --blue-electric: #3B82F6;
+  --emerald: #10B981;
+  --emerald-light: #34D399;
+  --green: #10B981;
+  --green-light: #34D399;
+  --green-mint: #D1FAE5;
+  --green-dark: #047857;
+  --gold: #F59E0B;
   --bg: #0C0B09;
   --bg2: #141310;
   --card: #1A1A2E;
@@ -16,20 +22,18 @@
   --heading: #EDE8E2;
   --text: #A09888;
   --dim: #666;
-  --emerald: #22C55E;
-  --blue: #3B82F6;
   --red: #EF4444;
   --purple: #8B5CF6;
   --whatsapp: #25D366;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Figtree', system-ui, -apple-system, sans-serif;
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
-  background: #FFFFFF;
-  color: #4A5548;
+  background: #FAFAFA;
+  color: #3F3F46;
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
@@ -40,11 +44,11 @@ body {
   min-height: 100vh;
 }
 
-::selection { background: var(--green); color: #fff; }
+::selection { background: var(--blue-electric); color: #fff; }
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #F0F4F0; }
-::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 3px; }
-:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+::-webkit-scrollbar-track { background: #F4F4F5; }
+::-webkit-scrollbar-thumb { background: var(--blue-electric); border-radius: 3px; }
+:focus-visible { outline: 2px solid var(--blue-electric); outline-offset: 2px; }
 button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 input, select, textarea { font-family: inherit; }
 table { border-collapse: collapse; border-spacing: 0; }

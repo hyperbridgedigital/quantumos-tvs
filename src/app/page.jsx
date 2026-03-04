@@ -2,6 +2,7 @@
 import { lazy, Suspense } from 'react';
 import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
+import { t } from '@/data/translations';
 import TopBar from '@/components/layout/TopBar';
 import AdminSidebar from '@/components/layout/AdminSidebar';
 import UserAuthModal from '@/components/auth/UserAuthModal';
@@ -45,6 +46,14 @@ const KynetraChat = lazy(() => import('@/components/admin/KynetraChat'));
 const KynetraInsights = lazy(() => import('@/components/admin/KynetraInsights'));
 const UserManager = lazy(() => import('@/components/admin/UserManager'));
 
+// v1.3.0 — Influencers, Content Hub, Community, CSR, Marketplace
+const Influencers = lazy(() => import('@/components/admin/Influencers'));
+const ContentHubAdmin = lazy(() => import('@/components/admin/ContentHubAdmin'));
+const CommunityAdmin = lazy(() => import('@/components/admin/CommunityAdmin'));
+const CSRAdmin = lazy(() => import('@/components/admin/CSRAdmin'));
+const MarketplaceSellers = lazy(() => import('@/components/admin/MarketplaceSellers'));
+const PCBuilderAdmin = lazy(() => import('@/components/admin/PCBuilderAdmin'));
+
 function Loader() {
   return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:60 }}>
     <div style={{ width:28, height:28, border:'3px solid '+brand.border, borderTop:'3px solid '+brand.gold, borderRadius:'50%', animation:'spin .8s linear infinite' }} />
@@ -64,10 +73,17 @@ const MODULES = {
   funnels: FunnelBuilder, automation: AutomationRules,
   // v1.2.0
   users: UserManager,
+  // v1.3.0
+  influencers: Influencers,
+  contentHub: ContentHubAdmin,
+  community: CommunityAdmin,
+  csr: CSRAdmin,
+  marketplace: MarketplaceSellers,
+  pcBuilder: PCBuilderAdmin,
 };
 
 function AppContent() {
-  const { view, setView, user, adminTab, toast, setShowAdminLogin } = useApp();
+  const { view, setView, user, adminTab, toast, setShowAdminLogin, locale, currentStore } = useApp();
   const Mod = MODULES[adminTab] || Dashboard;
 
   return (
@@ -95,11 +111,24 @@ function AppContent() {
               <div style={{ fontSize:12, color:brand.storeDim, marginBottom:8 }}>
                 {brand.footer}
               </div>
+              <div style={{ fontSize:11, color:brand.storeDim, marginBottom:8 }}>
+                {t('store', locale)}: {currentStore?.area || t('mountRoad', locale)} · {t('currency', locale)}
+              </div>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:16, flexWrap:'wrap', marginBottom:8 }}>
+                {brand.links?.storeAddress && (
+                  <a href={brand.links.storeAddress} target="_blank" rel="noopener noreferrer" style={{ fontSize:12, color:brand.blueElectric, fontWeight:600, textDecoration:'none' }}>
+                    📍 {t('storeAndDirections', locale)}
+                  </a>
+                )}
+                <a href="/brand" style={{ fontSize:12, color:brand.blueElectric, fontWeight:600, textDecoration:'none' }}>
+                  {t('aboutBrand', locale)}
+                </a>
+              </div>
               <button
                 onClick={() => setShowAdminLogin(true)}
                 style={{ fontSize:10, color:brand.storeDim+'88', background:'none', border:'none', cursor:'pointer', padding:'4px 8px' }}
               >
-                QuantumOS Admin →
+                {t('quantumOSAdmin', locale)}
               </button>
             </footer>
           </>
