@@ -1,13 +1,10 @@
-/* HyperBridge QuantumOS v11.2.0 — TheValueStore (Computer Store Theme) */
-
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+/* TheValueStore — tech-store palette (blue accent, no green); aligned with Best Buy / Newegg / B&H style */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --green: #1B5E20;
-  --green-light: #2E7D32;
-  --green-mint: #E8F5E9;
-  --green-dark: #0D3B12;
-  --gold: #C9A84C;
+  --primary: #0066CC;
+  --primary-light: #2563EB;
+  --primary-mint: #EFF6FF;
   --bg: #0C0B09;
   --bg2: #141310;
   --card: #1A1A2E;
@@ -15,87 +12,39 @@
   --heading: #EDE8E2;
   --text: #A09888;
   --dim: #666;
-  --emerald: #22C55E;
-  --blue: #3B82F6;
-  --red: #EF4444;
-  --purple: #8B5CF6;
-  --whatsapp: #25D366;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Figtree', system-ui, -apple-system, sans-serif;
-  /* Computer store storefront */
-  --store-surface: #FFFFFF;
-  --store-surface-2: #F8FAFC;
+  --store-bg: #FFFFFF;
+  --store-bg2: #F8FAFC;
   --store-border: #E2E8F0;
   --store-heading: #0F172A;
   --store-text: #334155;
-  --store-muted: #64748B;
-  --store-card-shadow: 0 1px 3px rgba(15,23,42,.06);
-  --store-card-shadow-hover: 0 10px 40px rgba(15,23,42,.08);
+  --store-dim: #64748B;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Figtree', system-ui, sans-serif;
 }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-
+html { scroll-behavior: smooth; }
 body {
-  background: var(--store-surface);
-  color: var(--store-text);
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  overflow-x: hidden;
   min-height: 100vh;
 }
-
-  /* Computer store storefront — explicit so no other theme can override */
-  body[data-theme="store"] {
-    background: var(--store-surface);
-    color: var(--store-text);
-  }
-  body[data-theme="store"]::-webkit-scrollbar-track { background: var(--store-surface-2); }
-  body[data-theme="store"]::-webkit-scrollbar-thumb { background: var(--store-border); border-radius: 3px; }
-
-  body[data-theme="admin"] {
-    background: var(--bg);
-    color: var(--text);
-  }
-  body[data-theme="admin"]::-webkit-scrollbar-track { background: var(--bg2); }
-  body[data-theme="admin"]::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  /* Store dark theme */
-  body[data-theme="store-dark"] {
-    background: #0F172A;
-    color: #E2E8F0;
-  }
-  body[data-theme="store-dark"]::-webkit-scrollbar-track { background: #1E293B; }
-  body[data-theme="store-dark"]::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-
-::selection { background: var(--green); color: #fff; }
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(--store-surface-2); }
-::-webkit-scrollbar-thumb { background: var(--store-border); border-radius: 3px; }
-:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
-button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-input, select, textarea { font-family: inherit; }
-table { border-collapse: collapse; border-spacing: 0; }
-img, svg { display: block; max-width: 100%; }
-
-.admin-sidebar { contain: layout style; }
-.admin-content { contain: layout; }
-
-@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-@keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-@keyframes pulse { 0%,100% { opacity:.4; } 50% { opacity:1; } }
-@keyframes spin { to { transform:rotate(360deg); } }
-@keyframes slideIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
-@keyframes shimmer { 0% { background-position:-200% 0; } 100% { background-position:200% 0; } }
-
-.will-animate { will-change: opacity, transform; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration:0.01ms!important; transition-duration:0.01ms!important; scroll-behavior:auto!important; }
+body[data-theme="store"] {
+  background: var(--store-bg);
+  color: var(--store-text);
+}
+body[data-theme="admin"] {
+  background: var(--bg);
+  color: var(--text);
+}
+body[data-theme="store-dark"] {
+  background: #0F172A;
+  color: #E2E8F0;
 }
 
-.topbar { position:fixed; top:0; left:0; right:0; height:54px; z-index:1000; contain:layout style; }
-.page-content { padding-top:54px; min-height:100vh; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+.page-content { padding-top: 56px; min-height: 100vh; }

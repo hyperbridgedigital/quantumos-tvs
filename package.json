@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:poll": "WATCHPACK_POLLING=true next dev",
-    "build": "npm run prebuild && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "generate": "node scripts/generateTestData.mjs --seed 111 --days 90",

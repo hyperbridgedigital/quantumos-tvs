@@ -1,15 +1,8 @@
 import './globals.css';
-import { Providers } from './Providers';
 
 export const metadata = {
-  title: 'TheValueStore — Best Value. Maximum Performance. | Gaming PCs, Laptops & Tech',
-  description: 'Premium computer and gaming ecommerce — Build your PC, shop RTX gaming rigs, AI-ready laptops, components, and tech that gives back.',
-  metadataBase: new URL('https://thevaluestore.com'),
-  openGraph: {
-    title: 'TheValueStore — Best Value. Maximum Performance.',
-    description: 'Gaming PCs · Laptops · PC Components · Build Your PC · Tech for Education',
-    type: 'website',
-  },
+  title: 'TheValueStore — Best Value. Maximum Performance.',
+  description: 'Gaming PCs, Laptops & Tech',
 };
 
 export const viewport = {
@@ -23,16 +16,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Figtree:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body suppressHydrationMismatch>
+      <body suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var t=typeof localStorage!=='undefined'?localStorage.getItem('tvs_theme'):null;var v=t==='dark'?'store-dark':'store';if(document.body)document.body.setAttribute('data-theme',v);})();`,
           }}
         />
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );

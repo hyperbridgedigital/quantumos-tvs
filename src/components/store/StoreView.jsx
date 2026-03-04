@@ -1,508 +1,414 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
 import { fmt } from '@/lib/utils';
-import { Badge } from '@/components/shared/Badge';
-import { moods } from '@/data/moods';
-import { BUDGET_TIERS } from '@/data/products';
-import { catalogProducts, catalogCategories } from '@/data/catalog';
-import BuildPCView from '@/components/store/BuildPCView';
-import StoreHome from '@/components/store/StoreHome';
-import StoreFeaturesView from '@/components/store/StoreFeaturesView';
+import KynetraChatWidget from './KynetraChatWidget';
 
 const TABS = [
-  { key:'home', label:'Home', icon:'🏠' },
-  { key:'menu', label:'Shop', icon:'🛒' },
-  { key:'buildpc', label:'Build PC', icon:'🖥️' },
-  { key:'more', label:'More', icon:'✨' },
-  { key:'offers', label:'Offers', icon:'🎁' },
-  { key:'track', label:'Orders', icon:'📦' },
-  { key:'franchise', label:'Franchise', icon:'🏢' },
+  { id: 'home', label: 'Home' },
+  { id: 'shop', label: 'Shop' },
+  { id: 'buildpc', label: 'Build PC' },
+  { id: 'offers', label: 'Offers' },
+  { id: 'track', label: 'Track' },
+  { id: 'franchise', label: 'Franchise' },
 ];
 
 export default function StoreView() {
   const {
-    activeStores, selectedStore, setSelectedStore, currentStore,
-    availableProducts, cart, addToCart, removeFromCart, updateCartQty, cartTotal,
-    placeOrder, customerOrders, settings, partnerValues, show,
-    customer, setShowUserAuth, offers, rewardsConf,
-    userLocation, setUserLocation, stores, storeTheme
+    availableProducts,
+    cart,
+    addToCart,
+    removeFromCart,
+    updateCartQty,
+    cartTotal,
+    placeOrder,
+    customerOrders,
+    settings,
+    storeTheme,
+    show,
+    offers,
+    storeFeaturesData,
+    createStoreFeature,
+    fetchStoreFeatures,
   } = useApp();
 
-  const theme = storeTheme === 'dark' ? brand.storeDark : brand;
-
-  const [tab, setTab] = useState('home');
+  const [storeTab, setStoreTab] = useState('home');
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [custInfo, setCustInfo] = useState({ name:'', phone:'', email:'', address:'', locality:'', city:'Chennai', state:'Tamil Nadu', pincode:'', landmark:'', type:'delivery', coupon:'' });
-  const [locLoading, setLocLoading] = useState(false);
-  const [appliedOffer, setAppliedOffer] = useState(null);
-  const [refCode] = useState(() => 'TVS' + Math.random().toString(36).slice(2,6).toUpperCase());
-  const [franchiseForm, setFranchiseForm] = useState({ name:'', phone:'', email:'', city:'', investment:'', experience:'', message:'' });
-  const [shareOpen, setShareOpen] = useState(false);
-  const [catFilter, setCatFilter] = useState('all');
-  const [moodFilter, setMoodFilter] = useState('');
-  const [budgetFilter, setBudgetFilter] = useState('');
+  const [form, setForm] = useState({ name: '', phone: '', address: '', type: 'delivery' });
+  const [searchQ, setSearchQ] = useState('');
+  const [recommendations, setRecommendations] = useState([]);
+  const [buildParts, setBuildParts] = useState([]);
+  const [buildTotal, setBuildTotal] = useState(null);
+  const [franchiseForm, setFranchiseForm] = useState({ name: '', phone: '', city: '', message: '' });
 
-  const freeAbove = Number(settings.DELIVERY_FREE_ABOVE || 499);
-  const deliveryCharge = Number(settings.DELIVERY_CHARGE || 29);
-  const gstRate = Number(settings.GST_RATE || 5);
+  const theme = storeTheme === 'dark' ? brand.storeDark : brand;
+  const G = brand.green;
+  const products = Array.isArray(availableProducts) ? availableProducts : [];
+  const filteredProducts = searchQ.trim()
+    ? products.filter(
+        (p) =>
+          (p.name || '').toLowerCase().includes(searchQ.toLowerCase()) ||
+          (p.category || '').toLowerCase().includes(searchQ.toLowerCase())
+      )
+    : products;
+  const gstRate = Number(settings?.GST_RATE || 5);
   const gst = Math.round(cartTotal * gstRate / 100);
-  const isFreeDelivery = custInfo.type === 'pickup' || cartTotal >= freeAbove;
-  const finalDeliveryFee = isFreeDelivery ? 0 : deliveryCharge;
-  const discount = useMemo(() => {
-    if (!appliedOffer) return 0;
-    if (appliedOffer.discountType === 'percent') return Math.min(Math.round(cartTotal * appliedOffer.discount / 100), appliedOffer.maxDiscount || 9999);
-    if (appliedOffer.discountType === 'flat') return appliedOffer.discount;
-    return 0;
-  }, [appliedOffer, cartTotal]);
-  const grandTotal = Math.max(0, cartTotal + gst + finalDeliveryFee - discount);
+  const deliveryFee = cartTotal >= Number(settings?.DELIVERY_FREE_ABOVE || 499) ? 0 : Number(settings?.DELIVERY_CHARGE || 49);
+  const grandTotal = cartTotal + gst + deliveryFee;
 
-  const detectLocation = () => {
-    setLocLoading(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          setUserLocation(loc);
-          let nearest = null, minDist = Infinity;
-          stores.filter(s => s.status === 'active').forEach(s => {
-            const d = Math.sqrt((s.lat - loc.lat) ** 2 + (s.lng - loc.lng) ** 2) * 111;
-            if (d < minDist) { minDist = d; nearest = s; }
-          });
-          if (nearest) { setSelectedStore(nearest.id); show('📍 ' + nearest.name + ' (' + minDist.toFixed(1) + ' km)'); }
-          setLocLoading(false);
-        },
-        () => { show('Location denied', 'error'); setLocLoading(false); }
-      );
-    } else { setLocLoading(false); }
-  };
-
-  useEffect(() => { if (!userLocation && !selectedStore) detectLocation(); }, []);
-
-  // Kynetra can request tab change (e.g. "Open Build PC")
   useEffect(() => {
-    const handler = (e) => {
-      if (e.detail?.tab) setTab(e.detail.tab);
-      if (e.detail?.category) setCatFilter(e.detail.category);
-    };
-    window.addEventListener('tvs-navigate', handler);
-    return () => window.removeEventListener('tvs-navigate', handler);
-  }, []);
+    fetch('/api/ai/recommendations?limit=6' + (cart?.length ? '&cartIds=' + cart.map((i) => i.id).join(',') : ''))
+      .then((r) => r.json())
+      .then((d) => setRecommendations(d.recommendations || []))
+      .catch(() => {});
+  }, [cart?.length]);
 
-  // Build PC: when URL has ?build=, switch to Build PC tab (share link restore)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('build')) setTab('buildpc');
-  }, []);
-
-  const openCheckout = () => {
-    if (customer) setCustInfo(p => ({ ...p, name: customer.name || '', phone: customer.phone || '' }));
-    setCheckoutOpen(true);
-  };
-  const applyCoupon = () => {
-    const code = custInfo.coupon.trim().toUpperCase();
-    const offer = offers.find(o => o.code === code && o.active);
-    if (!offer) return show('Invalid coupon', 'error');
-    if (cartTotal < (offer.minOrder || 0)) return show('Min order ₹' + offer.minOrder, 'error');
-    setAppliedOffer(offer); show('🎉 ' + offer.name + ' applied!');
-  };
-  const handlePlace = () => {
-    if (!custInfo.name || !custInfo.phone) return show('Fill name & phone', 'error');
-    const order = placeOrder({ ...custInfo, discount, appliedOffer: appliedOffer?.code });
-    if (order) { setCheckoutOpen(false); setCustInfo({ name:'', phone:'', address:'', type:'delivery', coupon:'' }); setAppliedOffer(null); setTab('track'); }
-  };
-  const shareReferral = (p) => {
-    const txt = 'Shop at ' + brand.name + ' – ₹' + (settings.VIRAL_REFERRAL_FRIEND||100) + ' OFF with code: ' + refCode + ' 🎮';
-    if (p === 'whatsapp') window.open?.('https://wa.me/?text=' + encodeURIComponent(txt));
-    else if (p === 'copy') { navigator.clipboard?.writeText(refCode); show('Copied!'); }
-    setShareOpen(false);
-  };
-
-  const categories = useMemo(() => {
-    if (catalogProducts?.length && Array.isArray(catalogCategories)) return ['all', ...catalogCategories.map((c) => c.id)];
-    return ['all', ...new Set((availableProducts || []).map(p => p.category || 'Main'))];
-  }, [availableProducts, catalogProducts, catalogCategories]);
-  const filteredProducts = useMemo(() => {
-    let list = catalogProducts?.length ? catalogProducts : (availableProducts || []);
-    if (catFilter && catFilter !== 'all') list = list.filter(p => (p.category || p.categoryLabel) === catFilter || p.category === catFilter);
-    if (moodFilter) list = list.filter(p => (p.moods || []).includes(moodFilter));
-    if (budgetFilter) {
-      const tier = BUDGET_TIERS.find(t => t.id === budgetFilter);
-      if (tier) list = list.filter(p => p.price >= tier.min && p.price <= tier.max);
+  const handlePlaceOrder = () => {
+    if (!form.name?.trim() || !form.phone?.trim()) {
+      show('Enter name and phone', 'error');
+      return;
     }
-    return list;
-  }, [availableProducts, catalogProducts, catFilter, moodFilter, budgetFilter]);
-  const activeOffers = offers.filter(o => o.active);
-  const waPhone = partnerValues.WA_PHONE_NUMBER_ID || settings.SUPPORT_PHONE || '+91 98765 43210';
+    const order = placeOrder({ ...form });
+    if (order) {
+      setCheckoutOpen(false);
+      setForm({ name: '', phone: '', address: '', type: 'delivery' });
+      setStoreTab('track');
+      show('Order placed: ' + order.id);
+    }
+  };
 
-  // ═══ DESIGN TOKENS — Green + theme (light/dark) ═══
-  const G = '#1B5E20', GL = '#2E7D32', GM = '#E8F5E9', GD = '#0D3B12';
-  const SH = theme.storeHeading, SD = theme.storeDim, ST = theme.storeText, SB = theme.storeBorder;
+  const addBuildPart = (p, qty = 1) => {
+    setBuildParts((prev) => {
+      const ex = prev.find((i) => i.productId === p.id);
+      if (ex) return prev.map((i) => (i.productId === p.id ? { ...i, qty: i.qty + qty } : i));
+      return [...prev, { productId: p.id, name: p.name, price: p.price, qty }];
+    });
+  };
+  const removeBuildPart = (productId) => setBuildParts((p) => p.filter((i) => i.productId !== productId));
+  const updateBuildQty = (productId, qty) => {
+    if (qty <= 0) removeBuildPart(productId);
+    else setBuildParts((p) => p.map((i) => (i.productId === productId ? { ...i, qty } : i)));
+  };
 
-  const inp = { width:'100%', padding:'13px 16px', borderRadius:12, background: theme.storeCard, border:'1.5px solid '+SB, color:SH, fontSize:14, outline:'none', fontFamily:"'Figtree',sans-serif", transition:'border .2s', boxSizing:'border-box' };
-  const greenBtn = { padding:'14px 28px', borderRadius:12, background:G, color:'#fff', fontWeight:700, fontSize:14, border:'none', cursor:'pointer' };
-  const card = { background: theme.storeCard, border:'1px solid '+SB, borderRadius:16, boxShadow: storeTheme === 'dark' ? '0 1px 3px rgba(0,0,0,.3)' : 'var(--store-card-shadow, 0 1px 3px rgba(15,23,42,.06))' };
+  useEffect(() => {
+    if (buildParts.length === 0) {
+      setBuildTotal(null);
+      return;
+    }
+    fetch('/api/buildpc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ parts: buildParts.map((i) => ({ productId: i.productId, qty: i.qty })) }),
+    })
+      .then((r) => r.json())
+      .then((d) => setBuildTotal(d.total))
+      .catch(() => setBuildTotal(null));
+  }, [buildParts]);
+
+  const addBuildToCart = () => {
+    buildParts.forEach(({ productId, qty }) => {
+      const p = products.find((x) => x.id === productId);
+      if (p) for (let i = 0; i < qty; i++) addToCart(p);
+    });
+    setBuildParts([]);
+    setBuildTotal(null);
+    setStoreTab('shop');
+    show('Build added to cart');
+  };
+
+  const activeOffers = Array.isArray(offers) ? offers.filter((o) => o.active) : [];
+
+  const wishlist = storeFeaturesData?.wishlist || [];
+  const addToWishlist = (p) => {
+    createStoreFeature('wishlist', { productId: p.id, productName: p.name, price: p.price, customerId: 'guest' });
+    show('Added to wishlist');
+  };
+  const [compareIds, setCompareIds] = useState([]);
+  const addToCompare = (p) => {
+    if (compareIds.includes(p.id)) setCompareIds((c) => c.filter((id) => id !== p.id));
+    else if (compareIds.length < 4) setCompareIds((c) => [...c, p.id]);
+    else show('Max 4 products to compare', 'error');
+  };
+  const [priceAlertProduct, setPriceAlertProduct] = useState(null);
+  const [priceAlertTarget, setPriceAlertTarget] = useState('');
+  const submitPriceAlert = (productId, productName, currentPrice) => {
+    const target = Number(priceAlertTarget) || Math.round(currentPrice * 0.9);
+    createStoreFeature('priceAlerts', { productId, productName, currentPrice, targetPrice: target, email: 'guest@example.com', status: 'active' });
+    show('Price alert set');
+    setPriceAlertProduct(null);
+    setPriceAlertTarget('');
+  };
+  const [expertBooking, setExpertBooking] = useState({ topic: '', preferred: '' });
+  const submitExpertBooking = () => {
+    createStoreFeature('expertBookings', { customerId: 'guest', customerName: form.name || 'Guest', topic: expertBooking.topic || 'Build recommendation', slot: new Date(Date.now() + 86400000).toISOString(), expertName: 'TBD', status: 'pending' });
+    show('Expert booking requested. We will call you.');
+    setExpertBooking({ topic: '', preferred: '' });
+  };
 
   return (
-    <div style={{ maxWidth:960, margin:'0 auto', padding:'0 16px 80px', background: theme.storeBg }}>
+    <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px 16px 100px', background: theme.storeBg }}>
+      <h1 style={{ fontFamily: brand.fontDisplay, fontSize: 28, color: theme.storeHeading, marginBottom: 4 }}>{brand.name}</h1>
+      <p style={{ fontSize: 14, color: theme.storeDim, marginBottom: 16 }}>{brand.tagline}</p>
 
-      {/* ═══ NAV — Home shows new hero carousel inside StoreHome ═══ */}
-      <div style={{ display:'flex', gap:3, marginBottom:28, background: theme.storeBg2, borderRadius:14, padding:4, border: '1px solid '+SB }}>
-        {TABS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)} style={{ display:'flex', alignItems:'center', gap:6, padding:'11px 18px', borderRadius:10, fontSize:13, fontWeight:700, border:'none', flex:1, justifyContent:'center', transition:'all .15s', background: tab===t.key ? brand.storeCard : 'transparent', color: tab===t.key ? G : SD, boxShadow: tab===t.key ? 'var(--store-card-shadow, 0 1px 3px rgba(15,23,42,.06))' : 'none' }}>
-            <span>{t.icon}</span>{t.label}
-            {t.key==='offers' && activeOffers.length>0 && <span style={{ width:18, height:18, borderRadius:'50%', background:brand.red, color:'#fff', fontSize:9, fontWeight:800, display:'inline-flex', alignItems:'center', justifyContent:'center' }}>{activeOffers.length}</span>}
+      {/* Tabs */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setStoreTab(t.id)}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 10,
+              border: 'none',
+              background: storeTab === t.id ? G : theme.storeBg2,
+              color: storeTab === t.id ? '#fff' : theme.storeDim,
+              fontWeight: 600,
+              fontSize: 13,
+              cursor: 'pointer',
+            }}
+          >
+            {t.label}
           </button>
         ))}
       </div>
 
-      {/* ═══ HOME (50-feature landing) ═══ */}
-      {tab==='home' && <StoreHome onNavigate={(targetTab, productId, categoryId) => { setTab(targetTab || 'menu'); if (categoryId) setCatFilter(categoryId); }} />}
-
-      {/* ═══ BUILD PC (CSR) ═══ */}
-      {tab==='buildpc' && <BuildPCView />}
-
-      {/* ═══ MORE (10 store features) ═══ */}
-      {tab==='more' && <StoreFeaturesView storeTheme={storeTheme} />}
-
-      {/* ═══ MENU ═══ */}
-      {tab==='menu' && <>
-        {/* Store selector */}
-        <div style={{ marginBottom:24 }}>
-          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', textTransform:'uppercase', color:G, marginBottom:12 }}>📍 Choose Store</div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(270px,1fr))', gap:10 }}>
-            {activeStores.map(st => (
-              <button key={st.id} onClick={() => setSelectedStore(st.id)} style={{ textAlign:'left', padding:18, borderRadius:14, border: selectedStore===st.id ? '2px solid '+G : '1px solid '+SB, width:'100%', background: selectedStore===st.id ? GM : brand.storeCard, color:ST, cursor:'pointer', transition:'all .15s', boxShadow: selectedStore===st.id ? '0 2px 12px rgba(27,94,32,.08)' : 'var(--store-card-shadow, 0 1px 3px rgba(15,23,42,.06))' }}>
-                <div style={{ fontWeight:700, color:SH, fontSize:14, marginBottom:4 }}>{st.name}</div>
-                <div style={{ fontSize:11, color:SD, marginBottom:8 }}>{(st.address||'').slice(0,55)}</div>
-                <div style={{ display:'flex', gap:12, fontSize:11 }}>
-                  <span style={{ color:G, fontWeight:600 }}>⚡ {st.prepTime}min</span>
-                  <span style={{ color:brand.gold, fontWeight:600 }}>⭐ {st.rating}</span>
-                  <span style={{ color:SD }}>{st.hours}</span>
+      {/* Home */}
+      {storeTab === 'home' && (
+        <>
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 18, color: theme.storeHeading, marginBottom: 12 }}>Recommended for you</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
+              {(recommendations.length ? recommendations : products.slice(0, 6)).map((p) => (
+                <div key={p.id} style={{ padding: 12, background: theme.storeCard, border: `1px solid ${theme.storeBorder}`, borderRadius: 12 }}>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: theme.storeHeading, marginBottom: 4 }}>{p.name}</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: G, marginBottom: 8 }}>{fmt(p.price)}</div>
+                  <button onClick={() => addToCart(p)} style={{ width: '100%', padding: 8, borderRadius: 8, background: G, color: '#fff', fontWeight: 600, fontSize: 12, border: 'none' }}>Add to cart</button>
                 </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Delivery banner */}
-        {currentStore && <div style={{ background:GM, border:'1px solid #C8E6C9', borderRadius:16, padding:'18px 24px', marginBottom:24, display:'flex', alignItems:'center', gap:16, flexWrap:'wrap' }}>
-          <div style={{ width:48, height:48, borderRadius:14, background:G, display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:22, flexShrink:0 }}>🚀</div>
-          <div style={{ flex:1, minWidth:200 }}>
-            <div style={{ fontWeight:700, color:SH, fontSize:15 }}>60-Minute Delivery</div>
-            <div style={{ fontSize:12, color:ST }}>Free over <b style={{ color:G }}>₹{freeAbove}</b> · Otherwise <b>₹{deliveryCharge}</b></div>
-          </div>
-          <div style={{ textAlign:'center', padding:'8px 16px', background: brand.storeCard, borderRadius:12, border:'1px solid #C8E6C9' }}>
-            <div style={{ fontFamily:brand.fontDisplay, fontSize:22, fontWeight:700, color:G }}>{currentStore.prepTime}min</div>
-            <div style={{ fontSize:8, color:SD, letterSpacing:'.1em', fontWeight:700 }}>FULFILLMENT</div>
-          </div>
-        </div>}
-
-        {/* Offers strip */}
-        {activeOffers.length > 0 && <div style={{ marginBottom:24, display:'flex', gap:10, overflowX:'auto', paddingBottom:6 }}>
-          {activeOffers.slice(0,5).map(o => (
-            <div key={o.id} onClick={() => { setCustInfo(p=>({...p,coupon:o.code})); setAppliedOffer(o); show('🎉 '+o.code+' applied!'); }}
-              style={{ flexShrink:0, width:230, padding:'16px 18px', borderRadius:14, border:'1px solid '+SB, background: brand.storeCard, cursor:'pointer', boxShadow: 'var(--store-card-shadow, 0 1px 3px rgba(15,23,42,.06))' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}><span style={{ fontSize:22 }}>{o.icon}</span><span style={{ fontWeight:700, fontSize:13, color:SH }}>{o.name}</span></div>
-              <div style={{ fontSize:11, color:SD, marginBottom:8 }}>{o.desc}</div>
-              <span style={{ fontFamily:'monospace', fontSize:12, fontWeight:700, color:G, background:GM, padding:'4px 12px', borderRadius:6, border:'1px dashed '+G+'30' }}>{o.code}</span>
-            </div>
-          ))}
-        </div>}
-
-        {/* WhatsApp + Referral */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(270px,1fr))', gap:10, marginBottom:24 }}>
-          <div style={{ ...card, padding:'16px 20px', display:'flex', alignItems:'center', gap:14, borderLeft:'4px solid #25D366' }}>
-            <div style={{ width:44, height:44, borderRadius:12, background:'#25D366', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20, flexShrink:0 }}>💬</div>
-            <div style={{ flex:1 }}><div style={{ fontWeight:700, color:SH, fontSize:13 }}>WhatsApp Order</div><div style={{ fontSize:11, color:SD }}>₹{settings.VIRAL_REFERRAL_FRIEND||100} off first order</div></div>
-            <button onClick={() => window.open?.('https://wa.me/'+waPhone.replace(/[^0-9]/g,''))} style={{ padding:'8px 16px', borderRadius:8, background:'#25D366', color:'#fff', fontWeight:700, fontSize:11, border:'none', cursor:'pointer' }}>Chat</button>
-          </div>
-          {settings.VIRAL_REFERRAL_ENABLED !== 'false' && <div style={{ ...card, padding:'16px 20px', display:'flex', alignItems:'center', gap:14, borderLeft:'4px solid '+brand.gold, position:'relative' }}>
-            <div style={{ width:44, height:44, borderRadius:12, background:brand.gold, display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20, flexShrink:0 }}>🎁</div>
-            <div style={{ flex:1 }}><div style={{ fontWeight:700, color:SH, fontSize:13 }}>Refer & Earn ₹{settings.VIRAL_REFERRAL_REWARD||100}</div><div style={{ fontSize:11, color:SD }}>Code: <b style={{ color:G }}>{refCode}</b></div></div>
-            <button onClick={() => setShareOpen(!shareOpen)} style={{ padding:'8px 16px', borderRadius:8, background:brand.gold, color:'#fff', fontWeight:700, fontSize:11, border:'none', cursor:'pointer' }}>Share</button>
-            {shareOpen && <div style={{ position:'absolute', top:'100%', right:0, zIndex:50, background: brand.storeCard, border:'1px solid '+SB, borderRadius:12, padding:10, display:'flex', gap:6, marginTop:4, boxShadow: 'var(--store-card-shadow-hover, 0 10px 40px rgba(15,23,42,.08))' }}>
-              <button onClick={() => shareReferral('whatsapp')} style={{ padding:'7px 14px', borderRadius:8, background:'#25D366', color:'#fff', fontWeight:700, fontSize:11, border:'none', cursor:'pointer' }}>WhatsApp</button>
-              <button onClick={() => shareReferral('copy')} style={{ padding:'7px 14px', borderRadius:8, background:G, color:'#fff', fontWeight:700, fontSize:11, border:'none', cursor:'pointer' }}>Copy</button>
-            </div>}
-          </div>}
-        </div>
-
-        {/* Category filter */}
-        <div style={{ display:'flex', gap:6, marginBottom:18, overflowX:'auto', paddingBottom:4 }}>
-          {categories.map(c => <button key={c} onClick={() => setCatFilter(c)} style={{ padding:'8px 20px', borderRadius:24, fontSize:12, fontWeight:600, border:'1px solid '+(catFilter===c?G:SB), background: catFilter===c ? G : brand.storeCard, color:catFilter===c?'#fff':ST, cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'all .15s' }}>{c==='all'?'All':(catalogCategories?.find(x=>x.id===c)?.label||c)}</button>)}
-        </div>
-
-        {/* Budget filter — find goodies within your budget */}
-        <div style={{ marginBottom:14 }}>
-          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.18em', textTransform:'uppercase', color:G, marginBottom:10 }}>💰 Budget</div>
-          <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-            <button onClick={() => setBudgetFilter('')} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(budgetFilter===''?G:SB), background: budgetFilter==='' ? GM : brand.storeCard, color:budgetFilter===''?G:SD, cursor:'pointer', transition:'all .15s', boxShadow:budgetFilter===''?'0 1px 6px rgba(27,94,32,.08)':'none' }}>Any</button>
-            {BUDGET_TIERS.map(t => (
-              <button key={t.id} onClick={() => setBudgetFilter(budgetFilter===t.id?'':t.id)} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(budgetFilter===t.id?G:SB), background: budgetFilter===t.id ? GM : brand.storeCard, color:budgetFilter===t.id?G:SD, cursor:'pointer', transition:'all .15s', boxShadow:budgetFilter===t.id?'0 1px 6px rgba(27,94,32,.08)':'none' }}>{t.label}</button>
-            ))}
-          </div>
-        </div>
-
-        {/* Mood filter — emotional / vibe */}
-        <div style={{ marginBottom:18 }}>
-          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.18em', textTransform:'uppercase', color:G, marginBottom:10 }}>✨ Vibe</div>
-          <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-            <button onClick={() => setMoodFilter('')} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(moodFilter===''?G:SB), background: moodFilter==='' ? GM : brand.storeCard, color:moodFilter===''?G:SD, cursor:'pointer', transition:'all .15s', boxShadow:moodFilter===''?'0 1px 6px rgba(27,94,32,.08)':'none' }}>All vibes</button>
-            {moods.map(m => (
-              <button key={m.slug} onClick={() => setMoodFilter(moodFilter===m.slug?'':m.slug)} style={{ padding:'10px 18px', borderRadius:12, fontSize:12, fontWeight:600, border:'1.5px solid '+(moodFilter===m.slug?m.color:SB), background: moodFilter===m.slug ? m.color+'18' : brand.storeCard, color:moodFilter===m.slug?m.color:SD, cursor:'pointer', transition:'all .15s', boxShadow:moodFilter===m.slug?'0 1px 6px rgba(0,0,0,.06)':'none' }}><span style={{ marginRight:4 }}>{m.emoji}</span>{m.name}</button>
-            ))}
-          </div>
-        </div>
-
-        {/* Products grid */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(210px,1fr))', gap:14, marginBottom:28 }}>
-          {filteredProducts.length === 0 ? (
-            <div style={{ gridColumn:'1 / -1', textAlign:'center', padding:'48px 24px', background:GM, borderRadius:16, border:'1px solid #C8E6C9' }}>
-              <div style={{ fontSize:40, marginBottom:12 }}>🔍</div>
-              <div style={{ fontWeight:700, color:SH, fontSize:16, marginBottom:6 }}>No items match your filters</div>
-            <div style={{ fontSize:11, color:SD, marginBottom:8 }}>Try relaxing Budget or category to see more.</div>
-            <button onClick={() => { setBudgetFilter(''); setMoodFilter(''); setCatFilter('all'); }} style={{ ...greenBtn }}>Clear filters</button>
-            </div>
-          ) : filteredProducts.map(p => (
-            <div key={p.id} style={{ ...card, padding:18, opacity:(p.available !== false && p.inStock !== false) ? 1 : .4, position:'relative' }}>
-              {p.image && <img src={p.image} alt={p.name} style={{ width:'100%', aspectRatio:1, objectFit:'cover', borderRadius:12, marginBottom:12 }} />}
-              {p.tag && <span style={{ position:'absolute', top:12, right:12, fontSize:8, padding:'3px 10px', borderRadius:6, background:G, color:'#fff', fontWeight:800 }}>{p.tag}</span>}
-              <div style={{ fontWeight:700, color:SH, fontSize:15, marginBottom:4 }}>{p.name}</div>
-              {(p.category || p.categoryLabel) && <div style={{ fontSize:10, color:SD, marginBottom:10 }}>{p.categoryLabel || p.category}</div>}
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <span style={{ fontFamily:brand.fontDisplay, fontSize:22, fontWeight:700, color:G }}>{fmt(p.price)}</span>
-                {(p.available !== false && p.inStock !== false) ? <button onClick={() => addToCart(p)} style={{ padding:'8px 18px', borderRadius:10, background:G, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', border:'none' }}>+ Add</button>
-                : <span style={{ fontSize:10, color:brand.red, fontWeight:600 }}>Sold Out</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ═══ Cart ═══ */}
-        {cart.length > 0 && <div style={{ ...card, padding:26, marginBottom:28, border:'2px solid '+G+'18' }}>
-          {/* Kynetra at checkout — 20 years ahead: AI help when you need it */}
-          <div style={{ marginBottom:16, padding:12, background: theme.storeBg2, borderRadius:12, border:'1px solid '+SB }}>
-            <div style={{ fontSize:11, fontWeight:700, color:SH, marginBottom:8 }}>💬 Need help? Ask Kynetra</div>
-            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-              {['Discount code?', 'Track order', 'Change address?', 'Best GPU for my build'].map(msg => (
-                <button key={msg} type="button" onClick={() => typeof window !== 'undefined' && window.dispatchEvent(new CustomEvent('kynetra-open', { detail: { message: msg, send: true } }))} style={{ padding:'6px 14px', borderRadius:20, border:'1px solid '+SB, background: theme.storeCard, color:SH, fontSize:11, fontWeight:600, cursor:'pointer' }}>{msg}</button>
               ))}
             </div>
+          </section>
+          <p style={{ fontSize: 14, color: theme.storeDim }}>Use the tabs above to Shop, Build PC, view Offers, Track orders, or inquire about Franchise. Or open the chat for help.</p>
+          <section style={{ marginTop: 32 }}>
+            <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 18, color: theme.storeHeading, marginBottom: 12 }}>Book an expert</h2>
+            <p style={{ fontSize: 13, color: theme.storeDim, marginBottom: 12 }}>Free 15-min call for build advice or bulk quotes.</p>
+            <input placeholder="Topic (e.g. Gaming PC, Streaming build)" value={expertBooking.topic} onChange={(e) => setExpertBooking((f) => ({ ...f, topic: e.target.value }))} style={{ width: '100%', maxWidth: 400, padding: 12, marginBottom: 8, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
+            <button onClick={submitExpertBooking} style={{ padding: '12px 20px', borderRadius: 10, background: G, color: '#fff', fontWeight: 600, border: 'none' }}>Request call</button>
+          </section>
+        </>
+      )}
+
+      {/* Shop */}
+      {storeTab === 'shop' && (
+        <>
+          {compareIds.length > 0 && (
+            <div style={{ marginBottom: 20, padding: 16, background: theme.storeBg2, border: `1px solid ${theme.storeBorder}`, borderRadius: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <h3 style={{ fontSize: 16, color: theme.storeHeading }}>Compare ({compareIds.length})</h3>
+                <button onClick={() => setCompareIds([])} style={{ padding: '6px 12px', borderRadius: 8, border: `1px solid ${theme.storeBorder}`, background: 'transparent', fontSize: 12 }}>Clear</button>
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: `2px solid ${theme.storeBorder}` }}>
+                      <th style={{ textAlign: 'left', padding: 8, color: theme.storeDim }}>Product</th>
+                      <th style={{ textAlign: 'left', padding: 8, color: theme.storeDim }}>Category</th>
+                      <th style={{ textAlign: 'right', padding: 8, color: theme.storeDim }}>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {compareIds.map((id) => {
+                      const p = products.find((x) => x.id === id);
+                      return p ? (
+                        <tr key={id} style={{ borderBottom: `1px solid ${theme.storeBorder}` }}>
+                          <td style={{ padding: 8, color: theme.storeHeading }}>{p.name}</td>
+                          <td style={{ padding: 8, color: theme.storeDim }}>{p.category || '—'}</td>
+                          <td style={{ padding: 8, textAlign: 'right', fontWeight: 700, color: G }}>{fmt(p.price)}</td>
+                        </tr>
+                      ) : null;
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+          <div style={{ marginBottom: 16 }}>
+            <input
+              type="search"
+              placeholder="Search products..."
+              value={searchQ}
+              onChange={(e) => setSearchQ(e.target.value)}
+              style={{ width: '100%', maxWidth: 400, padding: '12px 16px', borderRadius: 10, border: `1px solid ${theme.storeBorder}`, background: theme.storeCard, color: theme.storeHeading }}
+            />
           </div>
-          <div style={{ fontFamily:brand.fontDisplay, fontWeight:700, color:SH, fontSize:20, marginBottom:18, display:'flex', alignItems:'center', gap:10 }}>
-            <span style={{ width:36, height:36, borderRadius:10, background:GM, display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>🛒</span>
-            Your Order <span style={{ fontSize:13, fontWeight:500, color:SD }}>({cart.reduce((a,i)=>a+i.qty,0)} items)</span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
+            {filteredProducts.slice(0, 24).map((p) => (
+              <div key={p.id} style={{ padding: 16, background: theme.storeCard, border: `1px solid ${theme.storeBorder}`, borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,.06)' }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: theme.storeHeading, marginBottom: 4 }}>{p.name}</div>
+                <div style={{ fontSize: 12, color: theme.storeDim, marginBottom: 8 }}>{p.category || 'Product'}</div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: G, marginBottom: 10 }}>{fmt(p.price)}</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => addToCart(p)} style={{ flex: 1, padding: '10px', borderRadius: 8, background: G, color: '#fff', fontWeight: 700, fontSize: 13, border: 'none' }}>Add to cart</button>
+                  <button onClick={() => addToWishlist(p)} style={{ padding: '10px', borderRadius: 8, border: `1px solid ${theme.storeBorder}`, background: 'transparent', fontSize: 16 }} title="Wishlist">♥</button>
+                  <button onClick={() => addToCompare(p)} style={{ padding: '10px', borderRadius: 8, border: `1px solid ${theme.storeBorder}`, background: compareIds.includes(p.id) ? G : 'transparent', color: compareIds.includes(p.id) ? '#fff' : theme.storeText, fontSize: 12 }} title="Compare">⇔</button>
+                </div>
+                {priceAlertProduct?.id === p.id ? (
+                  <div style={{ marginTop: 8, padding: 8, background: theme.storeBg2, borderRadius: 8 }}>
+                    <input type="number" placeholder="Target price (₹)" value={priceAlertTarget || p.price} onChange={(e) => setPriceAlertTarget(e.target.value)} style={{ width: '100%', padding: 8, marginBottom: 6, borderRadius: 6, border: `1px solid ${theme.storeBorder}` }} />
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button onClick={() => submitPriceAlert(p.id, p.name, p.price)} style={{ flex: 1, padding: 8, borderRadius: 6, background: G, color: '#fff', fontWeight: 600, fontSize: 12, border: 'none' }}>Set alert</button>
+                      <button onClick={() => { setPriceAlertProduct(null); setPriceAlertTarget(''); }} style={{ padding: 8, borderRadius: 6, border: `1px solid ${theme.storeBorder}`, background: 'transparent', fontSize: 12 }}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={() => { setPriceAlertProduct(p); setPriceAlertTarget(String(p.price)); }} style={{ width: '100%', marginTop: 6, padding: 6, borderRadius: 6, border: `1px solid ${theme.storeBorder}`, background: 'transparent', fontSize: 11, color: theme.storeDim }}>Notify when price drops</button>
+                )}
+              </div>
+            ))}
           </div>
-          {cart.map(i => (
-            <div key={i.id} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 0', borderBottom:'1px solid '+SB }}>
-              <span style={{ color:SH, fontSize:14, fontWeight:500 }}>{i.name}</span>
-              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <button onClick={() => updateCartQty(i.id,i.qty-1)} style={{ width:28, height:28, borderRadius:8, background: theme.storeBg2, color:SH, border:'1px solid '+SB, fontWeight:700, cursor:'pointer', fontSize:14 }}>−</button>
-                <span style={{ fontWeight:700, minWidth:24, textAlign:'center', color:SH }}>{i.qty}</span>
-                <button onClick={() => updateCartQty(i.id,i.qty+1)} style={{ width:28, height:28, borderRadius:8, background:GM, color:G, border:'1px solid #C8E6C9', fontWeight:700, cursor:'pointer', fontSize:14 }}>+</button>
-                <span style={{ fontWeight:700, color:G, minWidth:65, textAlign:'right' }}>{fmt(i.price*i.qty)}</span>
-                <button onClick={() => removeFromCart(i.id)} style={{ color:brand.red, background:'none', border:'none', fontSize:14, cursor:'pointer' }}>✕</button>
+        </>
+      )}
+
+      {/* Build PC */}
+      {storeTab === 'buildpc' && (
+        <>
+          <p style={{ fontSize: 14, color: theme.storeDim, marginBottom: 16 }}>Add components to your build. Total updates automatically.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24 }}>
+            <div>
+              <h3 style={{ fontSize: 14, color: theme.storeHeading, marginBottom: 8 }}>Components & peripherals</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {products.map((p) => (
+                  <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 12, background: theme.storeBg2, borderRadius: 10, border: `1px solid ${theme.storeBorder}` }}>
+                    <span style={{ color: theme.storeHeading }}>{p.name} — {fmt(p.price)}</span>
+                    <button onClick={() => addBuildPart(p)} style={{ padding: '8px 14px', borderRadius: 8, background: G, color: '#fff', fontWeight: 600, border: 'none' }}>Add</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ padding: 20, background: theme.storeBg2, border: `1px solid ${theme.storeBorder}`, borderRadius: 16, height: 'fit-content' }}>
+              <h3 style={{ fontSize: 16, color: theme.storeHeading, marginBottom: 12 }}>Your build</h3>
+              {buildParts.length === 0 ? (
+                <p style={{ color: theme.storeDim, fontSize: 13 }}>No parts added. Add components from the list.</p>
+              ) : (
+                <>
+                  {buildParts.map((i) => (
+                    <div key={i.productId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: `1px solid ${theme.storeBorder}` }}>
+                      <span style={{ fontSize: 13, color: theme.storeHeading }}>{i.name} × {i.qty}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <button onClick={() => updateBuildQty(i.productId, i.qty - 1)} style={{ width: 26, height: 26, borderRadius: 6, border: `1px solid ${theme.storeBorder}`, background: theme.storeCard, fontSize: 14 }}>−</button>
+                        <span style={{ fontWeight: 700, minWidth: 20, textAlign: 'center' }}>{i.qty}</span>
+                        <button onClick={() => updateBuildQty(i.productId, i.qty + 1)} style={{ width: 26, height: 26, borderRadius: 6, border: `1px solid ${G}`, background: brand.greenMint, color: G, fontSize: 14 }}>+</button>
+                        <span style={{ fontWeight: 700, color: G }}>{fmt(i.price * i.qty)}</span>
+                        <button onClick={() => removeBuildPart(i.productId)} style={{ color: brand.red, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
+                      </div>
+                    </div>
+                  ))}
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `2px solid ${theme.storeBorder}`, fontWeight: 700, fontSize: 18, color: G }}>Total: {buildTotal != null ? fmt(buildTotal) : '—'}</div>
+                  <button onClick={addBuildToCart} disabled={buildParts.length === 0} style={{ width: '100%', marginTop: 12, padding: 14, borderRadius: 12, background: G, color: '#fff', fontWeight: 700, border: 'none' }}>Add build to cart</button>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Offers */}
+      {storeTab === 'offers' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {activeOffers.length === 0 ? (
+            <p style={{ color: theme.storeDim }}>No active offers. Check back later or ask Kynetra for deals.</p>
+          ) : (
+            activeOffers.map((o) => (
+              <div key={o.id} style={{ padding: 20, background: theme.storeCard, border: `1px solid ${theme.storeBorder}`, borderRadius: 16 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: theme.storeHeading, marginBottom: 4 }}>{o.icon} {o.name}</div>
+                <div style={{ fontSize: 13, color: theme.storeDim, marginBottom: 8 }}>{o.desc}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: G }}>Code: {o.code}</div>
+                {o.minOrder && <div style={{ fontSize: 12, color: theme.storeDim }}>Min order: {fmt(o.minOrder)}</div>}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Track */}
+      {storeTab === 'track' && (
+        <div>
+          <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 20, color: theme.storeHeading, marginBottom: 16 }}>Your orders</h2>
+          {customerOrders?.length > 0 ? (
+            customerOrders.slice(0, 10).map((o) => (
+              <div key={o.id} style={{ padding: 16, marginBottom: 12, background: theme.storeCard, border: `1px solid ${theme.storeBorder}`, borderRadius: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontWeight: 700, color: theme.storeHeading }}>{o.id}</span>
+                  <span style={{ fontSize: 13, color: theme.storeDim }}>{o.status}</span>
+                </div>
+                <div style={{ marginTop: 4, color: theme.storeDim, fontSize: 13 }}>Total {fmt(o.total)} · {o.placed || ''}</div>
+              </div>
+            ))
+          ) : (
+            <p style={{ color: theme.storeDim }}>No orders yet. Place an order from Shop and come back here, or ask Kynetra to track by Order ID.</p>
+          )}
+        </div>
+      )}
+
+      {/* Franchise */}
+      {storeTab === 'franchise' && (
+        <div style={{ maxWidth: 480 }}>
+          <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 20, color: theme.storeHeading, marginBottom: 8 }}>Franchise inquiry</h2>
+          <p style={{ fontSize: 14, color: theme.storeDim, marginBottom: 20 }}>Share your details and our team will call you in 24h.</p>
+          <input placeholder="Full name" value={franchiseForm.name} onChange={(e) => setFranchiseForm((f) => ({ ...f, name: e.target.value }))} style={{ width: '100%', padding: 12, marginBottom: 10, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
+          <input placeholder="Phone" value={franchiseForm.phone} onChange={(e) => setFranchiseForm((f) => ({ ...f, phone: e.target.value }))} style={{ width: '100%', padding: 12, marginBottom: 10, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
+          <input placeholder="City" value={franchiseForm.city} onChange={(e) => setFranchiseForm((f) => ({ ...f, city: e.target.value }))} style={{ width: '100%', padding: 12, marginBottom: 10, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
+          <textarea placeholder="Message (optional)" value={franchiseForm.message} onChange={(e) => setFranchiseForm((f) => ({ ...f, message: e.target.value }))} style={{ width: '100%', padding: 12, marginBottom: 16, borderRadius: 8, border: `1px solid ${theme.storeBorder}`, minHeight: 80 }} />
+          <button onClick={() => { show('Inquiry submitted. We will call you soon.'); setFranchiseForm({ name: '', phone: '', city: '', message: '' }); }} style={{ padding: '14px 24px', borderRadius: 12, background: G, color: '#fff', fontWeight: 700, border: 'none' }}>Submit</button>
+        </div>
+      )}
+
+      {/* Cart & checkout (all tabs) */}
+      {cart.length > 0 && (
+        <div style={{ marginTop: 32, padding: 24, background: theme.storeBg2, border: `1px solid ${theme.storeBorder}`, borderRadius: 16 }}>
+          <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 20, color: theme.storeHeading, marginBottom: 16 }}>Cart ({cart.length} items)</h2>
+          {cart.map((item) => (
+            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${theme.storeBorder}` }}>
+              <span style={{ color: theme.storeHeading }}>{item.name} × {item.qty}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <button onClick={() => updateCartQty(item.id, item.qty - 1)} style={{ width: 28, height: 28, borderRadius: 6, border: `1px solid ${theme.storeBorder}`, background: theme.storeCard, fontSize: 16 }}>−</button>
+                <span style={{ fontWeight: 700, minWidth: 24, textAlign: 'center' }}>{item.qty}</span>
+                <button onClick={() => updateCartQty(item.id, item.qty + 1)} style={{ width: 28, height: 28, borderRadius: 6, border: `1px solid ${G}`, background: brand.greenMint, color: G, fontSize: 16 }}>+</button>
+                <span style={{ fontWeight: 700, color: G, minWidth: 70, textAlign: 'right' }}>{fmt(item.price * item.qty)}</span>
+                <button onClick={() => removeFromCart(item.id)} style={{ color: brand.red, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>✕</button>
               </div>
             </div>
           ))}
-          <div style={{ paddingTop:16, marginTop:10, fontSize:13 }}>
-            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}><span style={{ color:SD }}>Subtotal</span><span style={{ color:SH }}>{fmt(cartTotal)}</span></div>
-            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}><span style={{ color:SD }}>GST ({gstRate}%)</span><span style={{ color:SH }}>{fmt(gst)}</span></div>
-            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
-              <span style={{ color:SD }}>Delivery</span>
-              {isFreeDelivery ? <span style={{ color:G, fontWeight:700 }}>FREE ✓</span> : <span style={{ color:SH }}>₹{deliveryCharge} <span style={{ fontSize:10, color:G }}>· Free over ₹{freeAbove}</span></span>}
-            </div>
-            {discount>0 && <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}><span style={{ color:G }}>🎁 {appliedOffer?.code}</span><span style={{ color:G, fontWeight:700 }}>−{fmt(discount)}</span></div>}
-            <div style={{ display:'flex', justifyContent:'space-between', fontWeight:700, fontSize:20, marginTop:12, paddingTop:12, borderTop:'2px solid '+SB }}>
-              <span style={{ color:SH }}>Total</span>
-              <span style={{ color:G }}>{fmt(grandTotal)}</span>
+          <div style={{ marginTop: 16, fontSize: 14 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}><span style={{ color: theme.storeDim }}>Subtotal</span><span>{fmt(cartTotal)}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}><span style={{ color: theme.storeDim }}>GST ({gstRate}%)</span><span>{fmt(gst)}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}><span style={{ color: theme.storeDim }}>Delivery</span><span>{deliveryFee === 0 ? 'FREE' : fmt(deliveryFee)}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 18, marginTop: 12, paddingTop: 12, borderTop: `2px solid ${theme.storeBorder}` }}>
+              <span>Total</span><span style={{ color: G }}>{fmt(grandTotal)}</span>
             </div>
           </div>
           {!checkoutOpen ? (
-            <button onClick={openCheckout} style={{ ...greenBtn, width:'100%', marginTop:16, fontSize:16, padding:15 }}>🛒 Checkout · {fmt(grandTotal)}</button>
+            <button onClick={() => setCheckoutOpen(true)} style={{ width: '100%', marginTop: 16, padding: 14, borderRadius: 12, background: G, color: '#fff', fontWeight: 700, fontSize: 16, border: 'none' }}>
+              Checkout · {fmt(grandTotal)}
+            </button>
           ) : (
-            <div style={{ padding:22, background: theme.storeBg2, borderRadius:14, border:'1px solid '+SB }}>
-              <div style={{ fontSize:10, fontWeight:800, color:G, marginBottom:12, letterSpacing:'.2em' }}>DELIVERY DETAILS</div>
-              {['name','phone','address'].map(f => <input key={f} placeholder={f==='name'?'Full Name':f==='phone'?'Phone (+91)':'Delivery Address'} value={custInfo[f]} onChange={e => setCustInfo(p=>({...p,[f]:e.target.value}))} style={{ ...inp, marginBottom:8 }} />)}
-              <div style={{ display:'flex', gap:8, marginBottom:12 }}>
-                {['delivery','pickup'].map(t => <button key={t} onClick={() => setCustInfo(p=>({...p,type:t}))} style={{ flex:1, padding:11, borderRadius:10, fontSize:13, fontWeight:700, border:'2px solid '+(custInfo.type===t?G:SB), background:custInfo.type===t?GM:'#fff', color:custInfo.type===t?G:SD, cursor:'pointer', transition:'all .15s' }}>{t==='delivery'?'🛵 Delivery':'🏃 Pickup'}</button>)}
-              </div>
-              <div style={{ display:'flex', gap:8, marginBottom:14 }}>
-                <input placeholder="Coupon code" value={custInfo.coupon} onChange={e => setCustInfo(p=>({...p,coupon:e.target.value.toUpperCase()}))} style={{ ...inp, flex:1, textTransform:'uppercase', letterSpacing:'.1em' }} />
-                <button onClick={applyCoupon} style={{ padding:'0 20px', borderRadius:10, background:brand.gold+'15', border:'1px solid '+brand.gold+'35', color:brand.gold, fontWeight:700, fontSize:12, cursor:'pointer' }}>Apply</button>
-              </div>
-              <button onClick={handlePlace} style={{ ...greenBtn, width:'100%', fontSize:16, padding:15 }}>✅ Place Order · {fmt(grandTotal)}</button>
+            <div style={{ marginTop: 16, padding: 16, background: theme.storeCard, borderRadius: 12, border: `1px solid ${theme.storeBorder}` }}>
+              <input placeholder="Full name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} style={{ width: '100%', padding: 12, marginBottom: 8, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
+              <input placeholder="Phone" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} style={{ width: '100%', padding: 12, marginBottom: 8, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
+              <input placeholder="Address" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} style={{ width: '100%', padding: 12, marginBottom: 12, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
+              <button onClick={handlePlaceOrder} style={{ width: '100%', padding: 14, borderRadius: 12, background: G, color: '#fff', fontWeight: 700, fontSize: 16, border: 'none' }}>
+                Place order · {fmt(grandTotal)}
+              </button>
             </div>
           )}
-        </div>}
-      </>}
-
-      {/* ═══ OFFERS ═══ */}
-      {tab==='offers' && <div>
-        {settings.VIRAL_REFERRAL_ENABLED !== 'false' && <div style={{ background:'linear-gradient(150deg, '+GD+', '+G+', '+GL+')', borderRadius:20, padding:'36px 28px', marginBottom:24, textAlign:'center' }}>
-          <div style={{ fontSize:44, marginBottom:10 }}>🎁</div>
-          <h3 style={{ fontFamily:brand.fontDisplay, fontSize:26, color:'#fff', marginBottom:6 }}>Refer Friends, Earn Rewards</h3>
-          <p style={{ fontSize:13, color:'#C8E6C9', marginBottom:18 }}>They get ₹{settings.VIRAL_REFERRAL_FRIEND||100} off, you earn ₹{settings.VIRAL_REFERRAL_REWARD||100}.</p>
-          <div style={{ display:'inline-flex', alignItems:'center', gap:10, background:'rgba(255,255,255,.12)', border:'2px dashed rgba(255,255,255,.25)', borderRadius:12, padding:'12px 26px', marginBottom:16 }}>
-            <span style={{ fontFamily:'monospace', fontSize:24, fontWeight:800, color:'#fff' }}>{refCode}</span>
-            <button onClick={() => shareReferral('copy')} style={{ padding:'6px 14px', borderRadius:8, background:'rgba(255,255,255,.2)', color:'#fff', fontWeight:700, fontSize:11, border:'none', cursor:'pointer' }}>📋 Copy</button>
-          </div>
-          <div><button onClick={() => shareReferral('whatsapp')} style={{ padding:'10px 22px', borderRadius:10, background:'#25D366', color:'#fff', fontWeight:700, fontSize:13, border:'none', cursor:'pointer' }}>💬 Share on WhatsApp</button></div>
-        </div>}
-
-        <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', color:G, marginBottom:12 }}>🎉 ACTIVE OFFERS</div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))', gap:12, marginBottom:24 }}>
-          {activeOffers.map(o => (
-            <div key={o.id} style={{ ...card, padding:20, borderLeft:'4px solid '+G }}>
-              <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
-                <span style={{ fontSize:30 }}>{o.icon}</span>
-                <div><div style={{ fontWeight:700, fontSize:15, color:SH }}>{o.name}</div><div style={{ fontSize:11, color:SD }}>{o.desc}</div></div>
-              </div>
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <span style={{ fontFamily:'monospace', fontSize:14, fontWeight:700, color:G, background:GM, padding:'5px 14px', borderRadius:6, border:'1px dashed '+G+'30' }}>{o.code}</span>
-                <button onClick={() => { setCustInfo(p=>({...p,coupon:o.code})); setAppliedOffer(o); setTab('menu'); show('🎉 Applied!'); }} style={{ padding:'8px 16px', borderRadius:8, background:G, color:'#fff', fontWeight:700, fontSize:12, border:'none', cursor:'pointer' }}>Apply →</button>
-              </div>
-              {o.minOrder>0 && <div style={{ fontSize:10, color:SD, marginTop:8 }}>Min: ₹{o.minOrder}{o.freebieItem ? ' · Freebie: '+o.freebieItem : ''}</div>}
-            </div>
-          ))}
         </div>
+      )}
 
-        {settings.VIRAL_REWARDS_ENABLED !== 'false' && <>
-          <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', color:G, marginBottom:12 }}>🏆 LOYALTY TIERS</div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(185px,1fr))', gap:10 }}>
-            {rewardsConf.tiers.map((t,i) => (
-              <div key={t.name} style={{ ...card, padding:18, textAlign:'center', borderTop:'3px solid '+[SD,'#C0C0C0',brand.gold,'#4CAF50'][i] }}>
-                <div style={{ fontSize:30, marginBottom:6 }}>{['🥉','🥈','🥇','💎'][i]}</div>
-                <div style={{ fontFamily:brand.fontDisplay, fontWeight:700, fontSize:16, color:SH }}>{t.name}</div>
-                <div style={{ fontSize:11, color:SD, marginBottom:8 }}>{t.minPoints}+ pts · {t.multiplier}x</div>
-                {t.perks.map(p => <div key={p} style={{ fontSize:10, color:G, marginBottom:2 }}>✓ {p}</div>)}
-              </div>
-            ))}
-          </div>
-        </>}
-      </div>}
+      <footer style={{ marginTop: 48, paddingTop: 24, borderTop: `1px solid ${theme.storeBorder}`, fontSize: 12, color: theme.storeDim, textAlign: 'center' }}>
+        {brand.footer}
+      </footer>
 
-      {/* ═══ ORDERS ═══ */}
-      {tab==='track' && <div>
-        {!customer && <div style={{ textAlign:'center', padding:'50px 20px' }}><div style={{ fontSize:48, marginBottom:12 }}>🔐</div><h3 style={{ fontFamily:brand.fontDisplay, color:SH, marginBottom:10 }}>Sign in to view orders</h3><button onClick={() => setShowUserAuth(true)} style={greenBtn}>Sign In</button></div>}
-        {customer && customerOrders.length === 0 && <div style={{ textAlign:'center', padding:'50px 20px' }}><div style={{ fontSize:48, marginBottom:12 }}>📦</div><h3 style={{ fontFamily:brand.fontDisplay, color:SH }}>No orders yet</h3><button onClick={() => setTab('menu')} style={{ ...greenBtn, marginTop:14 }}>Browse Shop</button></div>}
-        {customerOrders.map(o => (
-          <div key={o.id} style={{ ...card, padding:20, marginBottom:10 }}>
-            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-              <div><span style={{ fontFamily:'monospace', fontWeight:700, color:SH }}>{o.id}</span><span style={{ fontSize:11, color:SD, marginLeft:8 }}>{o.placed}</span></div>
-              <Badge color={o.status==='delivered'?G:o.status==='out_for_delivery'?brand.blue:brand.gold}>{o.status.replace(/_/g,' ')}</Badge>
-            </div>
-            <div style={{ fontSize:12, color:SD }}>{o.items.map(i => i.name+' ×'+i.qty).join(', ')}</div>
-            <div style={{ display:'flex', justifyContent:'space-between', marginTop:8 }}><span style={{ fontWeight:700, color:G }}>{fmt(o.total)}</span>{o.eta>0 && o.status!=='delivered' && <span style={{ color:G, fontSize:12, fontWeight:600 }}>⏱ ~{o.eta}min</span>}</div>
-          </div>
-        ))}
-      </div>}
-
-      {/* ═══ FRANCHISE ═══ */}
-      {tab==='franchise' && settings.FRANCHISE_ENABLED!=='false' && <div>
-        <div style={{ background:'linear-gradient(150deg, '+GD+', '+G+', '+GL+')', borderRadius:20, padding:'40px 30px', marginBottom:24, textAlign:'center' }}>
-          <div style={{ fontSize:48, marginBottom:12 }}>🏢</div>
-          <h2 style={{ fontFamily:brand.fontDisplay, fontSize:30, color:'#fff', marginBottom:8 }}>Partner with {brand.name}</h2>
-          <p style={{ fontSize:14, color:'#C8E6C9', maxWidth:500, margin:'0 auto 22px' }}>₹{settings.FRANCHISE_MIN_INVESTMENT||15}L – ₹{settings.FRANCHISE_MAX_INVESTMENT||35}L investment</p>
-          <div style={{ display:'flex', justifyContent:'center', gap:24, flexWrap:'wrap' }}>
-            {[{ l:'Investment', v:'₹'+(settings.FRANCHISE_MIN_INVESTMENT||15)+'-'+(settings.FRANCHISE_MAX_INVESTMENT||35)+'L' },{ l:'Royalty', v:(settings.FRANCHISE_DEFAULT_ROYALTY||12)+'%' },{ l:'Locations', v:activeStores.length+'+' },{ l:'ROI', v:'18-24mo' }].map(s2 => (
-              <div key={s2.l}><div style={{ fontFamily:brand.fontDisplay, fontSize:24, fontWeight:700, color:brand.gold }}>{s2.v}</div><div style={{ fontSize:10, color:'#A5D6A7', letterSpacing:'.1em' }}>{s2.l}</div></div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', color:G, marginBottom:12 }}>✨ WHY {brand.name.toUpperCase()}</div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:10, marginBottom:24 }}>
-          {[{i:'🖥️',t:'Proven Catalog',d:'Gaming PCs, laptops & components loved by builders'},{i:'📦',t:'Full Support',d:'Setup, training, ops, marketing'},{i:'💻',t:'Tech Platform',d:'POS, OMS, delivery, WhatsApp — included'},{i:'📈',t:'High Margins',d:'60%+ gross, optimized supply chain'},{i:'🎯',t:'Marketing',d:'Viral engine, social, SEO done for you'},{i:'🤝',t:'Community',d:'Network of franchise owners'}].map(f => (
-            <div key={f.t} style={{ ...card, padding:18 }}><div style={{ fontSize:28, marginBottom:8 }}>{f.i}</div><div style={{ fontWeight:700, color:SH, fontSize:14, marginBottom:4 }}>{f.t}</div><div style={{ fontSize:12, color:SD }}>{f.d}</div></div>
-          ))}
-        </div>
-
-        <div style={{ fontSize:10, fontWeight:800, letterSpacing:'.2em', color:G, marginBottom:12 }}>📝 FRANCHISE INQUIRY</div>
-        <div style={{ ...card, padding:26, maxWidth:540 }}>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:8 }}>
-            <input placeholder="Full Name *" value={franchiseForm.name} onChange={e => setFranchiseForm(p=>({...p,name:e.target.value}))} style={inp} />
-            <input placeholder="Phone *" value={franchiseForm.phone} onChange={e => setFranchiseForm(p=>({...p,phone:e.target.value}))} style={inp} />
-          </div>
-          <input placeholder="Email *" value={franchiseForm.email} onChange={e => setFranchiseForm(p=>({...p,email:e.target.value}))} style={{ ...inp, marginBottom:8 }} />
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:8 }}>
-            <input placeholder="Preferred City" value={franchiseForm.city} onChange={e => setFranchiseForm(p=>({...p,city:e.target.value}))} style={inp} />
-            <select value={franchiseForm.investment} onChange={e => setFranchiseForm(p=>({...p,investment:e.target.value}))} style={{ ...inp, appearance:'auto' }}>
-              <option value="">Budget</option><option value="15-20L">₹15-20L</option><option value="20-25L">₹20-25L</option><option value="25-35L">₹25-35L</option><option value="35L+">₹35L+</option>
-            </select>
-          </div>
-          <select value={franchiseForm.experience} onChange={e => setFranchiseForm(p=>({...p,experience:e.target.value}))} style={{ ...inp, marginBottom:8, appearance:'auto' }}>
-            <option value="">Retail / Tech Experience</option><option value="none">None</option><option value="1-3">1-3 years</option><option value="3+">3+ years</option>
-          </select>
-          <textarea placeholder="Tell us about yourself..." value={franchiseForm.message} onChange={e => setFranchiseForm(p=>({...p,message:e.target.value}))} rows={3} style={{ ...inp, marginBottom:14, resize:'vertical' }} />
-          <button onClick={() => { if(!franchiseForm.name||!franchiseForm.phone) return show('Fill name & phone','error'); show('✅ Inquiry submitted!'); setFranchiseForm({name:'',phone:'',email:'',city:'',investment:'',experience:'',message:''}); }} style={{ ...greenBtn, width:'100%' }}>🏢 Submit Franchise Inquiry</button>
-        </div>
-      </div>}
-
-      {/* ═══ WHATSAPP CHATBOT WIDGET ═══ */}
-      <ChatBotWidget waPhone={waPhone} show={show} />
+      <KynetraChatWidget onNavigate={(tab) => setStoreTab(tab)} storeTab={storeTab} />
     </div>
   );
-}
-
-function ChatBotWidget({ waPhone, show }) {
-  const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState([
-    { from:'bot', text:'👋 Welcome to ' + brand.name + '! I can help you with:\n\n🛒 Shop\n📦 Track order\n🎁 View offers\n🏢 Partner info\n\nJust type or tap below!' }
-  ]);
-  const [input, setInput] = useState('');
-  const G = '#1B5E20';
-
-  const quickReplies = ['🛒 Shop','📦 Track Order','🎁 Offers','🏢 Franchise'];
-
-  const botReply = (text) => {
-    const t = text.toLowerCase();
-    if (t.includes('menu')||t.includes('shop')||t.includes('order')||t.includes('laptop')||t.includes('gaming')||t.includes('build')||t.includes('pc')) return '🖥️ Our top picks:\n\n• Gaming PCs — from ₹45,999\n• Gaming Laptops — from ₹62,999\n• Build Your PC — configurator\n• Peripherals & accessories\n\nTap the Shop tab to browse!';
-    if (t.includes('track')||t.includes('status')||t.includes('where')) return '📦 To track your order, share your Order ID (e.g. ORD-7X2). You can also check the Orders tab above!';
-    if (t.includes('offer')||t.includes('deal')||t.includes('discount')||t.includes('coupon')) return '🎁 Active offers:\n\n• WELCOME20 — 20% off first order\n• GAMING50 — ₹500 off gaming PCs\n• BUILD100 — ₹1,000 off Build Your PC\n\nApply at checkout!';
-    if (t.includes('franchise')||t.includes('own')||t.includes('invest')) return '🏢 Franchise details:\n\n• Investment: ₹15-35L\n• ROI: 18-24 months\n• Full support\n\nTap the Franchise tab or I can connect you with our team!';
-    if (t.includes('hello')||t.includes('hi')||t.includes('hey')) return '👋 Hi! How can I help today?';
-    return '🤔 I can help with:\n\n🛒 Shopping (PCs, laptops, Build PC)\n📦 Tracking orders\n🎁 Offers & discounts\n🏢 Franchise info\n\nOr tap a quick reply below!';
-  };
-
-  const send = (text) => {
-    const t = text || input;
-    if (!t.trim()) return;
-    setMsgs(p => [...p, { from:'user', text: t }]);
-    setInput('');
-    setTimeout(() => setMsgs(p => [...p, { from:'bot', text: botReply(t) }]), 600);
-  };
-
-  return <>
-    {!open && <button onClick={() => setOpen(true)} style={{ position:'fixed', bottom:24, right:24, width:60, height:60, borderRadius:30, background:'#25D366', border:'none', cursor:'pointer', boxShadow:'0 6px 20px rgba(37,211,102,.4)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, zIndex:1000 }}>💬</button>}
-    {open && <div style={{ position:'fixed', bottom:24, right:24, width:360, maxHeight:520, borderRadius:20, overflow:'hidden', zIndex:1000, boxShadow:'0 10px 40px rgba(0,0,0,.15)', border:'1px solid #E0E8E0', display:'flex', flexDirection:'column', background:'#fff' }}>
-      <div style={{ padding:'14px 18px', background:G, color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <div style={{ width:36, height:36, borderRadius:18, background:'rgba(255,255,255,.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>🤖</div>
-          <div><div style={{ fontWeight:700, fontSize:14 }}>{brand.name}</div><div style={{ fontSize:10, opacity:.8 }}>Online · Replies instantly</div></div>
-        </div>
-        <button onClick={() => setOpen(false)} style={{ color:'#fff', background:'none', border:'none', fontSize:18, cursor:'pointer' }}>✕</button>
-      </div>
-      <div style={{ flex:1, overflowY:'auto', padding:'14px 16px', background:'#F0F4F0', maxHeight:320 }}>
-        {msgs.map((m,i) => (
-          <div key={i} style={{ display:'flex', justifyContent:m.from==='user'?'flex-end':'flex-start', marginBottom:8 }}>
-            <div style={{ maxWidth:'80%', padding:'10px 14px', borderRadius:m.from==='user'?'16px 16px 4px 16px':'16px 16px 16px 4px', background:m.from==='user'?G:'#fff', color:m.from==='user'?'#fff':'#333', fontSize:13, lineHeight:1.5, whiteSpace:'pre-wrap', boxShadow:m.from==='bot'?'0 1px 4px rgba(0,0,0,.06)':'none' }}>{m.text}</div>
-          </div>
-        ))}
-      </div>
-      <div style={{ padding:'6px 16px', background:'#fff', display:'flex', gap:4, overflowX:'auto', borderTop:'1px solid #E8F5E9' }}>
-        {quickReplies.map(q => <button key={q} onClick={() => send(q)} style={{ padding:'6px 12px', borderRadius:16, background:'#E8F5E9', color:G, fontSize:11, fontWeight:600, border:'none', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0 }}>{q}</button>)}
-      </div>
-      <div style={{ padding:'10px 16px', background:'#fff', display:'flex', gap:8, borderTop:'1px solid #E8F5E9' }}>
-        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key==='Enter' && send()} placeholder="Type a message..." style={{ flex:1, padding:'10px 14px', borderRadius:24, background:'#F0F4F0', border:'none', fontSize:13, outline:'none', color:'#333' }} />
-        <button onClick={() => send()} style={{ width:40, height:40, borderRadius:20, background:G, color:'#fff', border:'none', cursor:'pointer', fontSize:16, display:'flex', alignItems:'center', justifyContent:'center' }}>→</button>
-      </div>
-      <div style={{ padding:'8px 16px', background:'#F8FAF8', textAlign:'center', borderTop:'1px solid #E8F5E9' }}>
-        <button onClick={() => window.open?.('https://wa.me/'+waPhone.replace(/[^0-9]/g,''))} style={{ fontSize:11, color:'#25D366', fontWeight:700, background:'none', border:'none', cursor:'pointer' }}>Continue on WhatsApp →</button>
-      </div>
-    </div>}
-  </>;
 }

@@ -106,6 +106,13 @@ export function AppProvider({ children }) {
     try { localStorage.setItem('tvs_kynetra_templates', JSON.stringify(kynetraTemplates)); } catch (_) {}
   }, [kynetraTemplates]);
 
+  // ═══ TOAST (must be before store-feature callbacks that use show) ═══
+  const [toast, setToast] = useState(null);
+  const show = useCallback((msg, type = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 2500);
+  }, []);
+
   // ═══ STORE FEATURES (wishlist, price alerts, preorders, trade-in, build guides, warranty, expert booking, loyalty, stock-by-store, compare) ═══
   const [storeFeaturesData, setStoreFeaturesData] = useState({
     wishlist: [], priceAlerts: [], preorders: [], tradeins: [], buildGuides: [], warranties: [], expertBookings: [], loyaltyPoints: [], stockByStore: [], comparisons: [],
@@ -123,48 +130,41 @@ export function AppProvider({ children }) {
       const data = await res.json();
       if (data.ok && data.item) {
         setStoreFeaturesData(p => ({ ...p, [type]: [...(p[type] || []), data.item] }));
-        show('Saved');
+        setToast({ msg: 'Saved', type: 'success' }); setTimeout(() => setToast(null), 2500);
         return data.item;
       }
       return null;
-    } catch (e) { show('Failed to save', 'error'); return null; }
-  }, [show]);
+    } catch (e) { setToast({ msg: 'Failed to save', type: 'error' }); setTimeout(() => setToast(null), 2500); return null; }
+  }, []);
   const updateStoreFeature = useCallback(async (type, id, payload) => {
     try {
       const res = await fetch(`/api/store-features/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, ...payload }) });
       const data = await res.json();
       if (data.ok && data.item) {
         setStoreFeaturesData(p => ({ ...p, [type]: (p[type] || []).map(x => x.id === id ? data.item : x) }));
-        show('Updated');
+        setToast({ msg: 'Updated', type: 'success' }); setTimeout(() => setToast(null), 2500);
         return data.item;
       }
       return null;
-    } catch (e) { show('Failed to update', 'error'); return null; }
-  }, [show]);
+    } catch (e) { setToast({ msg: 'Failed to update', type: 'error' }); setTimeout(() => setToast(null), 2500); return null; }
+  }, []);
   const deleteStoreFeature = useCallback(async (type, id) => {
     try {
       const res = await fetch(`/api/store-features/${id}?type=${type}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.ok) {
         setStoreFeaturesData(p => ({ ...p, [type]: (p[type] || []).filter(x => x.id !== id) }));
-        show('Removed');
+        setToast({ msg: 'Removed', type: 'success' }); setTimeout(() => setToast(null), 2500);
         return true;
       }
       return false;
-    } catch (e) { show('Failed to remove', 'error'); return false; }
-  }, [show]);
+    } catch (e) { setToast({ msg: 'Failed to remove', type: 'error' }); setTimeout(() => setToast(null), 2500); return false; }
+  }, []);
   useEffect(() => {
     const types = ['wishlist', 'priceAlerts', 'preorders', 'tradeins', 'buildGuides', 'warranties', 'expertBookings', 'loyaltyPoints', 'stockByStore', 'comparisons'];
     types.forEach((t) => fetch('/api/store-features?type=' + t).then((res) => res.json()).then((data) => {
       if (data[t]) setStoreFeaturesData((p) => ({ ...p, [t]: data[t] }));
     }).catch(() => {}));
-  }, []);
-
-  // ═══ TOAST ═══
-  const [toast, setToast] = useState(null);
-  const show = useCallback((msg, type = 'success') => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 2500);
   }, []);
 
   // ═══ AUTH (Backend API) ═══
@@ -459,6 +459,16 @@ export function AppProvider({ children }) {
     });
     cart.forEach(item => { const si = stock.find(s => s.name?.toLowerCase().includes(item.name.toLowerCase().split(' ')[0])); if (si) updateStock(si.sku, { qty: Math.max(0, si.qty - item.qty) }); });
     setCart([]); setCustomerOrders(p => [order, ...p]);
+    // Persist to backend so Kynetra can look up order by ID
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: order.id, customer: order.customer, phone: order.phone, store: order.store,
+        items: order.items, total: order.total, subtotal: order.subtotal, gst: order.gst, deliveryFee: order.deliveryFee,
+        type: order.type, address: order.address, partner: order.partner, eta: order.eta,
+      }),
+    }).catch(() => {});
     return order;
   }, [cart, selectedStore, settings, stores, deliveryZones, stock, addOrder, updateStock, show]);
 

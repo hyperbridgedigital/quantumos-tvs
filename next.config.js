@@ -3,16 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   compress: true,
   poweredByHeader: false,
-  
+
   // Optimize images
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
-  },
-
-  // Bundle optimization
-  experimental: {
-    optimizePackageImports: ['@/components/shared', '@/data'],
   },
 
   // Security + cache headers

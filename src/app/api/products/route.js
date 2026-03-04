@@ -16,10 +16,22 @@ export async function GET(request) {
     const category = searchParams.get('category') || '';
     const mood = searchParams.get('mood') || '';
     const budgetTier = searchParams.get('budgetTier') || '';
+    const q = (searchParams.get('q') || '').trim().toLowerCase();
     const budgetMin = searchParams.has('budgetMin') ? Number(searchParams.get('budgetMin')) : null;
     const budgetMax = searchParams.has('budgetMax') ? Number(searchParams.get('budgetMax')) : null;
 
     let list = withBudgetTiers(menuItems);
+
+    if (q) {
+      list = list.filter(
+        (p) =>
+          (p.name || '').toLowerCase().includes(q) ||
+          (p.category || '').toLowerCase().includes(q) ||
+          (p.sku || '').toLowerCase().includes(q) ||
+          (p.tag || '').toLowerCase().includes(q) ||
+          (p.moods || []).some((m) => m.toLowerCase().includes(q))
+      );
+    }
 
     if (category && category !== 'all') {
       list = list.filter((p) => (p.category || 'Main') === category);

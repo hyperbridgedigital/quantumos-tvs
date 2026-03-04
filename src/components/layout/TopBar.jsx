@@ -1,88 +1,89 @@
 'use client';
-import { memo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
-import { ROLES } from '@/data/roles';
 
-function TopBar() {
-  const { view, setView, user, customer, adminLogout, userLogout, setShowUserAuth, setShowAdminLogin, cart, settings, storeTheme, setStoreTheme } = useApp();
-  const isAdmin = view === 'admin';
-  const G = brand.green;
+export default function TopBar() {
+  const { view, setView, user, storeTheme, setStoreTheme, setShowAdminLogin, setShowUserAuth, cart } = useApp();
+  const isStore = view === 'store';
   const isDark = storeTheme === 'dark';
 
   return (
-    <div className="topbar" style={{
-      background: isAdmin ? '#0C0B09' : (isDark ? brand.storeDark.storeBg : brand.storeBg),
-      backdropFilter: 'blur(20px)',
-      borderBottom: isAdmin ? '1px solid #2A2A3E' : '1px solid ' + (isDark ? brand.storeDark.storeBorder : brand.storeBorder),
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px',
-      boxShadow: isAdmin ? 'none' : 'var(--store-card-shadow, 0 1px 3px rgba(15,23,42,.06))',
-    }}>
-      {/* ═══ LOGO ═══ */}
-      <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => { if (!user) setView('store'); }}>
-        {isAdmin ? (
-          /* DARK ADMIN — Plain text logo, high contrast */
-          <div style={{ display:'flex', alignItems:'baseline', gap:6 }}>
-            <span style={{ fontFamily:brand.fontDisplay, fontSize:20, fontWeight:800, color:'#FFFFFF', letterSpacing:'-0.02em' }}>QuantumOS</span>
-            <span style={{ fontSize:8, fontWeight:700, letterSpacing:'.2em', textTransform:'uppercase', color:brand.gold, lineHeight:1 }}>Admin</span>
-          </div>
-        ) : (
-          /* LIGHT/DARK STOREFRONT — Green badge + text + theme toggle */
-          <>
-            <div style={{ width:36, height:36, borderRadius:10, background:G, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:brand.fontDisplay, fontSize:11, color:'#fff', fontWeight:800 }}>TVS</div>
-            <div>
-              <div style={{ fontFamily:brand.fontDisplay, fontSize:15, color: isDark ? brand.storeDark.storeHeading : brand.storeHeading, fontWeight:700, lineHeight:1.1 }}>{brand.name}</div>
-              <div style={{ fontSize:8, color:G, fontWeight:700, letterSpacing:'.15em', textTransform:'uppercase' }}>{brand.tagline}</div>
-            </div>
-          </>
+    <header
+      className="topbar"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 56,
+        zIndex: 1000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 20px',
+        background: isStore ? (isDark ? brand.storeDark?.storeBg2 ?? '#1E293B' : brand.storeBg2) : brand.bg2,
+        borderBottom: `1px solid ${isStore ? (isDark ? brand.storeDark?.storeBorder : brand.storeBorder) : brand.border}`,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <span style={{ fontFamily: brand.fontDisplay, fontWeight: 700, fontSize: 18, color: isStore ? (isDark ? brand.storeDark?.storeHeading : brand.storeHeading) : brand.heading }}>
+          {brand.name}
+        </span>
+        <button
+          onClick={() => setView('store')}
+          style={{
+            padding: '6px 14px',
+            borderRadius: 8,
+            border: 'none',
+            background: isStore ? brand.green : 'transparent',
+            color: isStore ? '#fff' : brand.dim,
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          Store
+        </button>
+        <button
+          onClick={() => setView('admin')}
+          style={{
+            padding: '6px 14px',
+            borderRadius: 8,
+            border: 'none',
+            background: !isStore ? brand.green : 'transparent',
+            color: !isStore ? '#fff' : brand.dim,
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          Admin
+        </button>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        {isStore && (
+          <button
+            onClick={() => setStoreTheme(isDark ? 'light' : 'dark')}
+            style={{ padding: '6px 12px', borderRadius: 8, border: `1px solid ${brand.storeBorder}`, background: 'transparent', fontSize: 12, color: brand.storeDim }}
+          >
+            {isDark ? '☀️ Light' : '🌙 Dark'}
+          </button>
+        )}
+        {isStore && (
+          <button onClick={() => setShowUserAuth(true)} style={{ padding: '6px 14px', borderRadius: 8, border: `1px solid ${brand.green}`, background: 'transparent', color: brand.green, fontSize: 13, fontWeight: 600 }}>
+            Sign in
+          </button>
+        )}
+        {!user && view === 'admin' && (
+          <button onClick={() => setShowAdminLogin(true)} style={{ padding: '8px 16px', borderRadius: 8, background: brand.gold, color: '#000', fontSize: 13, fontWeight: 700, border: 'none' }}>
+            Admin Login
+          </button>
+        )}
+        {user && view === 'admin' && (
+          <span style={{ fontSize: 12, color: brand.dim }}>{user.name}</span>
+        )}
+        {isStore && cart?.length > 0 && (
+          <span style={{ fontSize: 12, color: brand.storeDim }}>🛒 {cart.length}</span>
         )}
       </div>
-
-      {/* ═══ STOREFRONT NAV ═══ */}
-      {view === 'store' && (
-        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-          <button
-            type="button"
-            onClick={() => setStoreTheme(isDark ? 'light' : 'dark')}
-            title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-            style={{ padding:6, borderRadius:8, border:'1px solid ' + (isDark ? brand.storeDark.storeBorder : brand.storeBorder), background: isDark ? brand.storeDark.storeBg2 : brand.storeBg2, color: isDark ? brand.storeDark.storeText : brand.storeDim, cursor:'pointer', fontSize:16 }}
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button>
-          <span style={{ fontSize:11, color: isDark ? brand.storeDark.storeDim : brand.storeDim }} title="Search on Home">🔍</span>
-          {cart.length > 0 && (
-            <span style={{ padding:'5px 12px', borderRadius:8, background:brand.greenMint, color:G, fontSize:11, fontWeight:700, border:'1px solid #C8E6C9' }}>
-              🛒 {cart.length}
-            </span>
-          )}
-          {customer ? (
-            <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-              <span style={{ fontSize:12, color: isDark ? brand.storeDark.storeHeading : brand.storeHeading, fontWeight:500 }}>{customer.name}</span>
-              <span style={{ fontSize:9, padding:'2px 7px', borderRadius:4, background:brand.greenMint, color:G, fontWeight:700 }}>{customer.tier}</span>
-              <button onClick={userLogout} style={{ fontSize:10, color: isDark ? brand.storeDark.storeDim : brand.storeDim, background:'none', border:'none', cursor:'pointer' }}>Sign out</button>
-            </div>
-          ) : (
-            <button onClick={() => setShowUserAuth(true)} style={{ padding:'8px 20px', borderRadius:10, background:G, color:'#fff', fontSize:12, fontWeight:700, border:'none', cursor:'pointer' }}>Sign In</button>
-          )}
-        </div>
-      )}
-
-      {/* ═══ ADMIN NAV ═══ */}
-      {view === 'admin' && user && (
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <span style={{ fontSize:10, color:'#888' }}>{user.email}</span>
-          <span style={{ fontSize:10, padding:'2px 8px', borderRadius:6, background:ROLES[user.role]?.color+'22', color:ROLES[user.role]?.color, fontWeight:700 }}>
-            {ROLES[user.role]?.emoji} {ROLES[user.role]?.label}
-          </span>
-          <button onClick={() => setView('store')} style={{ fontSize:10, color:'#999', background:'rgba(255,255,255,.04)', padding:'5px 12px', borderRadius:6, border:'1px solid #2A2A3E', cursor:'pointer' }}>
-            🛍 Store
-          </button>
-          <button onClick={adminLogout} style={{ fontSize:10, color:'#EF4444', background:'#EF444412', padding:'5px 12px', borderRadius:6, border:'none', cursor:'pointer' }}>
-            Logout
-          </button>
-        </div>
-      )}
-    </div>
+    </header>
   );
 }
-export default memo(TopBar);
