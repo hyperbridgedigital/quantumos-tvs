@@ -14,7 +14,7 @@ import { ROLES as roleData, ADMIN_TABS, DEMO_USERS } from '@/data/roles';
 import { getDefaultSettings } from '@/data/settings';
 import { remarketingRecords as rmData } from '@/data/remarketingDb';
 import { cmsDb as initialCmsDb } from '@/data/cmsDb';
-import { uid, fmt } from '@/lib/utils';
+import { uid, fmt, parseJsonFromResponse } from '@/lib/utils';
 
 const AppContext = createContext(null);
 
@@ -118,7 +118,7 @@ export function AppProvider({ children }) {
         const token = typeof window !== 'undefined' ? localStorage.getItem('qos_token') : null;
         if (token) {
           const res = await fetch('/api/auth/session', { headers: { Authorization: 'Bearer ' + token } });
-          const data = await res.json();
+          const data = await parseJsonFromResponse(res, '/api/auth/session');
           if (data.ok && data.user) {
             setAuthToken(token);
             const u = DEMO_USERS[data.user.role] || { id: data.user.id, name: data.user.name, role: data.user.role, email: data.user.email };
@@ -129,7 +129,7 @@ export function AppProvider({ children }) {
           }
           localStorage.removeItem('qos_token');
         }
-      } catch (e) { console.warn('Session init:', e); }
+      } catch (e) { console.warn('[API] Session init failed:', e.message, e); }
     })();
   }, []);
 
@@ -148,7 +148,7 @@ export function AppProvider({ children }) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: (email || '').trim().toLowerCase(), password }),
       });
-      const data = await res.json();
+      const data = await parseJsonFromResponse(res, '/api/auth/login');
       if (!data.ok) { setAuthLoading(false); return data; }
       const token = data.accessToken || data.token;
       if (!token) { setAuthLoading(false); return { ok: false, error: 'No token received' }; }
@@ -176,7 +176,7 @@ export function AppProvider({ children }) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ target, channel }),
       });
-      const data = await res.json();
+      const data = await parseJsonFromResponse(res, '/api/auth/otp/send');
       if (data.ok) {
         const channelLabels = { sms: 'SMS', whatsapp: 'WhatsApp', email: 'Email' };
         show('OTP sent via ' + channelLabels[channel] + ' to ' + target);
@@ -191,7 +191,7 @@ export function AppProvider({ children }) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ target, otp, channel, name, loginType: 'customer' }),
       });
-      const data = await res.json();
+      const data = await parseJsonFromResponse(res, '/api/auth/otp/verify');
       if (!data.ok) return data;
       setAuthToken(data.accessToken);
       if (typeof window !== 'undefined') localStorage.setItem('qos_token', data.accessToken);

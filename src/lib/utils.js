@@ -1,3 +1,17 @@
+const DEBUG_API = typeof window !== 'undefined' && (localStorage.getItem('qos_debug_api') === '1' || /[?&]debug=1/.test(window.location.search));
+
+/** Safely parse JSON from fetch Response; handles HTML/404 responses that cause "Unexpected token '<'" */
+export async function parseJsonFromResponse(res, url = '') {
+  const ct = (res.headers.get('content-type') || '').toLowerCase();
+  if (!ct.includes('application/json')) {
+    const t = await res.clone().text();
+    console.warn('[API] Non-JSON response (enable ?debug=1 or localStorage.qos_debug_api=1 for details):', url, 'status:', res.status, 'content-type:', ct || '(none)');
+    if (DEBUG_API) console.warn('[API DEBUG] bodyPreview:', t.slice(0, 400));
+    throw new Error('Server returned HTML instead of JSON (API route may be missing or misconfigured)');
+  }
+  return res.json();
+}
+
 export const uid = () => Math.random().toString(36).slice(2, 8);
 export const fmt = (n) => '₹' + Number(n).toLocaleString('en-IN');
 export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback, useRef } from 'react';
+import { parseJsonFromResponse } from '@/lib/utils';
 
 export function useKynetra() {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +23,7 @@ export function useKynetra() {
       });
 
       if (!res.ok) throw new Error(`Kynetra error: ${res.status}`);
-      const data = await res.json();
+      const data = await parseJsonFromResponse(res, '/api/kynetra/chat');
       return data;
     } catch (err) {
       if (err.name === 'AbortError') return null;
@@ -48,7 +49,7 @@ export function useKynetra() {
       });
 
       if (!res.ok) throw new Error(`Action error: ${res.status}`);
-      return await res.json();
+      return await parseJsonFromResponse(res, '/api/kynetra/actions');
     } catch (err) {
       setError(err.message);
       return { success: false, error: err.message };
@@ -61,7 +62,7 @@ export function useKynetra() {
     try {
       const res = await fetch(`/api/kynetra/insights?type=${type}`);
       if (!res.ok) throw new Error(`Insights error: ${res.status}`);
-      return await res.json();
+      return await parseJsonFromResponse(res, `/api/kynetra/insights?type=${type}`);
     } catch (err) {
       setError(err.message);
       return { insights: [] };
