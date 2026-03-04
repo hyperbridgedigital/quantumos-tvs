@@ -97,7 +97,23 @@ export default function StoreHome({ onNavigate }) {
             <p style={{ color: '#C8E6C9', fontSize: 16, marginBottom: 24 }}>{slide.subtitle}</p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <button onClick={() => onNavigate?.('menu')} style={{ padding: '14px 28px', borderRadius: 12, background: '#fff', color: G, fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer' }}>{slide.cta}</button>
-              {slide.cta2 && <button onClick={() => onNavigate?.('buildpc')} style={{ padding: '14px 28px', borderRadius: 12, background: 'rgba(255,255,255,.2)', color: '#fff', fontWeight: 700, fontSize: 14, border: '1px solid rgba(255,255,255,.4)', cursor: 'pointer' }}>{slide.cta2}</button>
+              {slide.cta2 && (
+                <button
+                  onClick={() => onNavigate?.('buildpc')}
+                  style={{
+                    padding: '14px 28px',
+                    borderRadius: 12,
+                    background: 'rgba(255,255,255,.2)',
+                    color: '#fff',
+                    fontWeight: 700,
+                    fontSize: 14,
+                    border: '1px solid rgba(255,255,255,.4)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {slide.cta2}
+                </button>
+              )}
             </div>
           </div>
         ))}

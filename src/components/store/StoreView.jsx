@@ -144,30 +144,7 @@ export default function StoreView() {
   return (
     <div style={{ maxWidth:960, margin:'0 auto', padding:'0 16px 80px', background:'#fff' }}>
 
-      {/* ═══ HERO ═══ */}
-      <div style={{ position:'relative', borderRadius:24, marginBottom:28, overflow:'hidden', background:'linear-gradient(150deg, '+GD+' 0%, '+G+' 45%, '+GL+' 100%)', padding:'48px 36px 44px', animation:'fadeIn .5s ease' }}>
-        <div style={{ position:'absolute', top:-50, right:-30, width:160, height:160, borderRadius:'50%', border:'1px solid rgba(255,255,255,.07)' }} />
-        <div style={{ position:'absolute', bottom:-30, left:80, width:100, height:100, borderRadius:'50%', border:'1px solid rgba(255,255,255,.05)' }} />
-
-        <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
-          <span style={{ width:8, height:8, borderRadius:'50%', background:'#4ADE80', boxShadow:'0 0 10px #4ADE80' }} />
-          <span style={{ fontSize:10, fontWeight:700, letterSpacing:'.22em', textTransform:'uppercase', color:'#A5D6A7' }}>Live · {activeStores.length} locations</span>
-        </div>
-
-        <h1 style={{ fontFamily:brand.fontDisplay, fontSize:'clamp(34px,7vw,54px)', color:'#fff', lineHeight:1, marginBottom:6 }}>
-          {brand.name}
-        </h1>
-        <p style={{ fontFamily:brand.fontDisplay, fontSize:17, color:'#C8E6C9', fontStyle:'italic', marginBottom:24, letterSpacing:'.01em' }}>{brand.tagline}</p>
-
-        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-          <button onClick={detectLocation} disabled={locLoading} style={{ display:'flex', alignItems:'center', gap:6, padding:'11px 22px', borderRadius:12, background:'rgba(255,255,255,.14)', backdropFilter:'blur(10px)', border:'1px solid rgba(255,255,255,.18)', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer' }}>
-            {locLoading ? '⏳ Detecting...' : '📍 Find Nearest Store'}
-          </button>
-          {currentStore && <span style={{ padding:'11px 18px', borderRadius:12, background:'rgba(255,255,255,.1)', border:'1px solid rgba(255,255,255,.14)', color:'#E8F5E9', fontSize:12, fontWeight:600 }}>✓ {currentStore.name}</span>}
-        </div>
-      </div>
-
-      {/* ═══ NAV ═══ */}
+      {/* ═══ NAV — Home shows new hero carousel inside StoreHome ═══ */}
       <div style={{ display:'flex', gap:3, marginBottom:28, background:'#F0F4F0', borderRadius:14, padding:4 }}>
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{ display:'flex', alignItems:'center', gap:6, padding:'11px 18px', borderRadius:10, fontSize:13, fontWeight:700, border:'none', flex:1, justifyContent:'center', transition:'all .15s', background:tab===t.key?'#fff':'transparent', color:tab===t.key?G:SD, boxShadow:tab===t.key?'0 1px 6px rgba(27,94,32,.08)':'none' }}>
