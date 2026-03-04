@@ -223,7 +223,8 @@ export function AppProvider({ children }) {
   const canAccess = useCallback((tab) => {
     if (!user) return false;
     const r = roles[user.role];
-    return r?.tabs?.includes('all') || r?.tabs?.includes(tab);
+    const tabs = r?.tabs;
+    return tabs === 'all' || (Array.isArray(tabs) && (tabs.includes('all') || tabs.includes(tab)));
   }, [user, roles]);
   const visibleTabs = useMemo(() => ADMIN_TABS.filter(t => canAccess(t.key)), [canAccess]);
 

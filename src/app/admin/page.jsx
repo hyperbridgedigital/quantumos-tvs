@@ -188,11 +188,6 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        {/* Demo credentials hint */}
-        <div style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: '#475569' }}>
-          Demo: spadensilver@gmail.com / Super@4455
-        </div>
-
         {/* Footer */}
         <div style={{ textAlign: 'center', marginTop: 32, fontSize: 10, color: '#334155' }}>
           Powered by HyperBridge QuantumOS v1.2.0 • Kynetra AI
