@@ -56,15 +56,19 @@ export async function POST(request) {
   }
 }
 
-/** GET — agent info for frontend */
+/** GET — agent info for frontend (includes build presets for PC building in Kynetra) */
 export async function GET() {
+  const { list } = await import('@/data/storeFeaturesDb');
+  const buildGuides = list('buildGuides') || [];
   return NextResponse.json({
     agent: BRANDING.agentName,
     platform: PLATFORM,
     poweredBy: POWERED_BY,
-    intents: ['sales', 'service', 'post_sales'],
+    intents: ['sales', 'service', 'post_sales', 'hyperlocal'],
     supportsActions: true,
     actionTypes: ['navigate', 'show_offers', 'show_menu', 'open_buildpc', 'open_franchise', 'open_cart', 'track_order', 'search', 'add_to_cart', 'contact_support'],
+    buildPresets: buildGuides.length,
+    buildPresetIds: buildGuides.map((p) => p.id),
   }, {
     headers: {
       'X-Kynetra-Agent': BRANDING.agentName,

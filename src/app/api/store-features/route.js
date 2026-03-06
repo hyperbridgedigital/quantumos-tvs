@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { list, create } from '@/data/storeFeaturesDb';
 
-const TYPES = ['wishlist', 'priceAlerts', 'preorders', 'tradeins', 'buildGuides', 'warranties', 'expertBookings', 'loyaltyPoints', 'stockByStore', 'comparisons'];
+const TYPES = ['wishlist', 'priceAlerts', 'preorders', 'tradeins', 'buildGuides', 'warranties', 'expertBookings', 'loyaltyPoints', 'stockByStore', 'comparisons', 'savedBuilds'];
 
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +10,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     if (!type || !TYPES.includes(type)) {
-      return NextResponse.json({ error: 'Missing or invalid type. Use ?type=wishlist|priceAlerts|preorders|tradeins|buildGuides|warranties|expertBookings|loyaltyPoints|stockByStore|comparisons' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing or invalid type. Use ?type=wishlist|priceAlerts|preorders|tradeins|buildGuides|warranties|expertBookings|loyaltyPoints|stockByStore|comparisons|savedBuilds' }, { status: 400 });
     }
     const data = list(type);
     return NextResponse.json({ [type]: data });

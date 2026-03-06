@@ -3,7 +3,11 @@ import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { brand } from '@/lib/brand';
 import { fmt } from '@/lib/utils';
+import { getProductImageUrl } from '@/lib/productImages';
 import KynetraChatWidget from './KynetraChatWidget';
+import HomePage from './HomePage';
+import PCBuilderView from './PCBuilderView';
+import { QUICK_CATEGORIES } from '@/data/homepage';
 
 const TABS = [
   { id: 'home', label: 'Home' },
@@ -31,27 +35,33 @@ export default function StoreView() {
     storeFeaturesData,
     createStoreFeature,
     fetchStoreFeatures,
+    pendingBuildPresetId,
+    setPendingBuildPresetId,
   } = useApp();
 
   const [storeTab, setStoreTab] = useState('home');
+  const [categoryFilter, setCategoryFilter] = useState('');
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', address: '', type: 'delivery' });
   const [searchQ, setSearchQ] = useState('');
   const [recommendations, setRecommendations] = useState([]);
-  const [buildParts, setBuildParts] = useState([]);
-  const [buildTotal, setBuildTotal] = useState(null);
   const [franchiseForm, setFranchiseForm] = useState({ name: '', phone: '', city: '', message: '' });
 
   const theme = storeTheme === 'dark' ? brand.storeDark : brand;
-  const G = brand.green;
+  const G = brand.green || brand.primary;
   const products = Array.isArray(availableProducts) ? availableProducts : [];
-  const filteredProducts = searchQ.trim()
-    ? products.filter(
-        (p) =>
-          (p.name || '').toLowerCase().includes(searchQ.toLowerCase()) ||
-          (p.category || '').toLowerCase().includes(searchQ.toLowerCase())
-      )
-    : products;
+  const categoryFromQuery = categoryFilter.startsWith('category=') ? categoryFilter.replace('category=', '').trim() : '';
+  const filteredProducts = (() => {
+    let list = searchQ.trim()
+      ? products.filter(
+          (p) =>
+            (p.name || '').toLowerCase().includes(searchQ.toLowerCase()) ||
+            (p.category || '').toLowerCase().includes(searchQ.toLowerCase())
+        )
+      : products;
+    if (categoryFromQuery) list = list.filter((p) => (p.category || '') === categoryFromQuery);
+    return list;
+  })();
   const gstRate = Number(settings?.GST_RATE || 5);
   const gst = Math.round(cartTotal * gstRate / 100);
   const deliveryFee = cartTotal >= Number(settings?.DELIVERY_FREE_ABOVE || 499) ? 0 : Number(settings?.DELIVERY_CHARGE || 49);
@@ -78,43 +88,9 @@ export default function StoreView() {
     }
   };
 
-  const addBuildPart = (p, qty = 1) => {
-    setBuildParts((prev) => {
-      const ex = prev.find((i) => i.productId === p.id);
-      if (ex) return prev.map((i) => (i.productId === p.id ? { ...i, qty: i.qty + qty } : i));
-      return [...prev, { productId: p.id, name: p.name, price: p.price, qty }];
-    });
-  };
-  const removeBuildPart = (productId) => setBuildParts((p) => p.filter((i) => i.productId !== productId));
-  const updateBuildQty = (productId, qty) => {
-    if (qty <= 0) removeBuildPart(productId);
-    else setBuildParts((p) => p.map((i) => (i.productId === productId ? { ...i, qty } : i)));
-  };
-
-  useEffect(() => {
-    if (buildParts.length === 0) {
-      setBuildTotal(null);
-      return;
-    }
-    fetch('/api/buildpc', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ parts: buildParts.map((i) => ({ productId: i.productId, qty: i.qty })) }),
-    })
-      .then((r) => r.json())
-      .then((d) => setBuildTotal(d.total))
-      .catch(() => setBuildTotal(null));
-  }, [buildParts]);
-
-  const addBuildToCart = () => {
-    buildParts.forEach(({ productId, qty }) => {
-      const p = products.find((x) => x.id === productId);
-      if (p) for (let i = 0; i < qty; i++) addToCart(p);
-    });
-    setBuildParts([]);
-    setBuildTotal(null);
-    setStoreTab('shop');
-    show('Build added to cart');
+  const handleStoreNavigate = (tab, query) => {
+    setStoreTab(tab);
+    setCategoryFilter(query && String(query).trim() ? query.trim() : '');
   };
 
   const activeOffers = Array.isArray(offers) ? offers.filter((o) => o.active) : [];
@@ -147,7 +123,7 @@ export default function StoreView() {
   };
 
   return (
-    <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px 16px 100px', background: theme.storeBg }}>
+    <div style={{ maxWidth: 1120, margin: '0 auto', padding: '24px 16px 100px', background: theme.storeBg }}>
       <h1 style={{ fontFamily: brand.fontDisplay, fontSize: 28, color: theme.storeHeading, marginBottom: 4 }}>{brand.name}</h1>
       <p style={{ fontSize: 14, color: theme.storeDim, marginBottom: 16 }}>{brand.tagline}</p>
 
@@ -175,27 +151,13 @@ export default function StoreView() {
 
       {/* Home */}
       {storeTab === 'home' && (
-        <>
-          <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 18, color: theme.storeHeading, marginBottom: 12 }}>Recommended for you</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
-              {(recommendations.length ? recommendations : products.slice(0, 6)).map((p) => (
-                <div key={p.id} style={{ padding: 12, background: theme.storeCard, border: `1px solid ${theme.storeBorder}`, borderRadius: 12 }}>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: theme.storeHeading, marginBottom: 4 }}>{p.name}</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: G, marginBottom: 8 }}>{fmt(p.price)}</div>
-                  <button onClick={() => addToCart(p)} style={{ width: '100%', padding: 8, borderRadius: 8, background: G, color: '#fff', fontWeight: 600, fontSize: 12, border: 'none' }}>Add to cart</button>
-                </div>
-              ))}
-            </div>
-          </section>
-          <p style={{ fontSize: 14, color: theme.storeDim }}>Use the tabs above to Shop, Build PC, view Offers, Track orders, or inquire about Franchise. Or open the chat for help.</p>
-          <section style={{ marginTop: 32 }}>
-            <h2 style={{ fontFamily: brand.fontDisplay, fontSize: 18, color: theme.storeHeading, marginBottom: 12 }}>Book an expert</h2>
-            <p style={{ fontSize: 13, color: theme.storeDim, marginBottom: 12 }}>Free 15-min call for build advice or bulk quotes.</p>
-            <input placeholder="Topic (e.g. Gaming PC, Streaming build)" value={expertBooking.topic} onChange={(e) => setExpertBooking((f) => ({ ...f, topic: e.target.value }))} style={{ width: '100%', maxWidth: 400, padding: 12, marginBottom: 8, borderRadius: 8, border: `1px solid ${theme.storeBorder}` }} />
-            <button onClick={submitExpertBooking} style={{ padding: '12px 20px', borderRadius: 10, background: G, color: '#fff', fontWeight: 600, border: 'none' }}>Request call</button>
-          </section>
-        </>
+        <HomePage
+          theme={theme}
+          products={products}
+          recommendations={recommendations}
+          onNavigate={handleStoreNavigate}
+          addToCart={addToCart}
+        />
       )}
 
       {/* Shop */}
@@ -232,6 +194,47 @@ export default function StoreView() {
               </div>
             </div>
           )}
+          {/* Category links — click to filter */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+            <button
+              type="button"
+              onClick={() => setCategoryFilter('')}
+              style={{
+                padding: '8px 14px',
+                borderRadius: 8,
+                border: `1px solid ${theme.storeBorder}`,
+                background: !categoryFromQuery ? G : theme.storeCard,
+                color: !categoryFromQuery ? '#fff' : theme.storeHeading,
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: 'pointer',
+              }}
+            >
+              All
+            </button>
+            {QUICK_CATEGORIES.map((cat) => {
+              const isActive = categoryFromQuery === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategoryFilter(`category=${cat.id}`)}
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: 8,
+                    border: `1px solid ${theme.storeBorder}`,
+                    background: isActive ? G : theme.storeCard,
+                    color: isActive ? '#fff' : theme.storeHeading,
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {cat.icon} {cat.label}
+                </button>
+              );
+            })}
+          </div>
           <div style={{ marginBottom: 16 }}>
             <input
               type="search"
@@ -240,11 +243,30 @@ export default function StoreView() {
               onChange={(e) => setSearchQ(e.target.value)}
               style={{ width: '100%', maxWidth: 400, padding: '12px 16px', borderRadius: 10, border: `1px solid ${theme.storeBorder}`, background: theme.storeCard, color: theme.storeHeading }}
             />
+            {categoryFromQuery && (
+              <p style={{ fontSize: 13, color: theme.storeDim, marginTop: 8 }}>
+                Showing category: <strong>{categoryFromQuery}</strong>
+                <button type="button" onClick={() => setCategoryFilter('')} style={{ marginLeft: 12, padding: '4px 10px', borderRadius: 6, border: `1px solid ${theme.storeBorder}`, background: 'transparent', fontSize: 12, cursor: 'pointer' }}>Clear</button>
+              </p>
+            )}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
-            {filteredProducts.slice(0, 24).map((p) => (
+            {filteredProducts.slice(0, 24).map((p) => {
+              const imgUrl = getProductImageUrl(p, 400, 400);
+              const setCategory = () => setCategoryFilter(p.category ? `category=${p.category}` : '');
+              return (
               <div key={p.id} style={{ padding: 16, background: theme.storeCard, border: `1px solid ${theme.storeBorder}`, borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,.06)' }}>
-                <div style={{ fontWeight: 700, fontSize: 14, color: theme.storeHeading, marginBottom: 4 }}>{p.name}</div>
+                <button
+                  type="button"
+                  onClick={setCategory}
+                  style={{ width: '100%', padding: 0, border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left' }}
+                  title={`View all ${p.category || 'products'}`}
+                >
+                  <div style={{ width: '100%', aspectRatio: '1', borderRadius: 8, overflow: 'hidden', marginBottom: 12, background: theme.storeBg2 }}>
+                    <img src={imgUrl} alt={p.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: G, marginBottom: 4 }}>{p.name}</div>
+                </button>
                 <div style={{ fontSize: 12, color: theme.storeDim, marginBottom: 8 }}>{p.category || 'Product'}</div>
                 <div style={{ fontSize: 20, fontWeight: 800, color: G, marginBottom: 10 }}>{fmt(p.price)}</div>
                 <div style={{ display: 'flex', gap: 8 }}>
@@ -264,52 +286,28 @@ export default function StoreView() {
                   <button onClick={() => { setPriceAlertProduct(p); setPriceAlertTarget(String(p.price)); }} style={{ width: '100%', marginTop: 6, padding: 6, borderRadius: 6, border: `1px solid ${theme.storeBorder}`, background: 'transparent', fontSize: 11, color: theme.storeDim }}>Notify when price drops</button>
                 )}
               </div>
-            ))}
+            );})}
           </div>
         </>
       )}
 
       {/* Build PC */}
       {storeTab === 'buildpc' && (
-        <>
-          <p style={{ fontSize: 14, color: theme.storeDim, marginBottom: 16 }}>Add components to your build. Total updates automatically.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24 }}>
-            <div>
-              <h3 style={{ fontSize: 14, color: theme.storeHeading, marginBottom: 8 }}>Components & peripherals</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {products.map((p) => (
-                  <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 12, background: theme.storeBg2, borderRadius: 10, border: `1px solid ${theme.storeBorder}` }}>
-                    <span style={{ color: theme.storeHeading }}>{p.name} — {fmt(p.price)}</span>
-                    <button onClick={() => addBuildPart(p)} style={{ padding: '8px 14px', borderRadius: 8, background: G, color: '#fff', fontWeight: 600, border: 'none' }}>Add</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{ padding: 20, background: theme.storeBg2, border: `1px solid ${theme.storeBorder}`, borderRadius: 16, height: 'fit-content' }}>
-              <h3 style={{ fontSize: 16, color: theme.storeHeading, marginBottom: 12 }}>Your build</h3>
-              {buildParts.length === 0 ? (
-                <p style={{ color: theme.storeDim, fontSize: 13 }}>No parts added. Add components from the list.</p>
-              ) : (
-                <>
-                  {buildParts.map((i) => (
-                    <div key={i.productId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: `1px solid ${theme.storeBorder}` }}>
-                      <span style={{ fontSize: 13, color: theme.storeHeading }}>{i.name} × {i.qty}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <button onClick={() => updateBuildQty(i.productId, i.qty - 1)} style={{ width: 26, height: 26, borderRadius: 6, border: `1px solid ${theme.storeBorder}`, background: theme.storeCard, fontSize: 14 }}>−</button>
-                        <span style={{ fontWeight: 700, minWidth: 20, textAlign: 'center' }}>{i.qty}</span>
-                        <button onClick={() => updateBuildQty(i.productId, i.qty + 1)} style={{ width: 26, height: 26, borderRadius: 6, border: `1px solid ${G}`, background: brand.greenMint, color: G, fontSize: 14 }}>+</button>
-                        <span style={{ fontWeight: 700, color: G }}>{fmt(i.price * i.qty)}</span>
-                        <button onClick={() => removeBuildPart(i.productId)} style={{ color: brand.red, background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>
-                      </div>
-                    </div>
-                  ))}
-                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `2px solid ${theme.storeBorder}`, fontWeight: 700, fontSize: 18, color: G }}>Total: {buildTotal != null ? fmt(buildTotal) : '—'}</div>
-                  <button onClick={addBuildToCart} disabled={buildParts.length === 0} style={{ width: '100%', marginTop: 12, padding: 14, borderRadius: 12, background: G, color: '#fff', fontWeight: 700, border: 'none' }}>Add build to cart</button>
-                </>
-              )}
-            </div>
-          </div>
-        </>
+        <PCBuilderView
+          theme={theme}
+          settings={settings}
+          show={show}
+          createStoreFeature={createStoreFeature}
+          fetchStoreFeatures={fetchStoreFeatures}
+          storeFeaturesData={storeFeaturesData}
+          pendingBuildPresetId={pendingBuildPresetId}
+          setPendingBuildPresetId={setPendingBuildPresetId}
+          onRequestExpert={(topic) => {
+            createStoreFeature('expertBookings', { customerId: 'guest', customerName: 'Guest', topic: topic || 'Review my PC build', slot: new Date(Date.now() + 86400000).toISOString(), expertName: 'TBD', status: 'pending' });
+            show('Expert review requested. We will call you.');
+          }}
+          addToCart={addToCart}
+        />
       )}
 
       {/* Offers */}
@@ -405,7 +403,12 @@ export default function StoreView() {
       )}
 
       <footer style={{ marginTop: 48, paddingTop: 24, borderTop: `1px solid ${theme.storeBorder}`, fontSize: 12, color: theme.storeDim, textAlign: 'center' }}>
-        {brand.footer}
+        <div style={{ marginBottom: 8 }}>{brand.footer}</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px 20px' }}>
+          <a href={brand.links?.hyperbridge} target="_blank" rel="noopener noreferrer" style={{ color: G, textDecoration: 'underline' }}>HyperBridge</a>
+          <a href={brand.links?.quantumos} target="_blank" rel="noopener noreferrer" style={{ color: G, textDecoration: 'underline' }}>QuantumOS</a>
+          <a href={brand.links?.theReelFactory} target="_blank" rel="noopener noreferrer" style={{ color: G, textDecoration: 'underline' }}>TheReelFactory</a>
+        </div>
       </footer>
 
       <KynetraChatWidget onNavigate={(tab) => setStoreTab(tab)} storeTab={storeTab} />

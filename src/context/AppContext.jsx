@@ -28,13 +28,15 @@ export function AppProvider({ children }) {
   const [showUserAuth, setShowUserAuth] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
 
-  // ═══ STORE THEME (light/dark) — persisted ═══
+  const [pendingBuildPresetId, setPendingBuildPresetId] = useState(null);
+
+  // ═══ STORE THEME (dark / light) — default dark; persisted ═══
   const [storeTheme, setStoreTheme] = useState(() => {
-    if (typeof window === 'undefined') return 'light';
+    if (typeof window === 'undefined') return 'dark';
     try {
       const s = localStorage.getItem('tvs_theme');
-      return (s === 'dark' || s === 'light') ? s : 'light';
-    } catch (_) { return 'light'; }
+      return (s === 'dark' || s === 'light') ? s : 'dark';
+    } catch (_) { return 'dark'; }
   });
   useEffect(() => {
     try {
@@ -171,7 +173,7 @@ export function AppProvider({ children }) {
   const [authToken, setAuthToken] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
 
-  // Restore session on mount — only if user already has a token (no auto-login so store shows first)
+  // Restore session on mount — keep user/token but do NOT auto-switch to admin (cancel autologin)
   useEffect(() => {
     (async () => {
       try {
@@ -182,23 +184,25 @@ export function AppProvider({ children }) {
           if (data.ok && data.user) {
             setAuthToken(token);
             const u = DEMO_USERS[data.user.role] || { id: data.user.id, name: data.user.name, role: data.user.role, email: data.user.email };
-            setUser(u); setView('admin'); setAdminTab('dashboard');
+            setUser(u);
+            // Do NOT setView('admin') — app always opens on store; user can click Admin to switch
           } else {
             localStorage.removeItem('qos_token');
           }
         }
-        // No auto-login: app opens on store so TheValueStore storefront is visible first
       } catch (e) { console.warn('Session init:', e); }
     })();
   }, []);
 
-  // Sync products from backend so store and API stay in sync
+  // Sync products from backend so store and API stay in sync (600 demo catalog when useCatalog=1)
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/products')
+    fetch('/api/products?useCatalog=1')
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
-        if (!cancelled && data?.products && Array.isArray(data.products) && data.products.length > 0) setProducts(data.products);
+        if (!cancelled && data?.products && Array.isArray(data.products)) {
+          if (data.products.length > 0) setProducts(data.products);
+        }
       })
       .catch(() => {});
     return () => { cancelled = true; };
@@ -502,6 +506,7 @@ export function AppProvider({ children }) {
     partnerValues, updatePartnerConfig, savePartnerConfig, partnerConfig,
     roles, toggleRoleTab, settings, updateSetting, saveSettings,
     storeTheme, setStoreTheme,
+    pendingBuildPresetId, setPendingBuildPresetId,
     cart, addToCart, removeFromCart, updateCartQty, placeOrder, cartTotal,
     remarketingRecords, setRemarketingRecords,
     funnels, addFunnel, updateFunnel, deleteFunnel,
@@ -519,6 +524,7 @@ export function AppProvider({ children }) {
     products, availableProducts, partnerValues, roles, settings,
     cart, cartTotal, remarketingRecords, funnels, automationRules, chatbotFlows, chatMessages,
     kynetraTemplates, storeTheme,
+    pendingBuildPresetId, setPendingBuildPresetId,
     storeFeaturesData, fetchStoreFeatures, createStoreFeature, updateStoreFeature, deleteStoreFeature,
     login, logout, adminLogin, adminLogout, userSendOTP, userVerifyOTP, userLogout,
     addStore, updateStore, deleteStore, addOrder, updateOrderStatus,

@@ -1,10 +1,17 @@
-/* TheValueStore — tech-store palette (blue accent, no green); aligned with Best Buy / Newegg / B&H style */
+/* TheValueStore — Premium gaming & computer commerce
+   Palette: Matte black, Electric blue, Emerald accent, Soft white */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --primary: #0066CC;
-  --primary-light: #2563EB;
+  --primary: #0066FF;
+  --primary-light: #3B82F6;
   --primary-mint: #EFF6FF;
+  --emerald: #10B981;
+  --emerald-mint: #D1FAE5;
+  --matte-black: #0F0F0F;
+  --matte-black-2: #1A1A1A;
+  --soft-white: #FAFAFA;
+  --soft-white-2: #F5F5F5;
   --bg: #0C0B09;
   --bg2: #141310;
   --card: #1A1A2E;
@@ -12,12 +19,12 @@
   --heading: #EDE8E2;
   --text: #A09888;
   --dim: #666;
-  --store-bg: #FFFFFF;
-  --store-bg2: #F8FAFC;
-  --store-border: #E2E8F0;
-  --store-heading: #0F172A;
-  --store-text: #334155;
-  --store-dim: #64748B;
+  --store-bg: #FAFAFA;
+  --store-bg2: #F5F5F5;
+  --store-border: #E5E7EB;
+  --store-heading: #0F0F0F;
+  --store-text: #374151;
+  --store-dim: #6B7280;
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Figtree', system-ui, sans-serif;
 }
@@ -39,12 +46,19 @@ body[data-theme="admin"] {
   color: var(--text);
 }
 body[data-theme="store-dark"] {
-  background: #0F172A;
-  color: #E2E8F0;
+  background: #0F0F0F;
+  color: #E5E7EB;
 }
 
 button { font-family: inherit; cursor: pointer; }
 input, select, textarea { font-family: inherit; }
+/* Ensure links are visible (SOC2 / accessibility) */
+a {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+a:hover { opacity: 0.9; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
 .page-content { padding-top: 56px; min-height: 100vh; }

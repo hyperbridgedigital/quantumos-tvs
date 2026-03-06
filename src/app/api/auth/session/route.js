@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server';
 import { extractToken, verifyToken } from '@/lib/auth/jwt';
 import { ROLE_CONFIG } from '@/lib/auth/credentials';
+import { auditLog } from '@/lib/auditLog';
+
+function getClientInfo(request) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || null;
+  const userAgent = request.headers.get('user-agent') || null;
+  return { ip, userAgent };
+}
 
 export async function GET(request) {
+  const { ip, userAgent } = getClientInfo(request);
   try {
     const token = extractToken(request);
     if (!token) {
@@ -11,7 +19,7 @@ export async function GET(request) {
 
     const { valid, decoded, error } = verifyToken(token);
     if (!valid) {
-      // Clear invalid cookie
+      auditLog({ event: 'auth.session.invalid', resource: '/api/auth/session', result: 'failure', ip, userAgent, metadata: { reason: error } });
       const res = NextResponse.json({ ok: false, authenticated: false, error }, { status: 401 });
       res.headers.set('Set-Cookie', 'qos_token=; Path=/; HttpOnly; Max-Age=0');
       return res;
@@ -32,6 +40,6 @@ export async function GET(request) {
       expiresAt: new Date(decoded.exp * 1000).toISOString(),
     });
   } catch (err) {
-    return NextResponse.json({ ok: false, error: 'Server error: ' + err.message }, { status: 500 });
+    return NextResponse.json({ ok: false, error: 'Session check failed' }, { status: 500 });
   }
 }

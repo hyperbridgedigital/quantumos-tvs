@@ -45,6 +45,16 @@ export const seedBuildGuides = [
   { id: 'BG003', name: 'Streaming + Gaming', description: 'Encode and game without compromise', budgetMin: 90000, budgetMax: 110000, partIds: ['cpu_3', 'mb_1', 'gpu_2', 'ram_2', 'st_2', 'psu_2', 'case_1', 'cooler_2'], useCase: 'streaming', createdAt: '2025-01-15T10:00:00Z' },
   { id: 'BG004', name: 'SFF Compact Build', description: 'Small form factor portable PC', budgetMin: 60000, budgetMax: 75000, partIds: ['cpu_1', 'mb_4', 'gpu_1', 'ram_3', 'st_3', 'psu_4', 'case_4', 'cooler_5'], useCase: 'sff', createdAt: '2025-01-18T10:00:00Z' },
   { id: 'BG005', name: 'Max Value Budget', description: 'Every rupee counts', budgetMin: 35000, budgetMax: 45000, partIds: ['cpu_5', 'mb_3', 'gpu_4', 'ram_4', 'st_5', 'psu_3', 'case_2'], useCase: 'budget', createdAt: '2025-01-20T10:00:00Z' },
+  { id: 'BG006', name: '₹1L 1440p Ultra', description: 'High settings 1440p', budgetMin: 95000, budgetMax: 110000, partIds: ['cpu_1', 'mb_1', 'gpu_2', 'ram_2', 'st_1', 'psu_2', 'case_3', 'cooler_4'], useCase: 'gaming_1440p', createdAt: '2025-01-22T10:00:00Z' },
+  { id: 'BG007', name: '4K Gaming Elite', description: '4K gaming and content creation', budgetMin: 140000, budgetMax: 170000, partIds: ['cpu_2', 'mb_1', 'gpu_3', 'ram_2', 'st_4', 'psu_5', 'case_1', 'cooler_1'], useCase: 'gaming_4k', createdAt: '2025-01-25T10:00:00Z' },
+  { id: 'BG008', name: 'Creator / Workstation', description: 'Video edit, 3D, rendering', budgetMin: 120000, budgetMax: 150000, partIds: ['cpu_4', 'mb_1', 'gpu_2', 'ram_5', 'st_4', 'psu_2', 'case_3', 'cooler_2'], useCase: 'workstation', createdAt: '2025-01-28T10:00:00Z' },
+  { id: 'BG009', name: 'Silent / Quiet Build', description: 'Low noise, quality cooling', budgetMin: 85000, budgetMax: 100000, partIds: ['cpu_1', 'mb_2', 'gpu_1', 'ram_1', 'st_2', 'psu_1', 'case_3', 'cooler_1'], useCase: 'silent', createdAt: '2025-02-01T10:00:00Z' },
+  { id: 'BG010', name: 'Entry 1080p', description: 'First gaming PC', budgetMin: 40000, budgetMax: 50000, partIds: ['cpu_5', 'mb_5', 'gpu_4', 'ram_4', 'st_5', 'psu_3', 'case_2'], useCase: 'gaming_1080p', createdAt: '2025-02-05T10:00:00Z' },
+  { id: 'BG011', name: 'RTX 40 Series Focus', description: 'NVIDIA RTX 4060/70 build', budgetMin: 90000, budgetMax: 115000, partIds: ['cpu_3', 'mb_1', 'gpu_2', 'ram_1', 'st_1', 'psu_2', 'case_5', 'cooler_2'], useCase: 'streaming', createdAt: '2025-02-08T10:00:00Z' },
+  { id: 'BG012', name: 'AMD All-Red', description: 'Full AMD CPU + GPU', budgetMin: 75000, budgetMax: 95000, partIds: ['cpu_1', 'mb_2', 'gpu_5', 'ram_1', 'st_2', 'psu_1', 'case_3', 'cooler_4'], useCase: 'gaming_1440p', createdAt: '2025-02-10T10:00:00Z' },
+  { id: 'BG013', name: 'Intel + RTX', description: 'Intel i5/i7 + NVIDIA', budgetMin: 100000, budgetMax: 125000, partIds: ['cpu_3', 'mb_3', 'gpu_2', 'ram_2', 'st_2', 'psu_2', 'case_2', 'cooler_2'], useCase: 'streaming', createdAt: '2025-02-12T10:00:00Z' },
+  { id: 'BG014', name: 'Mini ITX Portable', description: 'Smallest footprint', budgetMin: 65000, budgetMax: 80000, partIds: ['cpu_1', 'mb_4', 'gpu_1', 'ram_3', 'st_3', 'psu_4', 'case_4', 'cooler_5'], useCase: 'sff', createdAt: '2025-02-15T10:00:00Z' },
+  { id: 'BG015', name: 'Budget Streaming', description: 'Stream on a budget', budgetMin: 55000, budgetMax: 70000, partIds: ['cpu_5', 'mb_5', 'gpu_1', 'ram_4', 'st_5', 'psu_3', 'case_2', 'cooler_4'], useCase: 'streaming', createdAt: '2025-02-18T10:00:00Z' },
 ];
 
 export const seedWarranties = [
@@ -89,6 +99,9 @@ export const seedComparisons = [
   { id: 'CP005', name: 'Budget Monitors', productIds: ['P005', 'P010'], createdAt: '2025-02-05T16:00:00Z' },
 ];
 
+// Saved PC builds (user-saved configs)
+export const seedSavedBuilds = [];
+
 // ─── IN-MEMORY STORE (mutations via API) ───
 const store = {
   wishlist: [...seedWishlist],
@@ -101,9 +114,10 @@ const store = {
   loyaltyPoints: [...seedLoyaltyPoints],
   stockByStore: [...seedStockByStore],
   comparisons: [...seedComparisons],
+  savedBuilds: [...seedSavedBuilds],
 };
 
-const TYPES = ['wishlist', 'priceAlerts', 'preorders', 'tradeins', 'buildGuides', 'warranties', 'expertBookings', 'loyaltyPoints', 'stockByStore', 'comparisons'];
+const TYPES = ['wishlist', 'priceAlerts', 'preorders', 'tradeins', 'buildGuides', 'warranties', 'expertBookings', 'loyaltyPoints', 'stockByStore', 'comparisons', 'savedBuilds'];
 
 export function getStore() {
   return store;
@@ -121,7 +135,7 @@ export function getById(type, id) {
 
 export function create(type, data) {
   if (!TYPES.includes(type)) return null;
-  const prefix = { wishlist: 'WL', priceAlerts: 'PA', preorders: 'PO', tradeins: 'TI', buildGuides: 'BG', warranties: 'WR', expertBookings: 'EB', loyaltyPoints: 'LP', stockByStore: 'SB', comparisons: 'CP' }[type] || 'SF';
+  const prefix = { wishlist: 'WL', priceAlerts: 'PA', preorders: 'PO', tradeins: 'TI', buildGuides: 'BG', warranties: 'WR', expertBookings: 'EB', loyaltyPoints: 'LP', stockByStore: 'SB', comparisons: 'CP', savedBuilds: 'BV' }[type] || 'SF';
   const id = data.id || `${prefix}-${uid()}`;
   const item = { ...data, id, createdAt: data.createdAt || new Date().toISOString() };
   store[type].push(item);
@@ -157,4 +171,5 @@ export function resetToSeed() {
   store.loyaltyPoints = [...seedLoyaltyPoints];
   store.stockByStore = [...seedStockByStore];
   store.comparisons = [...seedComparisons];
+  store.savedBuilds = [...seedSavedBuilds];
 }

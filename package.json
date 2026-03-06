@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "generate": "node scripts/generateTestData.mjs --seed 111 --days 90",
     "prebuild": "mkdir -p .next/server && echo \"{}\" > .next/server/pages-manifest.json"
   },
@@ -18,7 +20,11 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.0"
+    "eslint-config-next": "^14.2.0",
+    "get-port": "^7.0.0",
+    "lighthouse": "^11.4.0",
+    "playwright-lighthouse": "^4.0.0"
   }
 }
